@@ -1,9 +1,8 @@
 # Classes
-1. User -> Farmacist, Dermatologist, FarmacyAdministrator, SystemAdministrator
-2. Farmacy
-3. Supplier
-4. Drug
-5. Appointment -> AbsenceRequest
-6. Report
-7. Order -> SupplyOrder
-8. SupplyOffer
+1. User -> Farmacist, Dermatologist, FarmacyAdministrator, SystemAdministrator, Supplier
+2. Pharmacy
+3. Drug
+4. Appointment -> AbsenceRequest
+5. Report
+6. Order -> SupplyOrder
+7. SupplyOffer

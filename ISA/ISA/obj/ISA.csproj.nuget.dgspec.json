@@ -1,20 +1,23 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\Uros\\Desktop\\ISA\\isa-project\\ISA\\ISA\\ISA.csproj": {}
+    "C:\\Users\\Panonit\\Desktop\\Isa\\isa-project\\ISA\\ISA\\ISA.csproj": {}
   },
   "projects": {
-    "C:\\Users\\Uros\\Desktop\\ISA\\isa-project\\ISA\\ISA\\ISA.csproj": {
+    "C:\\Users\\Panonit\\Desktop\\Isa\\isa-project\\ISA\\ISA\\ISA.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Uros\\Desktop\\ISA\\isa-project\\ISA\\ISA\\ISA.csproj",
+        "projectUniqueName": "C:\\Users\\Panonit\\Desktop\\Isa\\isa-project\\ISA\\ISA\\ISA.csproj",
         "projectName": "ISA",
-        "projectPath": "C:\\Users\\Uros\\Desktop\\ISA\\isa-project\\ISA\\ISA\\ISA.csproj",
-        "packagesPath": "C:\\Users\\Uros\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Uros\\Desktop\\ISA\\isa-project\\ISA\\ISA\\obj\\",
+        "projectPath": "C:\\Users\\Panonit\\Desktop\\Isa\\isa-project\\ISA\\ISA\\ISA.csproj",
+        "packagesPath": "C:\\Users\\Panonit\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\Panonit\\Desktop\\Isa\\isa-project\\ISA\\ISA\\obj\\",
         "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
+        ],
         "configFilePaths": [
-          "C:\\Users\\Uros\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\Panonit\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
@@ -26,7 +29,6 @@
         },
         "frameworks": {
           "netcoreapp3.1": {
-            "targetAlias": "netcoreapp3.1",
             "projectReferences": {}
           }
         },
@@ -38,7 +40,6 @@
       },
       "frameworks": {
         "netcoreapp3.1": {
-          "targetAlias": "netcoreapp3.1",
           "imports": [
             "net461",
             "net462",
@@ -57,7 +58,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.100\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\3.1.400\\RuntimeIdentifierGraph.json"
         }
       }
     }
