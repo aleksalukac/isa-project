@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace ISA.Models.Entities.Users
 {
-    public class Dermatologist : User
+    public class Employee : User
     {
+        
     }
 }

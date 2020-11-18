@@ -4,7 +4,7 @@ using System.Text;
 
 namespace ISA.Models.Entities.Users
 {
-    public class FarmacyAdministrator
+    public class FarmacyAdministrator : User
     {
     }
 }

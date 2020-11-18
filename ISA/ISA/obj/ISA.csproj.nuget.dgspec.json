@@ -1,24 +1,25 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\Panonit\\Desktop\\Isa\\isa-project\\ISA\\ISA\\ISA.csproj": {}
+    "D:\\GitHub\\isa-project\\ISA\\ISA\\ISA.csproj": {}
   },
   "projects": {
-    "C:\\Users\\Panonit\\Desktop\\Isa\\isa-project\\ISA\\ISA\\ISA.csproj": {
+    "D:\\GitHub\\isa-project\\ISA\\ISA\\ISA.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Panonit\\Desktop\\Isa\\isa-project\\ISA\\ISA\\ISA.csproj",
+        "projectUniqueName": "D:\\GitHub\\isa-project\\ISA\\ISA\\ISA.csproj",
         "projectName": "ISA",
-        "projectPath": "C:\\Users\\Panonit\\Desktop\\Isa\\isa-project\\ISA\\ISA\\ISA.csproj",
-        "packagesPath": "C:\\Users\\Panonit\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Panonit\\Desktop\\Isa\\isa-project\\ISA\\ISA\\obj\\",
+        "projectPath": "D:\\GitHub\\isa-project\\ISA\\ISA\\ISA.csproj",
+        "packagesPath": "C:\\Users\\v-aleluk\\.nuget\\packages\\",
+        "outputPath": "D:\\GitHub\\isa-project\\ISA\\ISA\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
-          "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
+          "D:\\Microsoft\\Xamarin\\NuGet\\"
         ],
         "configFilePaths": [
-          "C:\\Users\\Panonit\\AppData\\Roaming\\NuGet\\NuGet.Config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+          "C:\\Users\\v-aleluk\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Xamarin.Offline.config"
         ],
         "originalTargetFrameworks": [
           "netcoreapp3.1"
@@ -29,6 +30,7 @@
         },
         "frameworks": {
           "netcoreapp3.1": {
+            "targetAlias": "netcoreapp3.1",
             "projectReferences": {}
           }
         },
@@ -40,6 +42,13 @@
       },
       "frameworks": {
         "netcoreapp3.1": {
+          "targetAlias": "netcoreapp3.1",
+          "dependencies": {
+            "Microsoft.EntityFrameworkCore": {
+              "target": "Package",
+              "version": "[5.0.0, )"
+            }
+          },
           "imports": [
             "net461",
             "net462",
@@ -58,7 +67,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\3.1.400\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.100\\RuntimeIdentifierGraph.json"
         }
       }
     }

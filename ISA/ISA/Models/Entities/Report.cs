@@ -4,7 +4,7 @@ using System.Text;
 
 namespace ISA.Models.Entities
 {
-    public class Report
+    public class Report : BaseEntity
     {
     }
 }

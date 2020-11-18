@@ -4,7 +4,7 @@ using System.Text;
 
 namespace ISA.Models.Entities
 {
-    public class Appoitment
+    public class Appoitment : BaseEntity
     {
     }
 }

@@ -4,7 +4,7 @@ using System.Text;
 
 namespace ISA.Models.Entities
 {
-    public class SupplyOrder
+    public class SupplyOrder : BaseEntity
     {
     }
 }
