@@ -8,6 +8,9 @@ namespace ISA.Models.Entities
     public class Pharmacy : BaseEntity
     {
         public String Address { get; set; }
-        public FarmacyAdministrator {get;set;
+        public PharmacyAdministrator Administrator { get; set; }
+        public List<Employee> Employees { get; set; }
+        public List<Drug> Drugs { get; set; }
+        public List<SupplyOrder> SupplyOrders { get; set; }
     }
 }

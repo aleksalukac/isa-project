@@ -16,6 +16,7 @@ namespace ISA.Models.Entities.Users
         public String Email { get; set; }
         public String Name { get; set; }
         public String Surname { get; set; }
+        public List<Appointment> Appointments { get; set; }
 
         private String _password;
 
