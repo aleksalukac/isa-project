@@ -10,9 +10,13 @@ namespace ISA.Models
 {
     public class Context : DbContext
     {
+        public Context(DbContextOptions<Context> options) : base(options)
+        {
+        }
+
         public DbSet<Drug> tbDrugs;
 
-        public DbSet<Report> tbReports;
+        public DbSet<Report> tbReports { get; set; }
 
         public DbSet<Pharmacy> tbPharmacys;
 
@@ -38,5 +42,9 @@ namespace ISA.Models
 
         public DbSet<PharmacyAdministrator> tbPharmacyAdministrator;
 
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<Report>().ToTable("Report");
+        }
     }
 }
