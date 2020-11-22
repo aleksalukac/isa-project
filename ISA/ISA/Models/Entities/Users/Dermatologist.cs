@@ -6,6 +6,5 @@ namespace ISA.Models.Entities.Users
 {
     public class Dermatologist : MedicalExpert
     {
-        public List<Appointment> Appoitments { get; set; }
     }
 }

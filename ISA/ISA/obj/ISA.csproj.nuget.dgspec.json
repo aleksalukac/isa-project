@@ -1,25 +1,21 @@
 {
   "format": 1,
   "restore": {
-    "D:\\GitHub\\isa-project\\ISA\\ISA\\ISA.csproj": {}
+    "C:\\Users\\Uros\\Desktop\\ISA\\isa-project\\ISA\\ISA\\ISA.csproj": {}
   },
   "projects": {
-    "D:\\GitHub\\isa-project\\ISA\\ISA\\ISA.csproj": {
+    "C:\\Users\\Uros\\Desktop\\ISA\\isa-project\\ISA\\ISA\\ISA.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\GitHub\\isa-project\\ISA\\ISA\\ISA.csproj",
+        "projectUniqueName": "C:\\Users\\Uros\\Desktop\\ISA\\isa-project\\ISA\\ISA\\ISA.csproj",
         "projectName": "ISA",
-        "projectPath": "D:\\GitHub\\isa-project\\ISA\\ISA\\ISA.csproj",
-        "packagesPath": "C:\\Users\\v-aleluk\\.nuget\\packages\\",
-        "outputPath": "D:\\GitHub\\isa-project\\ISA\\ISA\\obj\\",
+        "projectPath": "C:\\Users\\Uros\\Desktop\\ISA\\isa-project\\ISA\\ISA\\ISA.csproj",
+        "packagesPath": "C:\\Users\\Uros\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\Uros\\Desktop\\ISA\\isa-project\\ISA\\ISA\\obj\\",
         "projectStyle": "PackageReference",
-        "fallbackFolders": [
-          "D:\\Microsoft\\Xamarin\\NuGet\\"
-        ],
         "configFilePaths": [
-          "C:\\Users\\v-aleluk\\AppData\\Roaming\\NuGet\\NuGet.Config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Xamarin.Offline.config"
+          "C:\\Users\\Uros\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
           "netcoreapp3.1"
