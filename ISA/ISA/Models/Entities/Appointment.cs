@@ -1,14 +1,16 @@
 ﻿using ISA.Models.Entities.Users;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Text;
 
 namespace ISA.Models.Entities
 {
+    [Table("tbAppointments")]
     public class Appointment : BaseEntity
     {
-        public TimeSpan TimeSpan { get; set; }
-        public MedicalExpert MedicalExpert { get; set; }
+        //public TimeSpan TimeSpan { get; set; }
+        public Employee MedicalExpert { get; set; }
         public User Patient { get; set; }
         public float Price { get; private set; }
 

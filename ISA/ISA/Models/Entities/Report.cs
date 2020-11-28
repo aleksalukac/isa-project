@@ -8,12 +8,10 @@ using System.Text;
 namespace ISA.Models.Entities
 {
     
-    [Table("tbReport")]
-    public class Report
+    [Table("tbReports")]
+    public class Report : BaseEntity
     {
-        // public User User { get; set; }
-        [Key]
-        public long? Id { get; set; }
+        public User User { get; set; }
         public string ReportText { get; set; }
 
         public Report()

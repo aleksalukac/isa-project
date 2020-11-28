@@ -1,10 +1,12 @@
 ﻿using ISA.Models.Entities.Users;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Text;
 
 namespace ISA.Models.Entities
 {
+    [Table("tbOrders")]
     public class Order : BaseEntity
     {
         public List<DrugAndQuantity> DrugAndQuantities { get; set; }

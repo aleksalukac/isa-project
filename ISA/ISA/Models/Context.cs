@@ -14,37 +14,55 @@ namespace ISA.Models
         {
         }
 
-        public DbSet<Drug> tbDrugs;
+        public DbSet<Drug> tbDrugs { get; set; }
 
         public DbSet<Report> tbReports { get; set; }
 
-        public DbSet<Pharmacy> tbPharmacys;
+        public DbSet<Pharmacy> tbPharmacys { get; set; }
 
-        public DbSet<Order> tbOrders;
+        public DbSet<Order> tbOrders { get; set; }
 
-        public DbSet<Appointment> tbAppointments;
+        public DbSet<Appointment> tbAppointments { get; set; }
 
-        public DbSet<AbsenceRequest> tbAbsenceRequests;
+        public DbSet<AbsenceRequest> tbAbsenceRequests { get; set; }
 
-        public DbSet<SupplyOrder> tbSupplyOrders;
+        public DbSet<SupplyOrder> tbSupplyOrders { get; set; }
 
-        public DbSet<SupplyOffer> tbSupplyOffers;
+        public DbSet<SupplyOffer> tbSupplyOffers { get; set; }
 
-        public DbSet<User> tbUsers;
+        public DbSet<User> tbUsers { get; set; }
 
-        public DbSet<Dermatologist> tbDermatologist;
+        public DbSet<Supplier> tbSuppliers { get; set; }
 
-        public DbSet<Pharmacist> tbPharmacist;
+        public DbSet<Employee> tbEmployees { get; set; }
 
-        public DbSet<Supplier> tbSuppliers;
-        
-        public DbSet<SystemAdministrator> tbSystemAdministrator;
-
-        public DbSet<PharmacyAdministrator> tbPharmacyAdministrator;
-
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        protected override void OnModelCreating(ModelBuilder modelBuilder) 
         {
-            modelBuilder.Entity<Report>().ToTable("Report");
+            modelBuilder.Entity<Report>().ToTable("Reports");
+            modelBuilder.Entity<Drug>().ToTable("Drugs");
+            modelBuilder.Entity<Pharmacy>().ToTable("Pharmacys");
+            modelBuilder.Entity<Order>().ToTable("Orders");
+            modelBuilder.Entity<Appointment>().ToTable("Appointments");
+            modelBuilder.Entity<SupplyOrder>().ToTable("SupplyOrders")
+                .HasMany(p => p.Order)
+                .WithOne();
+            modelBuilder.Entity<SupplyOffer>().ToTable("SupplyOffers");
+            modelBuilder.Entity<Supplier>().ToTable("Suppliers");
+    
+            modelBuilder.Entity<AbsenceRequest>().ToTable("AbsenceRequests")
+                .HasOne(y => y.Employee)
+                .WithMany(x => x.AbsenceRequests)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<User>().ToTable("Users");
+            modelBuilder.Entity<Employee>().ToTable("Employees");
+            //modelBuilder.Entity<Med>().ToTable("MedicalExperts");
+            
+            /* 
+            modelBuilder.Entity<PharmacyAdministrator>().ToTable("PharmacyAdministrators")
+                .HasMany(y => y.AbsenceRequests)
+                .WithOne(x => x.PharmacyAdministrator)
+                .OnDelete(DeleteBehavior.Restrict);*/
         }
     }
 }

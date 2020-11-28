@@ -10,6 +10,7 @@ using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace ISA.Models.Entities.Users
 {
+    
     public class User : BaseEntity
     {
         public String Username { get; set; }
@@ -18,7 +19,7 @@ namespace ISA.Models.Entities.Users
         public String Surname { get; set; }
         public List<Appointment> Appointments { get; set; }
 
-        private String _password;
+
 
         [Required]
         public string Password
@@ -34,6 +35,23 @@ namespace ISA.Models.Entities.Users
             }
         }
 
+        private String _password;
+
+        public User()
+        {
+
+        }
+
+        public User(string username, string email, string name, string surname, List<Appointment> appointments, string password)
+        {
+            Username = username;
+            Email = email;
+            Name = name;
+            Surname = surname;
+            Appointments = appointments;
+            Password = password;
+        }
+
         private static string SHA256(string Text)
         {
             var Crypt = new System.Security.Cryptography.SHA256Managed();
@@ -45,5 +63,7 @@ namespace ISA.Models.Entities.Users
             }
             return Hash.ToString();
         }
+
+
     }
 }
