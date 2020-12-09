@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace ISA.Migrations
 {
-    public partial class FullIsaDB : Migration
+    public partial class ISADB : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {

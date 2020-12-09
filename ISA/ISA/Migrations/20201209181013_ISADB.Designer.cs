@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ISA.Migrations
 {
     [DbContext(typeof(Context))]
-    [Migration("20201128210342_FullIsaDB")]
-    partial class FullIsaDB
+    [Migration("20201209181013_ISADB")]
+    partial class ISADB
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
