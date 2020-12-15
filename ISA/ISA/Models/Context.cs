@@ -64,5 +64,9 @@ namespace ISA.Models
                 .WithOne(x => x.PharmacyAdministrator)
                 .OnDelete(DeleteBehavior.Restrict);*/
         }
+
+        public DbSet<ISA.Models.Entities.DrugType> DrugType { get; set; }
+
+        public DbSet<ISA.Models.Entities.DrugAndQuantity> DrugAndQuantity { get; set; }
     }
 }

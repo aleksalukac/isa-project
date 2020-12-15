@@ -12,7 +12,7 @@ namespace ISA.Models
         public static void Initialize(Context context)
         {
             //Deleting existing data base, before running existing one
-            context.Database.EnsureDeleted();
+            //context.Database.EnsureDeleted();
             context.Database.EnsureCreated();
 
             
