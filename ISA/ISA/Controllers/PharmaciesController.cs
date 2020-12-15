@@ -10,22 +10,22 @@ using ISA.Models.Entities;
 
 namespace ISA.Controllers
 {
-    public class AppointmentsController : Controller
+    public class PharmaciesController : Controller
     {
         private readonly Context _context;
 
-        public AppointmentsController(Context context)
+        public PharmaciesController(Context context)
         {
             _context = context;
         }
 
-        // GET: Appointments
+        // GET: Pharmacies
         public async Task<IActionResult> Index()
         {
-            return View(await _context.tbAppointments.ToListAsync());
+            return View(await _context.tbPharmacys.ToListAsync());
         }
 
-        // GET: Appointments/Details/5
+        // GET: Pharmacies/Details/5
         public async Task<IActionResult> Details(long? id)
         {
             if (id == null)
@@ -33,44 +33,39 @@ namespace ISA.Controllers
                 return NotFound();
             }
 
-            var appointment = await _context.tbAppointments
+            var pharmacy = await _context.tbPharmacys
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (appointment == null)
+            if (pharmacy == null)
             {
                 return NotFound();
             }
 
-            return View(appointment);
+            return View(pharmacy);
         }
 
-        // GET: Appointments/Create
+        // GET: Pharmacies/Create
         public IActionResult Create()
         {
             return View();
         }
 
-        // POST: Appointments/Create
+        // POST: Pharmacies/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Price,Rating,Report,Id")] Appointment appointment)
+        public async Task<IActionResult> Create([Bind("Address,Id")] Pharmacy pharmacy)
         {
-            
-
             if (ModelState.IsValid)
             {
-                //TODO Aleksandar Lukac Seter
-                DisableNegtiveValue(appointment);
-
-                _context.Add(appointment);
+                _context.Add(pharmacy);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            return View(appointment);
+            return View(pharmacy);
         }
 
-        // GET: Appointments/Edit/5
+        // GET: Pharmacies/Edit/5
         public async Task<IActionResult> Edit(long? id)
         {
             if (id == null)
@@ -78,39 +73,36 @@ namespace ISA.Controllers
                 return NotFound();
             }
 
-            var appointment = await _context.tbAppointments.FindAsync(id);
-            if (appointment == null)
+            var pharmacy = await _context.tbPharmacys.FindAsync(id);
+            if (pharmacy == null)
             {
                 return NotFound();
             }
-            return View(appointment);
+            return View(pharmacy);
         }
 
-        // POST: Appointments/Edit/5
+        // POST: Pharmacies/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(long id, [Bind("Price,Rating,Report,Id")] Appointment appointment)
+        public async Task<IActionResult> Edit(long id, [Bind("Address,Id")] Pharmacy pharmacy)
         {
-            if (id != appointment.Id)
+            if (id != pharmacy.Id)
             {
                 return NotFound();
             }
-
-            //TODO Aleksandar Lukac Seter
-            DisableNegtiveValue(appointment);
 
             if (ModelState.IsValid)
             {
                 try
                 {
-                    _context.Update(appointment);
+                    _context.Update(pharmacy);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!AppointmentExists(appointment.Id))
+                    if (!PharmacyExists(pharmacy.Id))
                     {
                         return NotFound();
                     }
@@ -121,16 +113,10 @@ namespace ISA.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(appointment);
-           
+            return View(pharmacy);
         }
 
-        static void DisableNegtiveValue(Appointment appointment)
-        {
-            appointment.Price = Math.Abs(appointment.Price);
-        }
-
-        // GET: Appointments/Delete/5
+        // GET: Pharmacies/Delete/5
         public async Task<IActionResult> Delete(long? id)
         {
             if (id == null)
@@ -138,30 +124,30 @@ namespace ISA.Controllers
                 return NotFound();
             }
 
-            var appointment = await _context.tbAppointments
+            var pharmacy = await _context.tbPharmacys
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (appointment == null)
+            if (pharmacy == null)
             {
                 return NotFound();
             }
 
-            return View(appointment);
+            return View(pharmacy);
         }
 
-        // POST: Appointments/Delete/5
+        // POST: Pharmacies/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(long id)
         {
-            var appointment = await _context.tbAppointments.FindAsync(id);
-            _context.tbAppointments.Remove(appointment);
+            var pharmacy = await _context.tbPharmacys.FindAsync(id);
+            _context.tbPharmacys.Remove(pharmacy);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        private bool AppointmentExists(long id)
+        private bool PharmacyExists(long id)
         {
-            return _context.tbAppointments.Any(e => e.Id == id);
+            return _context.tbPharmacys.Any(e => e.Id == id);
         }
     }
 }

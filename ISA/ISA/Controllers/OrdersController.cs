@@ -10,22 +10,22 @@ using ISA.Models.Entities;
 
 namespace ISA.Controllers
 {
-    public class AppointmentsController : Controller
+    public class OrdersController : Controller
     {
         private readonly Context _context;
 
-        public AppointmentsController(Context context)
+        public OrdersController(Context context)
         {
             _context = context;
         }
 
-        // GET: Appointments
+        // GET: Orders
         public async Task<IActionResult> Index()
         {
-            return View(await _context.tbAppointments.ToListAsync());
+            return View(await _context.tbOrders.ToListAsync());
         }
 
-        // GET: Appointments/Details/5
+        // GET: Orders/Details/5
         public async Task<IActionResult> Details(long? id)
         {
             if (id == null)
@@ -33,44 +33,39 @@ namespace ISA.Controllers
                 return NotFound();
             }
 
-            var appointment = await _context.tbAppointments
+            var order = await _context.tbOrders
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (appointment == null)
+            if (order == null)
             {
                 return NotFound();
             }
 
-            return View(appointment);
+            return View(order);
         }
 
-        // GET: Appointments/Create
+        // GET: Orders/Create
         public IActionResult Create()
         {
             return View();
         }
 
-        // POST: Appointments/Create
+        // POST: Orders/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Price,Rating,Report,Id")] Appointment appointment)
+        public async Task<IActionResult> Create([Bind("Id")] Order order)
         {
-            
-
             if (ModelState.IsValid)
             {
-                //TODO Aleksandar Lukac Seter
-                DisableNegtiveValue(appointment);
-
-                _context.Add(appointment);
+                _context.Add(order);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            return View(appointment);
+            return View(order);
         }
 
-        // GET: Appointments/Edit/5
+        // GET: Orders/Edit/5
         public async Task<IActionResult> Edit(long? id)
         {
             if (id == null)
@@ -78,39 +73,36 @@ namespace ISA.Controllers
                 return NotFound();
             }
 
-            var appointment = await _context.tbAppointments.FindAsync(id);
-            if (appointment == null)
+            var order = await _context.tbOrders.FindAsync(id);
+            if (order == null)
             {
                 return NotFound();
             }
-            return View(appointment);
+            return View(order);
         }
 
-        // POST: Appointments/Edit/5
+        // POST: Orders/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(long id, [Bind("Price,Rating,Report,Id")] Appointment appointment)
+        public async Task<IActionResult> Edit(long id, [Bind("Id")] Order order)
         {
-            if (id != appointment.Id)
+            if (id != order.Id)
             {
                 return NotFound();
             }
-
-            //TODO Aleksandar Lukac Seter
-            DisableNegtiveValue(appointment);
 
             if (ModelState.IsValid)
             {
                 try
                 {
-                    _context.Update(appointment);
+                    _context.Update(order);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!AppointmentExists(appointment.Id))
+                    if (!OrderExists(order.Id))
                     {
                         return NotFound();
                     }
@@ -121,16 +113,10 @@ namespace ISA.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(appointment);
-           
+            return View(order);
         }
 
-        static void DisableNegtiveValue(Appointment appointment)
-        {
-            appointment.Price = Math.Abs(appointment.Price);
-        }
-
-        // GET: Appointments/Delete/5
+        // GET: Orders/Delete/5
         public async Task<IActionResult> Delete(long? id)
         {
             if (id == null)
@@ -138,30 +124,30 @@ namespace ISA.Controllers
                 return NotFound();
             }
 
-            var appointment = await _context.tbAppointments
+            var order = await _context.tbOrders
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (appointment == null)
+            if (order == null)
             {
                 return NotFound();
             }
 
-            return View(appointment);
+            return View(order);
         }
 
-        // POST: Appointments/Delete/5
+        // POST: Orders/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(long id)
         {
-            var appointment = await _context.tbAppointments.FindAsync(id);
-            _context.tbAppointments.Remove(appointment);
+            var order = await _context.tbOrders.FindAsync(id);
+            _context.tbOrders.Remove(order);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        private bool AppointmentExists(long id)
+        private bool OrderExists(long id)
         {
-            return _context.tbAppointments.Any(e => e.Id == id);
+            return _context.tbOrders.Any(e => e.Id == id);
         }
     }
 }
