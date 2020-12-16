@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace ISA.Models
 {
-    public class Context : IdentityDbContext<AppUser, IdentityRole<long>, long>
+    public class Context : IdentityDbContext<AppUser>//, IdentityRole<long>/*, long*/>
     {
         public Context(DbContextOptions<Context> options) : base(options)
         {
