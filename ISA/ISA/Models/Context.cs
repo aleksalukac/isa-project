@@ -1,5 +1,6 @@
 ﻿using ISA.Models.Entities;
 using ISA.Models.Entities.Users;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -37,8 +38,12 @@ namespace ISA.Models
 
         public DbSet<Employee> tbEmployees { get; set; }
 
+        public DbSet<AppUser> tbAppUsers { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder) 
         {
+            base.OnModelCreating(modelBuilder);
+
             modelBuilder.Entity<Report>().ToTable("Reports");
             modelBuilder.Entity<Drug>().ToTable("Drugs");
             modelBuilder.Entity<Pharmacy>().ToTable("Pharmacys");
@@ -57,6 +62,7 @@ namespace ISA.Models
 
             modelBuilder.Entity<User>().ToTable("Users");
             modelBuilder.Entity<Employee>().ToTable("Employees");
+            modelBuilder.Entity<AppUser>().ToTable("AppUsers");
             //modelBuilder.Entity<Med>().ToTable("MedicalExperts");
             
             /* 
