@@ -10,7 +10,6 @@ using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace ISA.Models.Entities.Users
 {
-    
     public class User : BaseEntity
     {
         public String Username { get; set; }
@@ -18,8 +17,6 @@ namespace ISA.Models.Entities.Users
         public String Name { get; set; }
         public String Surname { get; set; }
         public List<Appointment> Appointments { get; set; }
-
-
 
         [Required]
         public string Password
@@ -63,7 +60,5 @@ namespace ISA.Models.Entities.Users
             }
             return Hash.ToString();
         }
-
-
     }
 }
