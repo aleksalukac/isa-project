@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace ISA.Models
 {
-    public class Context : IdentityDbContext<AppUser>
+    public class Context : IdentityDbContext<AppUser, IdentityRole<long>, long>
     {
         public Context(DbContextOptions<Context> options) : base(options)
         {
@@ -42,6 +42,7 @@ namespace ISA.Models
 
         protected override void OnModelCreating(ModelBuilder modelBuilder) 
         {
+
             base.OnModelCreating(modelBuilder);
 
             modelBuilder.Entity<Report>().ToTable("Reports");
@@ -63,13 +64,7 @@ namespace ISA.Models
             modelBuilder.Entity<User>().ToTable("Users");
             modelBuilder.Entity<Employee>().ToTable("Employees");
             modelBuilder.Entity<AppUser>().ToTable("AppUsers");
-            //modelBuilder.Entity<Med>().ToTable("MedicalExperts");
-            
-            /* 
-            modelBuilder.Entity<PharmacyAdministrator>().ToTable("PharmacyAdministrators")
-                .HasMany(y => y.AbsenceRequests)
-                .WithOne(x => x.PharmacyAdministrator)
-                .OnDelete(DeleteBehavior.Restrict);*/
+
         }
 
         public DbSet<ISA.Models.Entities.DrugType> DrugType { get; set; }

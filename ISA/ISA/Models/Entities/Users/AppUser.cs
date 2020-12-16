@@ -8,9 +8,8 @@ using System.Threading.Tasks;
 namespace ISA.Models.Entities.Users
 {
     [Table("tbAppUsers")]
-    public class AppUser : IdentityUser
+    public class AppUser : IdentityUser<long>
     {
-
         public List<Appointment> Appointments { get; set; }
     }
 }
