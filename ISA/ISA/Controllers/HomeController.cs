@@ -40,7 +40,6 @@ namespace ISA.Controllers
         [HttpPost]
         public async Task<IActionResult> Register(AppUser model)
         {
-            ;
             var user = new AppUser
             {
                 Id = "101",
@@ -51,7 +50,8 @@ namespace ISA.Controllers
             };
 
             var result = await _userManager.CreateAsync(user, user.PasswordHash);
-            if(result.Succeeded)
+
+            if (result.Succeeded)
             {
                 var SignIn = await _signInManager.PasswordSignInAsync(user, user.PasswordHash, false, false);
                 if(SignIn.Succeeded)

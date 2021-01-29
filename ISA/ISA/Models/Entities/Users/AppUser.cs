@@ -11,6 +11,11 @@ namespace ISA.Models.Entities.Users
     public class AppUser : IdentityUser
     {
         public string Password { get; set; }
+        
         public List<Appointment> Appointments { get; set; }
+        //public AppUser(string Password): base()
+        //{
+        //    this.Password = Password;
+        //}
     }
 }
