@@ -14,6 +14,8 @@ namespace Pharmacy.Controllers
     {
         private readonly ILogger<HomeController> _logger;
 
+        public bool ShowPharmacyToolBar { get; set; }
+
         public HomeController(ILogger<HomeController> logger)
         {
             _logger = logger;
@@ -28,6 +30,13 @@ namespace Pharmacy.Controllers
         public IActionResult Privacy()
         {
             return View();
+        }
+
+
+        [Authorize(Roles = "PharmacyAdmin")]
+        public IActionResult Pharmacy()
+        {
+            return Redirect("/Pharmacies");
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

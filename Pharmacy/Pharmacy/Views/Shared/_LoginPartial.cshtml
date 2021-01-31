@@ -1,9 +1,13 @@
-﻿@using Microsoft.AspNetCore.Identity
+﻿@using Microsoft.AspNetCore.Authorization
+@inject IAuthorizationService AuthorizationService
+
+@using Microsoft.AspNetCore.Identity
 @using Pharmacy.Models.Entities.Users
 @inject SignInManager<AppUser> SignInManager
 @inject UserManager<AppUser> UserManager
 
 <ul class="navbar-nav">
+
     @if (SignInManager.IsSignedIn(User))
     {
         <li class="nav-item">
@@ -14,6 +18,18 @@
                 <button type="submit" class="nav-link btn btn-link text-dark">Logout</button>
             </form>
         </li>
+        @if ((await AuthorizationService.AuthorizeAsync(User, null, "PharmacyPolicy")).Succeeded)
+        {
+            <li class="nav-item">
+                <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Pharmacy">Pharmacy</a>
+            </li>
+            <!--
+            <li>
+                <a asp-area=""
+                   asp-controller="VIPLounge" asp-action="ViewTheFancySeatsInTheLounge">View seats in the lounge</a>
+            </li>-->
+        }
+
     }
     else
     {

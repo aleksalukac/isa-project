@@ -38,6 +38,12 @@ namespace Pharmacy
                 .AddEntityFrameworkStores<ApplicationDbContext>();
             services.AddControllersWithViews();
 
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy("PharmacyPolicy",
+                policy => policy.RequireRole("PharmacyAdmin"));
+            });
+
             services.Configure<IdentityOptions>(options =>
             {
                 // Password settings.
