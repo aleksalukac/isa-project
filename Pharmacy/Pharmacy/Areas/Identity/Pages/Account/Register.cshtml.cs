@@ -24,17 +24,20 @@ namespace Pharmacy.Areas.Identity.Pages.Account
     {
         private readonly SignInManager<AppUser> _signInManager;
         private readonly UserManager<AppUser> _userManager;
+        private readonly RoleManager<IdentityRole> _roleManager;
         private readonly ILogger<RegisterModel> _logger;
         private readonly EmailSender _emailSender;
 
         public RegisterModel(
             UserManager<AppUser> userManager,
             SignInManager<AppUser> signInManager,
+            RoleManager<IdentityRole> roleManager,
             ILogger<RegisterModel> logger,
             IEmailSender emailSender)
         {
             _userManager = userManager;
             _signInManager = signInManager;
+            _roleManager = roleManager;
             _logger = logger;
 
             using (StreamReader r = new StreamReader("./Areas/Identity/emailCredentials.json"))
@@ -83,7 +86,10 @@ namespace Pharmacy.Areas.Identity.Pages.Account
             if (ModelState.IsValid)
             {
                 var user = new AppUser { UserName = Input.Email, Email = Input.Email };
+
                 var result = await _userManager.CreateAsync(user, Input.Password);
+                await _userManager.AddToRoleAsync(user, "User");
+
                 if (result.Succeeded)
                 {
                     _logger.LogInformation("User created a new account with password.");
