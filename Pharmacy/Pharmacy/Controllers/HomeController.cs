@@ -39,6 +39,20 @@ namespace Pharmacy.Controllers
             return Redirect("/Pharmacies");
         }
 
+        [Authorize(Roles = "PharmacyAdmin")]
+        public IActionResult Appointments()
+        {
+            return Redirect("/Appointments");
+        }
+
+        [Authorize(Roles = "PharmacyAdmin")]
+        public IActionResult AbsenceRequests()
+        {
+            return Redirect("/AbsenceRequests");
+        }
+        
+
+
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {
