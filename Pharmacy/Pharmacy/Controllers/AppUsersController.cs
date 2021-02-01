@@ -20,12 +20,25 @@ namespace Pharmacy.Controllers
             _context = context;
         }
 
+        [HttpGet("AppUsers/Details/{roleName}")]
         // GET: Appointments
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Details(string roleName = "User")
         {
-            return View(await _context.tbAppointments.ToListAsync());
+            /*
+            var entryPoint = (from appuser in _context.AppUsers
+                              join userrole in _context.UserRoles on appuser.Id equals userrole.UserId
+                              join role in _context.Roles on role.Id equals userrole.RoleId
+                              where appuser.Id == userrole.UserId 
+                              select *);*/
+            List<string> entryPoint = (from userrole in _context.UserRoles
+                              join role in _context.Roles on userrole.RoleId equals role.Id
+                              where role.Name == roleName
+                              select userrole.UserId).ToList();
+            ViewData["roleName"] = roleName;
+            // TODO 
+            return View( _context.AppUsers.Where(e => entryPoint.Contains(e.Id)).ToList());
         }
-
+        /*
         // GET: Appointments/Details/5
         public async Task<IActionResult> Details(long? id)
         {
@@ -149,6 +162,6 @@ namespace Pharmacy.Controllers
         private bool AppointmentExists(long id)
         {
             return _context.tbAppointments.Any(e => e.Id == id);
-        }
+        }*/
     }
 }
