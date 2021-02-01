@@ -14,7 +14,8 @@ namespace Pharmacy.Models.Entities
             BeginTime = beginTime;
             Duration = duration;
         }
-
+        [Key]
+        [Required]
         public long Id { get; set; }
         //[DataType(DataType.Date)]
         //[DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]

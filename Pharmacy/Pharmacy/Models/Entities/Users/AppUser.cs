@@ -20,7 +20,6 @@ namespace Pharmacy.Models.Entities.Users
         public string Country { get; set; }
         [PersonalData]
         public string City { get; set; }
-        public Pharmacy AdministratingPharmacy { get; set; }
         public List<Appointment> AppointmentsForUser { get; set; }
         public List<Appointment> AppointmentsForMedical { get; set; }
         public List<AbsenceRequest> AbsenceRequests { get; internal set; }
