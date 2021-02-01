@@ -11,8 +11,7 @@ namespace Pharmacy.Models.Entities
     {
         public long Id { get; set; }
         public String Address { get; set; }
-        
-        //public Employee Administrator { get; set; }
+        public AppUser Administrator { get; set; }
         public List<AppUser> Employees { get; set; }
         public List<Drug> Drugs { get; set; }
         public List<SupplyOrder> SupplyOrders { get; set; }

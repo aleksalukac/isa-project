@@ -9,12 +9,13 @@ namespace Pharmacy.Models.Entities
 {
     public class TimeSpan
     {
-        public TimeSpan(DateTime beginTime, DateTime endTime)
+        public TimeSpan(DateTime beginTime, DateTimeOffset duration)
         {
             BeginTime = beginTime;
-            EndTime = endTime;
+            Duration = duration;
         }
 
+        public long Id { get; set; }
         //[DataType(DataType.Date)]
         //[DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
         //[Display(Name = "Hire Date")]
@@ -23,7 +24,7 @@ namespace Pharmacy.Models.Entities
         //[DataType(DataType.Date)]
         //[DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
         //[Display(Name = "Hire Date")]
-        public DateTime EndTime { get; set; }
+        public DateTimeOffset Duration { get; set; }
     
         
     }

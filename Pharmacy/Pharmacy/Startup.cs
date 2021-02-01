@@ -42,6 +42,8 @@ namespace Pharmacy
             {
                 options.AddPolicy("PharmacyPolicy",
                 policy => policy.RequireRole("PharmacyAdmin"));
+                options.AddPolicy("UserPolicy",
+                policy => policy.RequireRole("User"));
             });
 
             services.Configure<IdentityOptions>(options =>

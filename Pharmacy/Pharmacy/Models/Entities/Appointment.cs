@@ -10,25 +10,10 @@ namespace Pharmacy.Models.Entities
     public class Appointment
     {
         public long Id { get; set; }
-        //public TimeSpan TimeSpan { get; set; }
-        [NotMapped]
+        public TimeSpan TimeSpan { get; set; }
         public AppUser MedicalExpert { get; set; }
         public AppUser Patient { get; set; }
-
         public float Price { get; set; }
-        /*
-        private _price;
-        public float Price { get { return this.Price; }  set { th = value >= 0 ? value : 0; } }
-        */
-        /*
-        public void SetPrice(float price)
-        {
-            if (price < 0)
-                throw new Exception("Price cannot be negative");
-
-            Price = price;
-        }*/
-
         public Rating Rating { get; set; }
         public string Report { get; set; }
     }
@@ -42,3 +27,16 @@ namespace Pharmacy.Models.Entities
         Perfect
     }
 }
+
+/*
+private _price;
+public float Price { get { return this.Price; }  set { th = value >= 0 ? value : 0; } }
+*/
+/*
+public void SetPrice(float price)
+{
+    if (price < 0)
+        throw new Exception("Price cannot be negative");
+
+    Price = price;
+}*/

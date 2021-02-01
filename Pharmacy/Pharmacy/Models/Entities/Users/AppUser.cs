@@ -10,13 +10,19 @@ namespace Pharmacy.Models.Entities.Users
     [Table("tbAppUsers")]
     public class AppUser : IdentityUser
     {
-        public string Password { get; set; }
-        
-        public List<Appointment> Appointments { get; set; }
+        [PersonalData]
+        public string FirstName { get; set; }
+        [PersonalData]
+        public string LastName { get; set; }
+        [PersonalData]
+        public string Adress { get; set; }
+        [PersonalData]
+        public string Country { get; set; }
+        [PersonalData]
+        public string City { get; set; }
+        public Pharmacy AdministratingPharmacy { get; set; }
+        public List<Appointment> AppointmentsForUser { get; set; }
+        public List<Appointment> AppointmentsForMedical { get; set; }
         public List<AbsenceRequest> AbsenceRequests { get; internal set; }
-        //public AppUser(string Password): base()
-        //{
-        //    this.Password = Password;
-        //}
     }
 }
