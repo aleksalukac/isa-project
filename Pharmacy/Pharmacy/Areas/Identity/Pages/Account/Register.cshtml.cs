@@ -96,6 +96,10 @@ namespace Pharmacy.Areas.Identity.Pages.Account
             [Display(Name = "Confirm password")]
             [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
             public string ConfirmPassword { get; set; }
+
+            [DataType(DataType.Text)]
+            [Display(Name = "Role")]
+            public string Role { get; set; }
         }
 
         public async Task OnGetAsync(string returnUrl = null)
@@ -114,7 +118,14 @@ namespace Pharmacy.Areas.Identity.Pages.Account
                     FirstName = Input.FirstName, LastName = Input.LastName, City = Input.City, Country  = Input.Country };
 
                 var result = await _userManager.CreateAsync(user, Input.Password);
-                await _userManager.AddToRoleAsync(user, "User");
+
+                if (Input.Role != null && Input.Role != "") 
+                {
+                    await _userManager.AddToRoleAsync(user, Input.Role); 
+                }else
+                {
+                    await _userManager.AddToRoleAsync(user, "User");
+                }
 
                 if (result.Succeeded)
                 {
