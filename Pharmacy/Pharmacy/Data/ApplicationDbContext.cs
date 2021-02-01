@@ -20,7 +20,7 @@ namespace Pharmacy.Data
 
         public DbSet<Report> tbReports { get; set; }
 
-        public DbSet<Pharmacy.Models.Entities.Pharmacy> tbPharmacys { get; set; }
+        public DbSet<Models.Entities.Pharmacy> tbPharmacys { get; set; }
 
         public DbSet<Order> tbOrders { get; set; }
 
@@ -105,7 +105,12 @@ namespace Pharmacy.Data
                 .WithMany(x => x.AbsenceRequests)
                 .OnDelete(DeleteBehavior.Restrict);
 
-            
+            modelBuilder.Entity<AbsenceRequest>().ToTable("AbsenceRequests")
+                .HasOne(p => p.TimeSpan)
+                .WithOne()
+                .HasForeignKey<Models.Entities.TimeSpan>(p => p.Id);
+
+
 
         }
     }
