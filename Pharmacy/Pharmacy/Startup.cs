@@ -11,6 +11,7 @@ using Pharmacy.Data;
 using Pharmacy.Models.Entities.Users;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -40,10 +41,16 @@ namespace Pharmacy
 
             services.AddAuthorization(options =>
             {
-                options.AddPolicy("PharmacyPolicy",
-                policy => policy.RequireRole("PharmacyAdmin"));
-                options.AddPolicy("UserPolicy",
-                policy => policy.RequireRole("User"));
+                using (var reader = new StreamReader(@"Data/UserRoles.csv"))
+                {
+                    List<string> RoleNames = reader.ReadLine().Split(';').ToList();
+
+                    foreach (var RoleName in RoleNames)
+                    {
+                        options.AddPolicy(RoleName + "Policy",
+                        policy => policy.RequireRole(RoleName));
+                    }
+                }
             });
 
             services.Configure<IdentityOptions>(options =>
