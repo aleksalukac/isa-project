@@ -1,0 +1,89 @@
+﻿@model IEnumerable<Pharmacy.Models.Entities.Drug>
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>Index</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<form asp-controller="Drugs" asp-action="Index">
+    <p>
+        Search: <input type="text" name="searchString" />
+        <input type="submit" value="Filter" />
+
+        <select name="filter" id="filter" style="background-color: transparent;">
+            <option value="Name" class="option">Name</option>
+            <option value="AvrageScore" class="option">Rating</option>
+            <option value="Type" class="option">Type</option>
+            <option value="Form" class="option">Form</option>
+            <option value="Drugmaker" class="option">Drugmaker</option>
+        </select>
+    </p>
+</form>
+
+<table class="table">
+
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Name)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Form)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Ingredients)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Drugmaker)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.IsPrescribable)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Notes)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.AvrageScore)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Form)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Ingredients)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Drugmaker)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.IsPrescribable)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Notes)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.AvrageScore)
+                </td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                    <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                    <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

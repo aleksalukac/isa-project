@@ -20,7 +20,6 @@ namespace Pharmacy.Models.Entities
     public class DrugAndQuantity
     {
         public long Id { get; set; }
-
         public Drug Drug { get; set; }
         public uint Quantity { get; set; }
 
