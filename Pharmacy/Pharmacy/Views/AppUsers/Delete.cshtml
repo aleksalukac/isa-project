@@ -1,4 +1,4 @@
-﻿@model Pharmacy.Models.Entities.Drug
+﻿@model Pharmacy.Models.Entities.Users.AppUser
 
 @{
     ViewData["Title"] = "Delete";
@@ -13,40 +13,34 @@
     <hr />
     <dl class="row">
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Name)
+            @Html.DisplayNameFor(model => model.FirstName)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Name)
+            @Html.DisplayFor(model => model.FirstName)
         </dd>
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Form)
+            @Html.DisplayNameFor(model => model.LastName)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Form)
+            @Html.DisplayFor(model => model.LastName)
         </dd>
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Ingredients)
+            @Html.DisplayNameFor(model => model.Email)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Ingredients)
+            @Html.DisplayFor(model => model.Email)
         </dd>
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Drugmaker)
+            @Html.DisplayNameFor(model => model.Adress)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Drugmaker)
+            @Html.DisplayFor(model => model.Adress)
         </dd>
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.IsPrescribable)
+            @Html.DisplayNameFor(model => model.City)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.IsPrescribable)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Notes)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Notes)
+            @Html.DisplayFor(model => model.City)
         </dd>
         <dt class = "col-sm-2">
             @Html.DisplayNameFor(model => model.AvrageScore)

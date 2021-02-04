@@ -28,7 +28,7 @@ namespace Pharmacy.Controllers
             var drugs = await _context.tbDrugs.ToListAsync();
             List<Drug> filteredDrugs = new List<Drug>();
 
-            if(searchString == null || searchString.Length == 0)
+            if(string.IsNullOrEmpty(searchString))
             {
                 filteredDrugs = drugs;
             }

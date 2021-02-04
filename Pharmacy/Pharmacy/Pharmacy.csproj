@@ -27,6 +27,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Views\AppUsers\Admin\" />
+    <Folder Include="Views\AppUsers\Dermatologist\" />
+    <Folder Include="Views\AppUsers\Pharmacist\" />
+    <Folder Include="Views\AppUsers\PharmacyAdmin\" />
     <Folder Include="Views\AppUsers\User\" />
   </ItemGroup>
 

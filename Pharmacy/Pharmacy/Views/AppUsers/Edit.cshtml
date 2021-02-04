@@ -1,4 +1,4 @@
-﻿@model Pharmacy.Models.Entities.Drug
+﻿@model Pharmacy.Models.Entities.Users.AppUser
 
 @{
     ViewData["Title"] = "Edit";
@@ -7,7 +7,7 @@
 
 <h1>Edit</h1>
 
-<h4>Drug</h4>
+<h4>User</h4>
 <hr />
 <div class="row">
     <div class="col-md-4">
@@ -15,39 +15,19 @@
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="Id" />
             <div class="form-group">
-                <label asp-for="Name" class="control-label"></label>
-                <input asp-for="Name" class="form-control" />
-                <span asp-validation-for="Name" class="text-danger"></span>
+                <label asp-for="FirstName" class="control-label"></label>
+                <input asp-for="FirstName" class="form-control" />
+                <span asp-validation-for="FirstName" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Form" class="control-label"></label>
-                <select asp-for="Form" class="form-control"></select>
-                <span asp-validation-for="Form" class="text-danger"></span>
+                <label asp-for="Adress" class="control-label"></label>
+                <input asp-for="Adress" class="form-control" />
+                <span asp-validation-for="Adress" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Ingredients" class="control-label"></label>
-                <input asp-for="Ingredients" class="form-control" />
-                <span asp-validation-for="Ingredients" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Drugmaker" class="control-label"></label>
-                <input asp-for="Drugmaker" class="form-control" />
-                <span asp-validation-for="Drugmaker" class="text-danger"></span>
-            </div>
-            <div class="form-group form-check">
-                <label class="form-check-label">
-                    <input class="form-check-input" asp-for="IsPrescribable" /> @Html.DisplayNameFor(model => model.IsPrescribable)
-                </label>
-            </div>
-            <div class="form-group">
-                <label asp-for="Notes" class="control-label"></label>
-                <input asp-for="Notes" class="form-control" />
-                <span asp-validation-for="Notes" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="AvrageScore" class="control-label"></label>
-                <input asp-for="AvrageScore" class="form-control" />
-                <span asp-validation-for="AvrageScore" class="text-danger"></span>
+                <label asp-for="City" class="control-label"></label>
+                <input asp-for="City" class="form-control" />
+                <span asp-validation-for="City" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <input type="submit" value="Save" class="btn btn-primary" />
