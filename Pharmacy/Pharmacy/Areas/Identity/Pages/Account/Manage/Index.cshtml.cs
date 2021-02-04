@@ -31,23 +31,64 @@ namespace Pharmacy.Areas.Identity.Pages.Account.Manage
         [BindProperty]
         public InputModel Input { get; set; }
 
+
         public class InputModel
         {
-            [Phone]
-            [Display(Name = "Phone number")]
-            public string PhoneNumber { get; set; }
+            [Required]
+            [DataType(DataType.Text)]
+            [Display(Name = "Adress")]
+            public string Adress { get; set; }
+
+            [Required]
+            [DataType(DataType.Text)]
+            [Display(Name = "Country")]
+            public string Country { get; set; }
+
+            [Required]
+            [DataType(DataType.Text)]
+            [Display(Name = "City")]
+            public string City { get; set; }
+
+            [Required]
+            [DataType(DataType.Text)]
+            [Display(Name = "Last name")]
+            public string LastName { get; set; }
+
+            [Required]
+            [DataType(DataType.Text)]
+            [Display(Name = "First name")]
+            public string FirstName { get; set; }
+
+            [Required]
+            [EmailAddress]
+            [Display(Name = "Email")]
+            public string Email { get; set; }
+
+            [Required]
+            [StringLength(100, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 6)]
+            [DataType(DataType.Password)]
+            [Display(Name = "Password")]
+            public string Password { get; set; }
+
         }
+
 
         private async Task LoadAsync(AppUser user)
         {
             var userName = await _userManager.GetUserNameAsync(user);
             var phoneNumber = await _userManager.GetPhoneNumberAsync(user);
+            var userView = await _userManager.FindByNameAsync(userName);
 
             Username = userName;
 
             Input = new InputModel
             {
-                PhoneNumber = phoneNumber
+                FirstName = userView.FirstName,
+                LastName = userView.LastName,
+                Adress = userView.Adress,
+                Country = userView.Country,
+                City = userView.City
+                
             };
         }
 
@@ -71,24 +112,36 @@ namespace Pharmacy.Areas.Identity.Pages.Account.Manage
                 return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
             }
 
-            if (!ModelState.IsValid)
+            if (ModelState.IsValid)
             {
                 await LoadAsync(user);
                 return Page();
             }
 
-            var phoneNumber = await _userManager.GetPhoneNumberAsync(user);
-            if (Input.PhoneNumber != phoneNumber)
+            var userName = await _userManager.GetUserNameAsync(user);
+            var userView = await _userManager.FindByNameAsync(userName);
+            if (Input.FirstName != userView.FirstName ||
+                Input.LastName != userView.LastName ||
+                Input.Adress != userView.Adress ||
+                Input.Country != userView.Country ||
+                Input.City != userView.City )
             {
-                var setPhoneResult = await _userManager.SetPhoneNumberAsync(user, Input.PhoneNumber);
+                userView.FirstName = Input.FirstName;
+                userView.LastName = Input.LastName;
+                userView.Adress = Input.Adress;
+                userView.Country = Input.Country;
+                userView.City = Input.City;
+
+                var setPhoneResult = await _userManager.UpdateAsync(userView);
                 if (!setPhoneResult.Succeeded)
                 {
-                    StatusMessage = "Unexpected error when trying to set phone number.";
+                    StatusMessage = "Unexpected error when trying to set user data.";
                     return RedirectToPage();
                 }
             }
+            else
 
-            await _signInManager.RefreshSignInAsync(user);
+                await _signInManager.RefreshSignInAsync(user);
             StatusMessage = "Your profile has been updated";
             return RedirectToPage();
         }

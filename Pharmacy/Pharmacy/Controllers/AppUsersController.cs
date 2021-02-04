@@ -33,6 +33,20 @@ namespace Pharmacy.Controllers
             ViewData["roleName"] = roleName;
             return View(await _context.AppUsers.Where(e => entryPoint.Contains(e.Id)).ToListAsync());
         }
+
+        [HttpGet("AppUsers/UserList")]
+        // GET: Appointments
+        public new async Task<IActionResult> UserList()
+        {
+            List<string> entryPoint = await (from userrole in _context.UserRoles
+                                             join role in _context.Roles on userrole.RoleId equals role.Id
+                                             where role.Name == "User"
+                                             select userrole.UserId).ToListAsync();
+
+            ViewData["roleName"] = "User";
+            return View(await _context.AppUsers.Where(e => entryPoint.Contains(e.Id)).ToListAsync());
+        }
+
         /*
         // GET: Appointments/Details/5
         public async Task<IActionResult> Details(long? id)
