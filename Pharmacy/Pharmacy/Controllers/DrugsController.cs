@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -11,43 +12,48 @@ using Pharmacy.Models.Entities;
 
 namespace Pharmacy.Controllers
 {
-    public class PharmaciesController : Controller
+    [Authorize]
+    public class DrugsController : Controller
     {
         private readonly ApplicationDbContext _context;
 
-        public PharmaciesController(ApplicationDbContext context)
+        public DrugsController(ApplicationDbContext context)
         {
             _context = context;
         }
 
-        // GET: Pharmacies
+        // GET: Drugs
         public async Task<IActionResult> Index(string searchString = "", string filter = "")
         {
-            var pharmacies = await _context.tbPharmacys.ToListAsync();
-            List<Pharmacy.Models.Entities.Pharmacy> filteredPharmacies = new List<Pharmacy.Models.Entities.Pharmacy>();
+            var drugs = await _context.tbDrugs.ToListAsync();
+            List<Drug> filteredDrugs = new List<Drug>();
 
-            if (searchString == null || searchString.Length == 0)
+            if(searchString == null || searchString.Length == 0)
             {
-                filteredPharmacies = pharmacies;
+                filteredDrugs = drugs;
             }
-            else
+            else foreach(var drug in drugs)
             {
-                foreach (var pharmacy in pharmacies)
-                {
-                    var json = JsonConvert.SerializeObject(pharmacy);
-                    var dictionary = JsonConvert.DeserializeObject<Dictionary<string, string>>(json);
+                var json = JsonConvert.SerializeObject(drug);
+                var dictionary = JsonConvert.DeserializeObject<Dictionary<string, string>>(json);
 
-                    if (dictionary[filter] != null && dictionary[filter].ToUpper().Contains(searchString.ToUpper()))
+                if (filter == "Form")
+                {
+                    if (drug.Form.ToString().ToUpper().Contains(searchString.ToUpper()))
                     {
-                        filteredPharmacies.Add(pharmacy);
+                        filteredDrugs.Add(drug);
                     }
+                }
+                if(dictionary[filter] != null && dictionary[filter].ToUpper().Contains(searchString.ToUpper()))
+                {
+                    filteredDrugs.Add(drug);
                 }
             }
 
-            return View(filteredPharmacies);
+            return View(filteredDrugs);
         }
 
-        // GET: Pharmacies/Details/5
+        // GET: Drugs/Details/5
         public async Task<IActionResult> Details(long? id)
         {
             if (id == null)
@@ -55,39 +61,39 @@ namespace Pharmacy.Controllers
                 return NotFound();
             }
 
-            var pharmacy = await _context.tbPharmacys
+            var drug = await _context.tbDrugs
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (pharmacy == null)
+            if (drug == null)
             {
                 return NotFound();
             }
 
-            return View(pharmacy);
+            return View(drug);
         }
 
-        // GET: Pharmacies/Create
+        // GET: Drugs/Create
         public IActionResult Create()
         {
             return View();
         }
 
-        // POST: Pharmacies/Create
+        // POST: Drugs/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Address")] Pharmacy.Models.Entities.Pharmacy pharmacy)
+        public async Task<IActionResult> Create([Bind("Id,Name,Form,Ingredients,Drugmaker,IsPrescribable,Notes")] Drug drug)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(pharmacy);
+                _context.Add(drug);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            return View(pharmacy);
+            return View(drug);
         }
 
-        // GET: Pharmacies/Edit/5
+        // GET: Drugs/Edit/5
         public async Task<IActionResult> Edit(long? id)
         {
             if (id == null)
@@ -95,22 +101,22 @@ namespace Pharmacy.Controllers
                 return NotFound();
             }
 
-            var pharmacy = await _context.tbPharmacys.FindAsync(id);
-            if (pharmacy == null)
+            var drug = await _context.tbDrugs.FindAsync(id);
+            if (drug == null)
             {
                 return NotFound();
             }
-            return View(pharmacy);
+            return View(drug);
         }
 
-        // POST: Pharmacies/Edit/5
+        // POST: Drugs/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(long id, [Bind("Id,Address")] Pharmacy.Models.Entities.Pharmacy pharmacy)
+        public async Task<IActionResult> Edit(long id, [Bind("Id,Name,Form,Ingredients,Drugmaker,IsPrescribable,Notes,AvrageScore")] Drug drug)
         {
-            if (id != pharmacy.Id)
+            if (id != drug.Id)
             {
                 return NotFound();
             }
@@ -119,12 +125,12 @@ namespace Pharmacy.Controllers
             {
                 try
                 {
-                    _context.Update(pharmacy);
+                    _context.Update(drug);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!PharmacyExists(pharmacy.Id))
+                    if (!DrugExists(drug.Id))
                     {
                         return NotFound();
                     }
@@ -135,10 +141,10 @@ namespace Pharmacy.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(pharmacy);
+            return View(drug);
         }
 
-        // GET: Pharmacies/Delete/5
+        // GET: Drugs/Delete/5
         public async Task<IActionResult> Delete(long? id)
         {
             if (id == null)
@@ -146,30 +152,30 @@ namespace Pharmacy.Controllers
                 return NotFound();
             }
 
-            var pharmacy = await _context.tbPharmacys
+            var drug = await _context.tbDrugs
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (pharmacy == null)
+            if (drug == null)
             {
                 return NotFound();
             }
 
-            return View(pharmacy);
+            return View(drug);
         }
 
-        // POST: Pharmacies/Delete/5
+        // POST: Drugs/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(long id)
         {
-            var pharmacy = await _context.tbPharmacys.FindAsync(id);
-            _context.tbPharmacys.Remove(pharmacy);
+            var drug = await _context.tbDrugs.FindAsync(id);
+            _context.tbDrugs.Remove(drug);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        private bool PharmacyExists(long id)
+        private bool DrugExists(long id)
         {
-            return _context.tbPharmacys.Any(e => e.Id == id);
+            return _context.tbDrugs.Any(e => e.Id == id);
         }
     }
 }

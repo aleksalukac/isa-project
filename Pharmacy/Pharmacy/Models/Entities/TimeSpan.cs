@@ -26,7 +26,5 @@ namespace Pharmacy.Models.Entities
         //[DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
         //[Display(Name = "Hire Date")]
         public DateTimeOffset Duration { get; set; }
-    
-        
     }
 }
