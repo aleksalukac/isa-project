@@ -44,7 +44,7 @@ namespace Pharmacy.Controllers
                         filteredDrugs.Add(drug);
                     }
                 }
-                if(dictionary[filter].ToUpper().Contains(searchString.ToUpper()))
+                if(dictionary[filter] != null && dictionary[filter].ToUpper().Contains(searchString.ToUpper()))
                 {
                     filteredDrugs.Add(drug);
                 }

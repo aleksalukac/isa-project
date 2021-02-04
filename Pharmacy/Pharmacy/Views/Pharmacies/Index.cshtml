@@ -10,6 +10,19 @@
 <p>
     <a asp-action="Create">Create New</a>
 </p>
+
+<form asp-controller="Pharmacy" asp-action="Index">
+    <p>
+        Search: <input type="text" name="searchString" />
+        <input type="submit" value="Filter" />
+
+        <select name="filter" id="filter" style="background-color: transparent;">
+            <option value="Name" class="option">Name</option>
+            <option value="AvrageScore" class="option">Rating</option>
+        </select>
+    </p>
+</form>
+
 <table class="table">
     <thead>
         <tr>

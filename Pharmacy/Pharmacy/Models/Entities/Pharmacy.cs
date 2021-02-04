@@ -10,6 +10,7 @@ namespace Pharmacy.Models.Entities
     public class Pharmacy
     {
         public long Id { get; set; }
+        public string Name { get; set; }
         public string Address { get; set; }
         [ForeignKey("AppUser")]
         public string AdminUserID { get; set; }

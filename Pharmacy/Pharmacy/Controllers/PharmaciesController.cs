@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 using Pharmacy.Data;
 using Pharmacy.Models.Entities;
 
@@ -20,9 +21,30 @@ namespace Pharmacy.Controllers
         }
 
         // GET: Pharmacies
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string searchString = "", string filter = "")
         {
-            return View(await _context.tbPharmacys.ToListAsync());
+            var pharmacies = await _context.tbPharmacys.ToListAsync();
+            List<Pharmacy.Models.Entities.Pharmacy> filteredPharmacies = new List<Pharmacy.Models.Entities.Pharmacy>();
+
+            if (searchString == null || searchString.Length == 0)
+            {
+                filteredPharmacies = pharmacies;
+            }
+            else
+            {
+                foreach (var pharmacy in pharmacies)
+                {
+                    var json = JsonConvert.SerializeObject(pharmacy);
+                    var dictionary = JsonConvert.DeserializeObject<Dictionary<string, string>>(json);
+
+                    if (dictionary[filter] != null && dictionary[filter].ToUpper().Contains(searchString.ToUpper()))
+                    {
+                        filteredPharmacies.Add(pharmacy);
+                    }
+                }
+            }
+
+            return View(filteredPharmacies);
         }
 
         // GET: Pharmacies/Details/5
