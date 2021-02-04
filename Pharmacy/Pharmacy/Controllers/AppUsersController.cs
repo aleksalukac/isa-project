@@ -25,12 +25,6 @@ namespace Pharmacy.Controllers
         // GET: Appointments
         public async Task<IActionResult> Details(string roleName = "User")
         {
-            /*
-            var entryPoint = (from appuser in _context.AppUsers
-                              join userrole in _context.UserRoles on appuser.Id equals userrole.UserId
-                              join role in _context.Roles on role.Id equals userrole.RoleId
-                              where appuser.Id == userrole.UserId 
-                              select *);*/
             List<string> entryPoint = await (from userrole in _context.UserRoles
                               join role in _context.Roles on userrole.RoleId equals role.Id
                               where role.Name == roleName

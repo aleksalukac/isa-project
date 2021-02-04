@@ -21,18 +21,18 @@ namespace Pharmacy.Models.Entities
         [ForeignKey("AppUser")]
         public string PatientID { get; set; }
         public float Price { get; set; }
-        public Rating Rating { get; set; }
+        //public Rating Rating { get; set; }
         public string Report { get; set; }
     }
 
-    public enum Rating
+/*    public enum Rating
     {
         Terrible = 1,
         Disatisfied,
         OK,
         Satisfied,
         Perfect
-    }
+    }*/
 }
 
 /*

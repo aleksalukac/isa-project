@@ -13,7 +13,7 @@ namespace Pharmacy.Models.Entities
         public string Address { get; set; }
         [ForeignKey("AppUser")]
         public string AdminUserID { get; set; }
-        //public AppUser Administrator { get; set; }
+        public float AvrageScore { get; set; }
         public List<AppUser> Employees { get; set; }
         public List<Drug> Drugs { get; set; }
         public List<SupplyOrder> SupplyOrders { get; set; }

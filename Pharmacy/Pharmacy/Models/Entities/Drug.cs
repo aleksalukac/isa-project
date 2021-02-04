@@ -17,6 +17,7 @@ namespace Pharmacy.Models.Entities
         public bool IsPrescribable { get; set; }
         public List<Drug> SimilarDrugs { get; set; } 
         public string Notes { get; set; }
+        public float AvrageScore { get; set; }
     }
 
     public class DrugType

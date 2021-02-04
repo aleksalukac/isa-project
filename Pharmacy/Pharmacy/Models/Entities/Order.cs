@@ -11,5 +11,7 @@ namespace Pharmacy.Models.Entities
     {
         public long Id { get; set; }
         public List<DrugAndQuantity> DrugAndQuantities { get; set; }
+        public decimal Cost { get; set; }
+        public bool Reserved { get; set; }
     }
 }

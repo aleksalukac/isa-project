@@ -54,7 +54,7 @@ namespace Pharmacy.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Price,Rating,Report")] Appointment appointment)
+        public async Task<IActionResult> Create([Bind("Id,MedicalExpertID,PatientID,Price,Report")] Appointment appointment)
         {
             if (ModelState.IsValid)
             {
@@ -86,7 +86,7 @@ namespace Pharmacy.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(long id, [Bind("Id,Price,Rating,Report")] Appointment appointment)
+        public async Task<IActionResult> Edit(long id, [Bind("Id,MedicalExpertID,PatientID,Price,Report")] Appointment appointment)
         {
             if (id != appointment.Id)
             {

@@ -8,14 +8,16 @@ using System.Text;
 namespace Pharmacy.Models.Entities
 {
     
-    [Table("tbReports")]
-    public class Report
+    [Table("tbRating")]
+    public class Rating
     {
         public long Id { get; set; }
+        [Required]
         public AppUser User { get; set; }
         public AppUser Employee { get; set; }
-        public Pharmacy Pharmacy { get; set; }  
-        public string ReportText { get; set; }
-
+        public Drug Drug { get; set; }
+        public Pharmacy Pharmacy { get; set; }
+        [Required]
+        public int Score { get; set; }
     }
 }
