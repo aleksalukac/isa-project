@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Pharmacy.Data;
 using Pharmacy.Models;
@@ -30,13 +31,13 @@ namespace Pharmacy.Controllers
                               join role in _context.Roles on role.Id equals userrole.RoleId
                               where appuser.Id == userrole.UserId 
                               select *);*/
-            List<string> entryPoint = (from userrole in _context.UserRoles
+            List<string> entryPoint = await (from userrole in _context.UserRoles
                               join role in _context.Roles on userrole.RoleId equals role.Id
                               where role.Name == roleName
-                              select userrole.UserId).ToList();
+                              select userrole.UserId).ToListAsync();
+
             ViewData["roleName"] = roleName;
-            // TODO 
-            return View( _context.AppUsers.Where(e => entryPoint.Contains(e.Id)).ToList());
+            return View(await _context.AppUsers.Where(e => entryPoint.Contains(e.Id)).ToListAsync());
         }
         /*
         // GET: Appointments/Details/5
