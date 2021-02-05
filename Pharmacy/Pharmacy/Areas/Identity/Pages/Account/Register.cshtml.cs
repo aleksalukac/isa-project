@@ -13,8 +13,10 @@ using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.WebUtilities;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
+using Pharmacy.Data;
 using Pharmacy.Models.Entities.Users;
 
 namespace Pharmacy.Areas.Identity.Pages.Account
@@ -27,18 +29,21 @@ namespace Pharmacy.Areas.Identity.Pages.Account
         private readonly RoleManager<IdentityRole> _roleManager;
         private readonly ILogger<RegisterModel> _logger;
         private readonly EmailSender _emailSender;
+        private readonly ApplicationDbContext _context;
 
         public RegisterModel(
             UserManager<AppUser> userManager,
             SignInManager<AppUser> signInManager,
             RoleManager<IdentityRole> roleManager,
             ILogger<RegisterModel> logger,
-            IEmailSender emailSender)
+            IEmailSender emailSender,
+            ApplicationDbContext context)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _roleManager = roleManager;
             _logger = logger;
+            _context = context;
 
             using (StreamReader r = new StreamReader("./Areas/Identity/emailCredentials.json"))
             {
@@ -100,11 +105,16 @@ namespace Pharmacy.Areas.Identity.Pages.Account
             [DataType(DataType.Text)]
             [Display(Name = "Role")]
             public string Role { get; set; }
+
+            [DataType(DataType.Text)]
+            [Display(Name = "Pharmacy")]
+            public string PharmacyId { get; set; }
         }
 
         public async Task OnGetAsync(string returnUrl = null)
         {
             ReturnUrl = returnUrl;
+            ViewData["PharmacyList"] = await _context.tbPharmacys.ToListAsync();
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
         }
 
@@ -115,14 +125,14 @@ namespace Pharmacy.Areas.Identity.Pages.Account
             if (ModelState.IsValid)
             {
                 var user = new AppUser { UserName = Input.Email, Email = Input.Email, Adress = Input.Adress,
-                    FirstName = Input.FirstName, LastName = Input.LastName, City = Input.City, Country  = Input.Country };
+                    FirstName = Input.FirstName, LastName = Input.LastName, City = Input.City, Country = Input.Country, PharmacyId = long.Parse(Input.PharmacyId) };
 
                 var result = await _userManager.CreateAsync(user, Input.Password);
 
-                if (Input.Role != null && Input.Role != "") 
+                if (Input.Role != null && Input.Role != "")
                 {
-                    await _userManager.AddToRoleAsync(user, Input.Role); 
-                }else
+                    await _userManager.AddToRoleAsync(user, Input.Role);
+                } else
                 {
                     await _userManager.AddToRoleAsync(user, "User");
                 }
@@ -162,4 +172,5 @@ namespace Pharmacy.Areas.Identity.Pages.Account
             return Page();
         }
     }
+
 }
