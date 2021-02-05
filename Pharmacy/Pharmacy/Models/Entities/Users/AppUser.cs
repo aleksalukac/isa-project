@@ -23,6 +23,8 @@ namespace Pharmacy.Models.Entities.Users
         [PersonalData]
         public int Penalty { get; set; }
         public float AvrageScore { get; set; }
+        [ForeignKey("Pharmacy")]
+        public long? PharmacyId { get; set; }
         public List<Appointment> AppointmentsForUser { get; set; }
         public List<Appointment> AppointmentsForMedical { get; set; }
         public List<AbsenceRequest> AbsenceRequests { get; internal set; }

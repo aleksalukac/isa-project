@@ -77,9 +77,9 @@ namespace Pharmacy.Data
             //    .WithOne();
 
 
-            modelBuilder.Entity<Pharmacy.Models.Entities.Pharmacy>().ToTable("Pharmacys")
-                .HasMany(p => p.Employees)
-                .WithOne();
+            modelBuilder.Entity<Pharmacy.Models.Entities.Pharmacy>().ToTable("Pharmacys");
+             //   .HasMany(p => p.Employees)
+             //   .WithOne();
 
             modelBuilder.Entity<Order>().ToTable("Orders");
 
