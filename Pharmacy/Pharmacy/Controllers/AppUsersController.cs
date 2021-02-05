@@ -62,16 +62,25 @@ namespace Pharmacy.Controllers
 
 
         // GET: AppUsers/PharmacistList/
-        public async Task<IActionResult> PharmacistList(string searchString = "", string filter = "")
+        public async Task<IActionResult> PharmacistList(string searchString = "", string filter = "", string pharmacy = "")
         {
             List<string> entryPoint = await (from userrole in _context.UserRoles
                                              join role in _context.Roles on userrole.RoleId equals role.Id
                                              where role.Name == "Pharmacist"
                                              select userrole.UserId).ToListAsync();
 
-            List<AppUser> users = await _context.AppUsers.Where(e => entryPoint.Contains(e.Id)).ToListAsync();
+            List<AppUser> users;
+            if (long.TryParse(pharmacy, out long pharmacyId))
+            {
+                users = await _context.AppUsers.Where(e => entryPoint.Contains(e.Id) && e.PharmacyId == pharmacyId).ToListAsync();
+            }
+            else
+            {
+                users = await _context.AppUsers.Where(e => entryPoint.Contains(e.Id)).ToListAsync();
+            }
 
             ViewData["roleName"] = "Pharmacist";
+            ViewData["PharmacyList"] = await _context.tbPharmacys.ToListAsync();
             return View(FilterUsers(users, searchString, filter));
         }
 
@@ -89,16 +98,25 @@ namespace Pharmacy.Controllers
 
 
         // GET: AppUsers/DermatologistList
-        public async Task<IActionResult> DermatologistList(string searchString = "", string filter = "")
+        public async Task<IActionResult> DermatologistList(string searchString = "", string filter = "", string pharmacy = "")
         {
             List<string> entryPoint = await (from userrole in _context.UserRoles
                                              join role in _context.Roles on userrole.RoleId equals role.Id
                                              where role.Name == "Dermatologist"
                                              select userrole.UserId).ToListAsync();
 
-            List<AppUser> users = await _context.AppUsers.Where(e => entryPoint.Contains(e.Id)).ToListAsync();
+            List<AppUser> users;
+            if (long.TryParse(pharmacy, out long pharmacyId))
+            {
+                users = await _context.AppUsers.Where(e => entryPoint.Contains(e.Id) && e.PharmacyId == pharmacyId).ToListAsync();
+            }
+            else
+            {
+                users = await _context.AppUsers.Where(e => entryPoint.Contains(e.Id)).ToListAsync();
+            }
 
-            ViewData["roleName"] = "Pharmacist";
+            ViewData["roleName"] = "Dermatologist";
+            ViewData["PharmacyList"] = await _context.tbPharmacys.ToListAsync();
             return View(FilterUsers(users,searchString,filter));
         }
 

@@ -22,14 +22,20 @@
     <p>
         Search: <input type="text" name="searchString" class="form-control" />
 
-                <select name="filter" id="filter" class="form-control">
-                    <option value="FirstName" class="option">FirstName</option>
-                    <option value="LastName" class="option">LastName</option>
-                    <option value="AvrageScore" class="option">Rating</option>
-                    <option value="City" class="option">City</option>
-                    <option value="Country" class="option">Country</option>
-                </select>
-        <input type="submit" value="Filter" class="btn btn-primary"/>
+        <select name="filter" id="filter" class="form-control">
+            <option value="FirstName" class="option">FirstName</option>
+            <option value="LastName" class="option">LastName</option>
+            <option value="AvrageScore" class="option">Rating</option>
+            <option value="City" class="option">City</option>
+            <option value="Country" class="option">Country</option>
+        </select>
+        <select name="pharmacy" id="pharmacy" class="form-control">
+            @foreach (Pharmacy.Models.Entities.Pharmacy item in (List<Pharmacy.Models.Entities.Pharmacy>)@ViewData["PharmacyList"])
+            {
+                <option value=@item.Id class="option">@item.Name</option>
+            }
+        </select>
+        <input type="submit" value="Filter" class="btn btn-primary" />
     </p>
 </form>
 <table class="table">
