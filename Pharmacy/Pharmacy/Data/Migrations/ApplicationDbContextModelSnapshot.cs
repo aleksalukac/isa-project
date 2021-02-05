@@ -487,7 +487,7 @@ namespace Pharmacy.Data.Migrations
                     b.Property<int>("Penalty")
                         .HasColumnType("int");
 
-                    b.Property<long?>("PharmacyId")
+                    b.Property<long>("PharmacyId")
                         .HasColumnType("bigint");
 
                     b.Property<string>("PhoneNumber")
@@ -515,8 +515,6 @@ namespace Pharmacy.Data.Migrations
                         .IsUnique()
                         .HasDatabaseName("UserNameIndex")
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
-
-                    b.HasIndex("PharmacyId");
 
                     b.ToTable("AppUsers");
                 });
@@ -693,13 +691,6 @@ namespace Pharmacy.Data.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("Pharmacy.Models.Entities.Users.AppUser", b =>
-                {
-                    b.HasOne("Pharmacy.Models.Entities.Pharmacy", null)
-                        .WithMany("Employees")
-                        .HasForeignKey("PharmacyId");
-                });
-
             modelBuilder.Entity("Pharmacy.Models.Entities.AbsenceRequest", b =>
                 {
                     b.Navigation("TimeSpan");
@@ -723,8 +714,6 @@ namespace Pharmacy.Data.Migrations
             modelBuilder.Entity("Pharmacy.Models.Entities.Pharmacy", b =>
                 {
                     b.Navigation("Drugs");
-
-                    b.Navigation("Employees");
 
                     b.Navigation("SupplyOrders");
                 });

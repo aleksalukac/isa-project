@@ -10,8 +10,8 @@ using Pharmacy.Data;
 namespace Pharmacy.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20210205175757_ISADB15")]
-    partial class ISADB15
+    [Migration("20210205222345_ISADB1")]
+    partial class ISADB1
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -488,6 +488,9 @@ namespace Pharmacy.Data.Migrations
 
                     b.Property<int>("Penalty")
                         .HasColumnType("int");
+
+                    b.Property<long>("PharmacyId")
+                        .HasColumnType("bigint");
 
                     b.Property<string>("PhoneNumber")
                         .HasColumnType("nvarchar(max)");
