@@ -18,6 +18,19 @@
 <p>
     <a asp-action="Create">Create New</a>
 </p>
+<form asp-controller="AppUsers" asp-action="PharmacistList" class="form-inline">
+    <p>
+        Search: <input type="text" name="searchString" class="form-control" />
+
+        <select name="filter" id="filter" class="form-control">
+            <option value="FirstName" class="option">FirstName</option>
+            <option value="AvrageScore" class="option">Rating</option>
+            <option value="City" class="option">City</option>
+            <option value="Country" class="option">Country</option>
+        </select>
+        <input type="submit" value="Filter" class="btn btn-primary" />
+    </p>
+</form>
 <table class="table">
     <thead>
         <tr>

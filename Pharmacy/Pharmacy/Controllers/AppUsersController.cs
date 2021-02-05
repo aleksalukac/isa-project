@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 using Pharmacy.Data;
 using Pharmacy.Models;
 using Pharmacy.Models.Entities.Users;
@@ -35,8 +36,7 @@ namespace Pharmacy.Controllers
             return View(await _context.AppUsers.Where(e => entryPoint.Contains(e.Id)).ToListAsync());
         }
 
-        [HttpGet("AppUsers/UserList")]
-        // GET: Appointments
+        // GET: AppUsers/UserList
         public async Task<IActionResult> UserList()
         {
             List<string> entryPoint = await (from userrole in _context.UserRoles
@@ -48,8 +48,7 @@ namespace Pharmacy.Controllers
             return View(await _context.AppUsers.Where(e => entryPoint.Contains(e.Id)).ToListAsync());
         }
 
-        [HttpGet("AppUsers/PharmacyAdminList")]
-        // GET: Appointments
+        // GET: AppUsers/PharmacyAdminList
         public async Task<IActionResult> PharmacyAdminList()
         {
             List<string> entryPoint = await (from userrole in _context.UserRoles
@@ -61,21 +60,22 @@ namespace Pharmacy.Controllers
             return View(await _context.AppUsers.Where(e => entryPoint.Contains(e.Id)).ToListAsync());
         }
 
-        [HttpGet("AppUsers/PharmacistList")]
-        // GET: Appointments
-        public async Task<IActionResult> PharmacistList()
+
+        // GET: AppUsers/PharmacistList/
+        public async Task<IActionResult> PharmacistList(string searchString = "", string filter = "")
         {
             List<string> entryPoint = await (from userrole in _context.UserRoles
                                              join role in _context.Roles on userrole.RoleId equals role.Id
                                              where role.Name == "Pharmacist"
                                              select userrole.UserId).ToListAsync();
 
-            ViewData["roleName"] = "User";
-            return View(await _context.AppUsers.Where(e => entryPoint.Contains(e.Id)).ToListAsync());
+            List<AppUser> users = await _context.AppUsers.Where(e => entryPoint.Contains(e.Id)).ToListAsync();
+
+            ViewData["roleName"] = "Pharmacist";
+            return View(FilterUsers(users, searchString, filter));
         }
 
-        [HttpGet("AppUsers/AdminList")]
-        // GET: Appointments
+        // GET: AppUsers/AdminList
         public async Task<IActionResult> AdminList()
         {
             List<string> entryPoint = await (from userrole in _context.UserRoles
@@ -87,17 +87,19 @@ namespace Pharmacy.Controllers
             return View(await _context.AppUsers.Where(e => entryPoint.Contains(e.Id)).ToListAsync());
         }
 
-        [HttpGet("AppUsers/DermatologistList")]
-        // GET: Appointments
-        public async Task<IActionResult> DermatologistList()
+
+        // GET: AppUsers/DermatologistList
+        public async Task<IActionResult> DermatologistList(string searchString = "", string filter = "")
         {
             List<string> entryPoint = await (from userrole in _context.UserRoles
                                              join role in _context.Roles on userrole.RoleId equals role.Id
                                              where role.Name == "Dermatologist"
                                              select userrole.UserId).ToListAsync();
 
-            ViewData["roleName"] = "User";
-            return View(await _context.AppUsers.Where(e => entryPoint.Contains(e.Id)).ToListAsync());
+            List<AppUser> users = await _context.AppUsers.Where(e => entryPoint.Contains(e.Id)).ToListAsync();
+
+            ViewData["roleName"] = "Pharmacist";
+            return View(FilterUsers(users,searchString,filter));
         }
 
         [HttpGet("AppUsers/Edit/{id}")]
@@ -195,130 +197,28 @@ namespace Pharmacy.Controllers
             return _context.tbAppUsers.Any(e => e.Id == id);
         }
 
-        /*
-        // GET: Appointments/Details/5
-        public async Task<IActionResult> Details(long? id)
+        private static List<AppUser> FilterUsers(List<AppUser> users, string searchString, string filter)
         {
-            if (id == null)
+            List<AppUser> filteredUsers = new List<AppUser>();
+            if (string.IsNullOrEmpty(searchString))
             {
-                return NotFound();
+                filteredUsers = users;
             }
-
-            var appointment = await _context.tbAppointments
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (appointment == null)
+            else
             {
-                return NotFound();
-            }
-
-            return View(appointment);
-        }
-
-        // GET: Appointments/Create
-        public IActionResult Create()
-        {
-            return View();
-        }
-
-        // POST: Appointments/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Price,Rating,Report")] Appointment appointment)
-        {
-            if (ModelState.IsValid)
-            {
-                _context.Add(appointment);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-            }
-            return View(appointment);
-        }
-
-        // GET: Appointments/Edit/5
-        public async Task<IActionResult> Edit(long? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var appointment = await _context.tbAppointments.FindAsync(id);
-            if (appointment == null)
-            {
-                return NotFound();
-            }
-            return View(appointment);
-        }
-
-        // POST: Appointments/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(long id, [Bind("Id,Price,Rating,Report")] Appointment appointment)
-        {
-            if (id != appointment.Id)
-            {
-                return NotFound();
-            }
-
-            if (ModelState.IsValid)
-            {
-                try
+                foreach (var user in users)
                 {
-                    _context.Update(appointment);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!AppointmentExists(appointment.Id))
+                    var json = JsonConvert.SerializeObject(user);
+                    var dictionary = JsonConvert.DeserializeObject<Dictionary<string, string>>(json);
+
+                    if (dictionary[filter] != null && dictionary[filter].ToUpper().Contains(searchString.ToUpper()))
                     {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
+                        filteredUsers.Add(user);
                     }
                 }
-                return RedirectToAction(nameof(Index));
-            }
-            return View(appointment);
-        }
-
-        // GET: Appointments/Delete/5
-        public async Task<IActionResult> Delete(long? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
             }
 
-            var appointment = await _context.tbAppointments
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (appointment == null)
-            {
-                return NotFound();
-            }
-
-            return View(appointment);
+            return filteredUsers;
         }
-
-        // POST: Appointments/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(long id)
-        {
-            var appointment = await _context.tbAppointments.FindAsync(id);
-            _context.tbAppointments.Remove(appointment);
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
-        }
-
-        private bool AppointmentExists(long id)
-        {
-            return _context.tbAppointments.Any(e => e.Id == id);
-        }*/
     }
 }
