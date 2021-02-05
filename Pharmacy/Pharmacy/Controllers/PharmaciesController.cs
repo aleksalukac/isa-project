@@ -108,7 +108,7 @@ namespace Pharmacy.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(long id, [Bind("Id,Address")] Pharmacy.Models.Entities.Pharmacy pharmacy)
+        public async Task<IActionResult> Edit(long id, [Bind("Id,Name,Address")] Pharmacy.Models.Entities.Pharmacy pharmacy)
         {
             if (id != pharmacy.Id)
             {
@@ -133,7 +133,7 @@ namespace Pharmacy.Controllers
                         throw;
                     }
                 }
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction("Index","Home");
             }
             return View(pharmacy);
         }
