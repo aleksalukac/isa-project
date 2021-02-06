@@ -24,6 +24,7 @@ namespace Pharmacy.Models.Entities
         public DateTime StartDateTime { get; set; }
         public TimeSpan Duration { get; set; }
         public AppointmentType Type { get; set; }
+        public List<Drug> PrescribedDrugs { get; set; }
     }
     public enum AppointmentType
     {

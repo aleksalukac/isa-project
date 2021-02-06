@@ -63,8 +63,8 @@ namespace Pharmacy.Areas.Identity.Pages.Account
         {
             [Required]
             [DataType(DataType.Text)]
-            [Display(Name = "Adress")]
-            public string Adress { get; set; }
+            [Display(Name = "Address")]
+            public string Address { get; set; }
 
             [Required]
             [DataType(DataType.Text)]
@@ -113,6 +113,7 @@ namespace Pharmacy.Areas.Identity.Pages.Account
 
         public async Task OnGetAsync(string returnUrl = null)
         {
+
             ReturnUrl = returnUrl;
             ViewData["PharmacyList"] = await _context.tbPharmacys.ToListAsync();
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
@@ -124,8 +125,34 @@ namespace Pharmacy.Areas.Identity.Pages.Account
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
             if (ModelState.IsValid)
             {
-                var user = new AppUser { UserName = Input.Email, Email = Input.Email, Adress = Input.Adress,
-                    FirstName = Input.FirstName, LastName = Input.LastName, City = Input.City, Country = Input.Country, PharmacyId = long.Parse(Input.PharmacyId) };
+                AppUser user;
+                if (long.TryParse(Input.PharmacyId, out long pharmacyid))
+                {
+                    user = new AppUser
+                    {
+                        UserName = Input.Email,
+                        Email = Input.Email,
+                        Address = Input.Address,
+                        FirstName = Input.FirstName,
+                        LastName = Input.LastName,
+                        City = Input.City,
+                        Country = Input.Country,
+                        PharmacyId = pharmacyid
+                    };
+                }
+                else
+                {
+                    user = new AppUser
+                    {
+                        UserName = Input.Email,
+                        Email = Input.Email,
+                        Address = Input.Address,
+                        FirstName = Input.FirstName,
+                        LastName = Input.LastName,
+                        City = Input.City,
+                        Country = Input.Country
+                    };
+                }
 
                 var result = await _userManager.CreateAsync(user, Input.Password);
 

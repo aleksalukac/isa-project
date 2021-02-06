@@ -27,7 +27,7 @@
 
                 <select name="filter" id="filter" style="background-color: transparent;">
                     <option value="Name" class="option">Name</option>
-                    <option value="AvrageScore" class="option">Rating</option>
+                    <option value="AverageScore" class="option">Rating</option>
                     <option value="Type" class="option">Type</option>
                     <option value="Form" class="option">Form</option>
                     <option value="Drugmaker" class="option">Drugmaker</option>
@@ -68,7 +68,7 @@
                 @Html.DisplayNameFor(model => model.Notes)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.AvrageScore)
+                @Html.DisplayNameFor(model => model.AverageScore)
             </th>
             <th></th>
         </tr>
@@ -96,7 +96,7 @@
                     @Html.DisplayFor(modelItem => item.Notes)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.AvrageScore)
+                    @Html.DisplayFor(modelItem => item.AverageScore)
                 </td>
                 <td>
                     @if ((await AuthorizationService.AuthorizeAsync(User, null, "PharmacyAdminPolicy")).Succeeded)

@@ -151,7 +151,7 @@ namespace Pharmacy.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost("AppUsers/Edit/{id}")]
         //[DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public async Task<IActionResult> Edit(string id, [Bind("Id,FirstName,LastName,Adress,Country,City,Penalty,AvrageScore")] AppUser appUser)
+        public async Task<IActionResult> Edit(string id, [Bind("Id,FirstName,LastName,Address,Country,City,Penalty,AverageScore")] AppUser appUser)
         {
             if (id != appUser.Id)
             {
@@ -166,7 +166,7 @@ namespace Pharmacy.Controllers
 
                     repositoryUser.FirstName = appUser.FirstName;
                     repositoryUser.LastName = appUser.LastName;
-                    repositoryUser.Adress = appUser.Adress;
+                    repositoryUser.Address = appUser.Address;
                     repositoryUser.City = appUser.City;
 
                     _context.Users.Update(repositoryUser);

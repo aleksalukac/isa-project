@@ -32,7 +32,7 @@
                 <select name="filter" id="filter" class="form-control">
                     <option value="FirstName" class="option">FirstName</option>
                     <option value="LastName" class="option">LastName</option>
-                    <option value="AvrageScore" class="option">Rating</option>
+                    <option value="AverageScore" class="option">Rating</option>
                     <option value="City" class="option">City</option>
                     <option value="Country" class="option">Country</option>
                 </select>
@@ -61,7 +61,7 @@
                 @Html.DisplayNameFor(model => model.LastName)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Adress)
+                @Html.DisplayNameFor(model => model.Address)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.City)
@@ -73,7 +73,7 @@
                 Role
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.AvrageScore)
+                @Html.DisplayNameFor(model => model.AverageScore)
             </th>
             <th></th>
         </tr>
@@ -89,7 +89,7 @@
                 @Html.DisplayFor(modelItem => item.LastName)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Adress)
+                @Html.DisplayFor(modelItem => item.Address)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.City)
@@ -101,7 +101,7 @@
                 @ViewData["roleName"]
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.AvrageScore)
+                @Html.DisplayFor(modelItem => item.AverageScore)
             </td>
             @if ((await AuthorizationService.AuthorizeAsync(User, null, "AdminPolicy")).Succeeded)
             {

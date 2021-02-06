@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Pharmacy.Data;
 
-namespace Pharmacy.Data.Migrations
+namespace Pharmacy.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
     partial class ApplicationDbContextModelSnapshot : ModelSnapshot
@@ -18,6 +18,21 @@ namespace Pharmacy.Data.Migrations
                 .UseIdentityColumns()
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("ProductVersion", "5.0.2");
+
+            modelBuilder.Entity("AppointmentDrug", b =>
+                {
+                    b.Property<long>("AppointmentsId")
+                        .HasColumnType("bigint");
+
+                    b.Property<long>("PrescribedDrugsId")
+                        .HasColumnType("bigint");
+
+                    b.HasKey("AppointmentsId", "PrescribedDrugsId");
+
+                    b.HasIndex("PrescribedDrugsId");
+
+                    b.ToTable("AppointmentDrug");
+                });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
                 {
@@ -222,7 +237,7 @@ namespace Pharmacy.Data.Migrations
                         .HasColumnType("bigint")
                         .UseIdentityColumn();
 
-                    b.Property<double>("AvrageScore")
+                    b.Property<double>("AverageScore")
                         .HasColumnType("float");
 
                     b.Property<double>("Cost")
@@ -346,7 +361,7 @@ namespace Pharmacy.Data.Migrations
                     b.Property<string>("AdminUserID")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<float>("AvrageScore")
+                    b.Property<float>("AverageScore")
                         .HasColumnType("real");
 
                     b.Property<string>("Name")
@@ -437,10 +452,10 @@ namespace Pharmacy.Data.Migrations
                     b.Property<int>("AccessFailedCount")
                         .HasColumnType("int");
 
-                    b.Property<string>("Adress")
+                    b.Property<string>("Address")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<float>("AvrageScore")
+                    b.Property<float>("AverageScore")
                         .HasColumnType("real");
 
                     b.Property<string>("City")
@@ -516,6 +531,21 @@ namespace Pharmacy.Data.Migrations
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
                     b.ToTable("AppUsers");
+                });
+
+            modelBuilder.Entity("AppointmentDrug", b =>
+                {
+                    b.HasOne("Pharmacy.Models.Entities.Appointment", null)
+                        .WithMany()
+                        .HasForeignKey("AppointmentsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Pharmacy.Models.Entities.Drug", null)
+                        .WithMany()
+                        .HasForeignKey("PrescribedDrugsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
