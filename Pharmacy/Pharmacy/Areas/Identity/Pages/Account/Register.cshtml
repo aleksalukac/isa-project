@@ -103,10 +103,13 @@
             }
             <div class="form-group">
                 <select asp-for="Input.PharmacyId" class="form-control">
-                        @foreach (Pharmacy.Models.Entities.Pharmacy item in (List<Pharmacy.Models.Entities.Pharmacy>)@ViewData["PharmacyList"])
+                    @if ((List<Pharmacy.Models.Entities.Pharmacy>)@ViewData["PharmacyList"] != null)
+                    {
+                        foreach (Pharmacy.Models.Entities.Pharmacy item in (List<Pharmacy.Models.Entities.Pharmacy>)@ViewData["PharmacyList"])
                         {
                             <option value=@item.Id class="option">@item.Name</option>
                         }
+                    }
                 </select>
              </div>
             <button type="submit" class="btn btn-primary">Register</button>

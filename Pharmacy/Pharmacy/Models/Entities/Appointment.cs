@@ -13,7 +13,7 @@ namespace Pharmacy.Models.Entities
         [Key]
         [Required]
         public long Id { get; set; }
-        public TimeSpan TimeSpan { get; set; }
+        //public TimeSpan TimeSpan { get; set; }
 
         [ForeignKey("AppUser")]
         public string MedicalExpertID { get; set; }
@@ -23,6 +23,8 @@ namespace Pharmacy.Models.Entities
         public float Price { get; set; }
         //public Rating Rating { get; set; }
         public string Report { get; set; }
+        public DateTime StartDateTime { get; set; }
+        public TimeSpan Duration { get; set; }
     }
 
 /*    public enum Rating

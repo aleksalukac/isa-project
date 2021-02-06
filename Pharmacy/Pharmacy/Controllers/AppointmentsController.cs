@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Pharmacy.Data;
 using Pharmacy.Models.Entities;
+using Pharmacy.Models.Entities.Users;
 
 namespace Pharmacy.Controllers
 {
@@ -46,6 +47,13 @@ namespace Pharmacy.Controllers
         // GET: Appointments/Create
         public IActionResult Create()
         {
+            List<AppUser> entryPoint = (from user in _context.tbAppUsers
+                                             join userrole in _context.UserRoles on user.Id equals userrole.UserId
+                                             join role in _context.Roles on userrole.RoleId equals role.Id
+                                             where role.Name == "Dermatologist"
+                                             select user).ToList();
+
+            ViewData["DermatologistList"] = entryPoint;
             return View();
         }
 
@@ -54,7 +62,7 @@ namespace Pharmacy.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,MedicalExpertID,PatientID,Price,Report")] Appointment appointment)
+        public async Task<IActionResult> Create([Bind("Id,MedicalExpertID,PatientID,Price,Report,StartDateTime,Duration")] Appointment appointment)
         {
             if (ModelState.IsValid)
             {
@@ -78,6 +86,14 @@ namespace Pharmacy.Controllers
             {
                 return NotFound();
             }
+
+            List<AppUser> entryPoint = await (from user in _context.tbAppUsers
+                                             join userrole in _context.UserRoles on user.Id equals userrole.UserId
+                                             join role in _context.Roles on userrole.RoleId equals role.Id
+                                             where role.Name == "Dermatologist"
+                                             select user).ToListAsync();
+
+            ViewData["DermatologistList"] = entryPoint;
             return View(appointment);
         }
 
@@ -86,7 +102,7 @@ namespace Pharmacy.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(long id, [Bind("Id,MedicalExpertID,PatientID,Price,Report")] Appointment appointment)
+        public async Task<IActionResult> Edit(long id, [Bind("Id,MedicalExpertID,PatientID,Price,Report,StartDateTime,Duration")] Appointment appointment)
         {
             if (id != appointment.Id)
             {

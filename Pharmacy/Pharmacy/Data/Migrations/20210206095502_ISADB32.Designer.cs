@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Pharmacy.Data;
 
 namespace Pharmacy.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20210206095502_ISADB32")]
+    partial class ISADB32
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -167,9 +169,6 @@ namespace Pharmacy.Data.Migrations
                     b.Property<string>("PharmacyAdministratorId")
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<TimeSpan>("TimeSpan")
-                        .HasColumnType("time");
-
                     b.HasKey("Id");
 
                     b.HasIndex("EmployeeId");
@@ -192,8 +191,8 @@ namespace Pharmacy.Data.Migrations
                     b.Property<string>("AppUserId1")
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<TimeSpan>("Duration")
-                        .HasColumnType("time");
+                    b.Property<DateTime>("EndDateTime")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("MedicalExpertID")
                         .HasColumnType("nvarchar(max)");
@@ -421,6 +420,22 @@ namespace Pharmacy.Data.Migrations
                     b.HasIndex("PharmacyId");
 
                     b.ToTable("SupplyOrders");
+                });
+
+            modelBuilder.Entity("Pharmacy.Models.Entities.TimeSpan", b =>
+                {
+                    b.Property<long>("Id")
+                        .HasColumnType("bigint");
+
+                    b.Property<DateTime>("BeginTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTimeOffset>("Duration")
+                        .HasColumnType("datetimeoffset");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("TimeSpan");
                 });
 
             modelBuilder.Entity("Pharmacy.Models.Entities.Users.AppUser", b =>
@@ -667,6 +682,31 @@ namespace Pharmacy.Data.Migrations
                         .HasForeignKey("PharmacyId");
 
                     b.Navigation("Pharmacy");
+                });
+
+            modelBuilder.Entity("Pharmacy.Models.Entities.TimeSpan", b =>
+                {
+                    b.HasOne("Pharmacy.Models.Entities.AbsenceRequest", null)
+                        .WithOne("TimeSpan")
+                        .HasForeignKey("Pharmacy.Models.Entities.TimeSpan", "Id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Pharmacy.Models.Entities.Appointment", null)
+                        .WithOne("TimeSpan")
+                        .HasForeignKey("Pharmacy.Models.Entities.TimeSpan", "Id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Pharmacy.Models.Entities.AbsenceRequest", b =>
+                {
+                    b.Navigation("TimeSpan");
+                });
+
+            modelBuilder.Entity("Pharmacy.Models.Entities.Appointment", b =>
+                {
+                    b.Navigation("TimeSpan");
                 });
 
             modelBuilder.Entity("Pharmacy.Models.Entities.Drug", b =>

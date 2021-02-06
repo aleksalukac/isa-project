@@ -36,7 +36,7 @@ namespace Pharmacy.Data
 
         public DbSet<DrugType> DrugType { get; set; }
 
-        public DbSet<Models.Entities.TimeSpan> TimeSpan { get; set; }
+        //public DbSet<Models.Entities.TimeSpan> TimeSpan { get; set; }
 
         public DbSet<DrugAndQuantity> DrugAndQuantity { get; set; }
 
@@ -83,10 +83,10 @@ namespace Pharmacy.Data
 
             modelBuilder.Entity<Order>().ToTable("Orders");
 
-            modelBuilder.Entity<Appointment>().ToTable("Appointments")
+            modelBuilder.Entity<Appointment>().ToTable("Appointments");/*
                 .HasOne(p => p.TimeSpan)
                 .WithOne()
-                .HasForeignKey<Models.Entities.TimeSpan>(p => p.Id);
+                .HasForeignKey<Models.Entities.TimeSpan>(p => p.Id);*/
 /*
             modelBuilder.Entity<Appointment>().ToTable("Appointments")
                 .HasOne(p => p.MedicalExpert)
@@ -107,10 +107,10 @@ namespace Pharmacy.Data
                 .WithMany(x => x.AbsenceRequests)
                 .OnDelete(DeleteBehavior.Restrict);
 
-            modelBuilder.Entity<AbsenceRequest>().ToTable("AbsenceRequests")
+            modelBuilder.Entity<AbsenceRequest>().ToTable("AbsenceRequests");/*
                 .HasOne(p => p.TimeSpan)
                 .WithOne()
-                .HasForeignKey<Models.Entities.TimeSpan>(p => p.Id);
+                .HasForeignKey<Models.Entities.TimeSpan>(p => p.Id);*/
 
 
 
