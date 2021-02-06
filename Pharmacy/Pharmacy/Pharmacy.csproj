@@ -6,6 +6,29 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Views\AppUsers\Admin\**" />
+    <Compile Remove="Views\AppUsers\Dermatologist\**" />
+    <Compile Remove="Views\AppUsers\Pharmacist\**" />
+    <Compile Remove="Views\AppUsers\PharmacyAdmin\**" />
+    <Compile Remove="Views\AppUsers\User\**" />
+    <Content Remove="Views\AppUsers\Admin\**" />
+    <Content Remove="Views\AppUsers\Dermatologist\**" />
+    <Content Remove="Views\AppUsers\Pharmacist\**" />
+    <Content Remove="Views\AppUsers\PharmacyAdmin\**" />
+    <Content Remove="Views\AppUsers\User\**" />
+    <EmbeddedResource Remove="Views\AppUsers\Admin\**" />
+    <EmbeddedResource Remove="Views\AppUsers\Dermatologist\**" />
+    <EmbeddedResource Remove="Views\AppUsers\Pharmacist\**" />
+    <EmbeddedResource Remove="Views\AppUsers\PharmacyAdmin\**" />
+    <EmbeddedResource Remove="Views\AppUsers\User\**" />
+    <None Remove="Views\AppUsers\Admin\**" />
+    <None Remove="Views\AppUsers\Dermatologist\**" />
+    <None Remove="Views\AppUsers\Pharmacist\**" />
+    <None Remove="Views\AppUsers\PharmacyAdmin\**" />
+    <None Remove="Views\AppUsers\User\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="5.0.2" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="5.0.2" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="5.0.2" />
@@ -24,14 +47,6 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="5.0.1" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Views\AppUsers\Admin\" />
-    <Folder Include="Views\AppUsers\Dermatologist\" />
-    <Folder Include="Views\AppUsers\Pharmacist\" />
-    <Folder Include="Views\AppUsers\PharmacyAdmin\" />
-    <Folder Include="Views\AppUsers\User\" />
   </ItemGroup>
 
 </Project>

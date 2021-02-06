@@ -38,12 +38,12 @@
 @foreach (var item in Model) {
         <tr>
             <td>
-                <a asp-controller="AppUser" asp-action="Details" asp-route-id="@item.MedicalExpertID">
+                <a asp-controller="AppUsers" asp-action="Details" asp-route-id="@item.MedicalExpertID">
                     @Html.DisplayFor(modelItem => item.MedicalExpertNameAndSurname)
                 </a> 
             </td>
             <td>
-                <a asp-controller="AppUser" asp-action="Details" asp-route-id="@item.PatientID">
+                <a asp-controller="AppUsers" asp-action="Details" asp-route-id="@item.PatientID">
                     @Html.DisplayFor(modelItem => item.PatientNameAndSurname)
                 </a> 
             </td>
