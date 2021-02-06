@@ -13,7 +13,6 @@
 <form asp-controller="Drugs" asp-action="Index">
     <p>
         Search: <input type="text" name="searchString" />
-        <input type="submit" value="Filter" />
 
         <select name="filter" id="filter" style="background-color: transparent;">
             <option value="Name" class="option">Name</option>
@@ -22,6 +21,13 @@
             <option value="Form" class="option">Form</option>
             <option value="Drugmaker" class="option">Drugmaker</option>
         </select>
+        <select name="pharmacy" id="pharmacy" class="form-control">
+            @foreach (Pharmacy.Models.Entities.Pharmacy item in (List<Pharmacy.Models.Entities.Pharmacy>)@ViewData["PharmacyList"])
+            {
+                <option value=@item.Id class="option">@item.Name</option>
+            }
+        </select>
+        <input type="submit" value="Filter" />
     </p>
 </form>
 

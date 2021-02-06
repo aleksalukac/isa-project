@@ -40,6 +40,7 @@ namespace Pharmacy.Controllers
                 return NotFound();
             }
 
+
             return View(order);
         }
 
@@ -54,7 +55,7 @@ namespace Pharmacy.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id")] Order order)
+        public async Task<IActionResult> Create([Bind("Id,Cost,Reserved")] Order order)
         {
             if (ModelState.IsValid)
             {
@@ -86,7 +87,7 @@ namespace Pharmacy.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(long id, [Bind("Id")] Order order)
+        public async Task<IActionResult> Edit(long id, [Bind("Id,Cost,Reserved")] Order order)
         {
             if (id != order.Id)
             {
