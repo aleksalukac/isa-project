@@ -2,20 +2,25 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Pharmacy.Data;
 using Pharmacy.Models.Entities;
+using Pharmacy.Models.Entities.Users;
 
 namespace Pharmacy.Controllers
 {
     public class OrdersController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly UserManager<AppUser> _userManager;
 
-        public OrdersController(ApplicationDbContext context)
+        public OrdersController(UserManager<AppUser> userManager, ApplicationDbContext context)
         {
+            _userManager = userManager;
             _context = context;
         }
 
@@ -34,39 +39,76 @@ namespace Pharmacy.Controllers
             }
 
             var order = await _context.tbOrders
+                .Include(order => order.DrugAndQuantities)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (order == null)
             {
                 return NotFound();
             }
 
+            var quant = await _context.DrugAndQuantity
+                .Include(drugQuant => drugQuant.Drug)
+                .FirstOrDefaultAsync(m => m.Id == order.DrugAndQuantities.Id);
+            ViewData["DrugName"] = quant.Drug.Name;
 
             return View(order);
         }
 
         // GET: Orders/Create
-        //[HttpGet("Orders/Create/{DrugId}/{PharmacyId}")]
-        public async Task<IActionResult> Create(long? DrugId)
+        [HttpGet("Orders/Create/{drugId}")]
+        public async Task<IActionResult> Create(long? drugId)
         {
-            //var drug = await _context.tbDrugs.FirstOrDefaultAsync(m => m.Id == DrugId);
-            //var order = new Order();
-            //var pharmacy = await (from drug in _context.tbDrugs
-            //                    join drugsQuant in _context.DrugAndQuantity on drug equals drugsQuant.Drug
-           //                     where drugsQuant.PharmacyId == pharmacyId && drugsQuant.Quantity != 0
-           //                     select drug).ToListAsync();
-            ViewData["PharmacyList"] = await _context.tbPharmacys.ToListAsync();
+            if (drugId == null)
+            {
+                return NotFound();
+            }
+            var drugsQuantList = await (from drug in _context.tbDrugs
+                                join drugsQuant in _context.DrugAndQuantity on drug equals drugsQuant.Drug
+                                where drugsQuant.Drug.Id == drugId && drugsQuant.Quantity > 0
+                                select drugsQuant.PharmacyId).ToListAsync();
+           
+            Drug drugInstance = await _context.tbDrugs.FindAsync(drugId);
+            
+            ViewData["PharmacyList"] = await _context.tbPharmacys.Where(e => drugsQuantList.Contains(e.Id)).ToListAsync();
+            ViewData["DrugName"] = drugInstance.Name;
+            ViewData["DrugId"] = drugInstance.Id;
+            ViewData["DrugCost"] = drugInstance.Cost;
+            
             return View();
         }
 
+        //[HttpGet("Orders/UserList")]
+        // GET: Orders/ScheduledOrders
+        public async Task<IActionResult> ScheduledOrders()
+        {
+            var user = await _userManager.GetUserAsync(User);
+            var timeNow = DateTime.Now;
+
+            return View(await _context.tbOrders.Where(m => m.User.Id == user.Id && timeNow < m.TimeOfTransaction).ToListAsync());
+        }
+
         // POST: Orders/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [Authorize]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(long? Id,long? PharmcyId, long? DrugId)
+        public async Task<IActionResult> Create(long? drugId, double? cost, long? pharmacy, DateTime? time)
         {
+            var drugsQuantEl = await (from drug in _context.tbDrugs
+                                        join drugsQuant in _context.DrugAndQuantity on drug equals drugsQuant.Drug
+                                        where drugsQuant.Drug.Id == drugId && drugsQuant.PharmacyId == pharmacy && drugsQuant.Quantity > 0
+                                        select drugsQuant).FirstAsync();
+            //change drugs and quant
+            drugsQuantEl.Quantity -= 1;
+            _context.Update(drugsQuantEl);
+            await _context.SaveChangesAsync();
+
+            //make a new order
             var order = new Order();
-            order.Reserved = true;
+            order.DrugAndQuantities = drugsQuantEl;
+            order.TimeOfTransaction = (DateTime)time;
+            order.Cost = (double)cost;
+            order.User = await _userManager.GetUserAsync(User);
+            order.TransactionComplete = false;
 
             if (ModelState.IsValid)
             {
@@ -99,7 +141,7 @@ namespace Pharmacy.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(long id, [Bind("Id,Cost,Reserved")] Order order)
+        public async Task<IActionResult> Edit(long id, [Bind("Id,Cost")] Order order)
         {
             if (id != order.Id)
             {

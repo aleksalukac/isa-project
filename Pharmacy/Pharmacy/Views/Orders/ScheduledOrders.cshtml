@@ -1,20 +1,25 @@
 ﻿@model IEnumerable<Pharmacy.Models.Entities.Order>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "ScheduledOrders";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h1>Index</h1>
-
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
+<h1>ScheduledOrders</h1>
 <table class="table">
     <thead>
         <tr>
             <th>
+                @Html.DisplayNameFor(model => model.Id)
+            </th>
+            <th>
                 @Html.DisplayNameFor(model => model.Cost)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.TimeOfTransaction)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.TransactionComplete)
             </th>
         </tr>
     </thead>
@@ -22,7 +27,16 @@
 @foreach (var item in Model) {
         <tr>
             <td>
+                @Html.DisplayFor(modelItem => item.Id)
+            </td>
+            <td>
                 @Html.DisplayFor(modelItem => item.Cost)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.TimeOfTransaction)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.TransactionComplete)
             </td>
             <td>
                 <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
