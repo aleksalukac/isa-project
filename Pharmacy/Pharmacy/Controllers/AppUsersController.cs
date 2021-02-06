@@ -60,7 +60,6 @@ namespace Pharmacy.Controllers
             return View(await _context.AppUsers.Where(e => entryPoint.Contains(e.Id)).ToListAsync());
         }
 
-
         // GET: AppUsers/PharmacistList/
         public async Task<IActionResult> PharmacistList(string searchString = "", string filter = "", string pharmacy = "")
         {
@@ -96,7 +95,6 @@ namespace Pharmacy.Controllers
             return View(await _context.AppUsers.Where(e => entryPoint.Contains(e.Id)).ToListAsync());
         }
 
-
         // GET: AppUsers/DermatologistList
         public async Task<IActionResult> DermatologistList(string searchString = "", string filter = "", string pharmacy = "")
         {
@@ -121,7 +119,7 @@ namespace Pharmacy.Controllers
         }
 
         [HttpGet("AppUsers/Edit/{id}")]
-        // GET: Drugs/Edit/5
+        // GET: AppUsers/Edit/5
         public async Task<IActionResult> Edit(string id)
         {
             if (id == null)
@@ -178,7 +176,6 @@ namespace Pharmacy.Controllers
             }
             return View(appUser);
         }
-
 
         [HttpGet("AppUsers/Delete/{id}")]
         // GET: Drugs/Delete/5
