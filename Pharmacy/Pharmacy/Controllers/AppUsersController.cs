@@ -23,17 +23,28 @@ namespace Pharmacy.Controllers
             _context = context;
         }
 
-        [HttpGet("AppUsers/Details/{roleName}")]
-        // GET: Appointments
-        public async Task<IActionResult> Details(string roleName = "User")
+        // GET: AppUsers/Details/5
+        public async Task<IActionResult> Details(string? id)
         {
-            List<string> entryPoint = await (from userrole in _context.UserRoles
-                              join role in _context.Roles on userrole.RoleId equals role.Id
-                              where role.Name == roleName
-                              select userrole.UserId).ToListAsync();
+            if (id == null)
+            {
+                return NotFound();
+            }
 
-            ViewData["roleName"] = roleName;
-            return View(await _context.AppUsers.Where(e => entryPoint.Contains(e.Id)).ToListAsync());
+            var appUser = await _context.tbAppUsers
+                .FirstOrDefaultAsync(m => m.Id == id);
+            if (appUser == null)
+            {
+                return NotFound();
+            }
+
+            List<string> userRole = await (from userrole in _context.UserRoles
+                                             join role in _context.Roles on userrole.RoleId equals role.Id
+                                             where userrole.UserId == id
+                                             select role.Name).ToListAsync();
+            ViewData["roleName"] = userRole.Count == 0 ? "" : userRole[0];
+            ViewData["pharmacyId"] = appUser.PharmacyId;
+            return View(appUser);
         }
 
         // GET: AppUsers/UserList
@@ -59,7 +70,6 @@ namespace Pharmacy.Controllers
             ViewData["roleName"] = "User";
             return View(await _context.AppUsers.Where(e => entryPoint.Contains(e.Id)).ToListAsync());
         }
-
 
         // GET: AppUsers/PharmacistList/
         public async Task<IActionResult> PharmacistList(string searchString = "", string filter = "", string pharmacy = "")
@@ -96,7 +106,6 @@ namespace Pharmacy.Controllers
             return View(await _context.AppUsers.Where(e => entryPoint.Contains(e.Id)).ToListAsync());
         }
 
-
         // GET: AppUsers/DermatologistList
         public async Task<IActionResult> DermatologistList(string searchString = "", string filter = "", string pharmacy = "")
         {
@@ -121,7 +130,7 @@ namespace Pharmacy.Controllers
         }
 
         [HttpGet("AppUsers/Edit/{id}")]
-        // GET: Drugs/Edit/5
+        // GET: AppUsers/Edit/5
         public async Task<IActionResult> Edit(string id)
         {
             if (id == null)
@@ -142,7 +151,7 @@ namespace Pharmacy.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost("AppUsers/Edit/{id}")]
         //[DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public async Task<IActionResult> Edit(string id, [Bind("Id,FirstName,LastName,Adress,Country,City,Penalty,AvrageScore")] AppUser appUser)
+        public async Task<IActionResult> Edit(string id, [Bind("Id,FirstName,LastName,Address,Country,City,Penalty,AverageScore")] AppUser appUser)
         {
             if (id != appUser.Id)
             {
@@ -157,7 +166,7 @@ namespace Pharmacy.Controllers
 
                     repositoryUser.FirstName = appUser.FirstName;
                     repositoryUser.LastName = appUser.LastName;
-                    repositoryUser.Adress = appUser.Adress;
+                    repositoryUser.Address = appUser.Address;
                     repositoryUser.City = appUser.City;
 
                     _context.Users.Update(repositoryUser);
@@ -178,7 +187,6 @@ namespace Pharmacy.Controllers
             }
             return View(appUser);
         }
-
 
         [HttpGet("AppUsers/Delete/{id}")]
         // GET: Drugs/Delete/5

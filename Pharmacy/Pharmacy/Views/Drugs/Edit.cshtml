@@ -30,6 +30,11 @@
                 <span asp-validation-for="Ingredients" class="text-danger"></span>
             </div>
             <div class="form-group">
+                <label asp-for="Cost" class="control-label"></label>
+                <input asp-for="Cost" class="form-control" />
+                <span asp-validation-for="Cost" class="text-danger"></span>
+            </div>
+            <div class="form-group">
                 <label asp-for="Drugmaker" class="control-label"></label>
                 <input asp-for="Drugmaker" class="form-control" />
                 <span asp-validation-for="Drugmaker" class="text-danger"></span>
@@ -45,9 +50,9 @@
                 <span asp-validation-for="Notes" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="AvrageScore" class="control-label"></label>
-                <input asp-for="AvrageScore" class="form-control" />
-                <span asp-validation-for="AvrageScore" class="text-danger"></span>
+                <label asp-for="AverageScore" class="control-label"></label>
+                <input asp-for="AverageScore" class="form-control" />
+                <span asp-validation-for="AverageScore" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <input type="submit" value="Save" class="btn btn-primary" />

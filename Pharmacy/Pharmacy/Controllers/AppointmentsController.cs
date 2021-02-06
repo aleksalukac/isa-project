@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Pharmacy.Data;
+using Pharmacy.Models.DTO;
 using Pharmacy.Models.Entities;
 using Pharmacy.Models.Entities.Users;
 
@@ -23,7 +24,23 @@ namespace Pharmacy.Controllers
         // GET: Appointments
         public async Task<IActionResult> Index()
         {
-            return View(await _context.tbAppointments.ToListAsync());
+            var appointmentList = await _context.tbAppointments.ToListAsync();
+
+            var appointmentDTOList = new List<AppointmentDTO>();
+
+            foreach(var appointment in appointmentList)
+            {
+                AppUser medicalExpert = _context.tbAppUsers.Find(appointment.MedicalExpertID);
+                AppUser patient = _context.tbAppUsers.Find(appointment.PatientID);
+
+                string patientFullName = patient == null ? "" : patient.FirstName + " " + patient.LastName;
+                string medicalExpertFullname = medicalExpert == null ? "" : medicalExpert.FirstName + " " + medicalExpert.LastName;
+
+                appointmentDTOList.Add(new AppointmentDTO(appointment,
+                    medicalExpertFullname, patientFullName));
+            }
+
+            return View(appointmentDTOList);
         }
 
         // GET: Appointments/Details/5

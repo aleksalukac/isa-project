@@ -36,8 +36,8 @@ namespace Pharmacy.Areas.Identity.Pages.Account.Manage
         {
             [Required]
             [DataType(DataType.Text)]
-            [Display(Name = "Adress")]
-            public string Adress { get; set; }
+            [Display(Name = "Address")]
+            public string Address { get; set; }
 
             [Required]
             [DataType(DataType.Text)]
@@ -85,7 +85,7 @@ namespace Pharmacy.Areas.Identity.Pages.Account.Manage
             {
                 FirstName = userView.FirstName,
                 LastName = userView.LastName,
-                Adress = userView.Adress,
+                Address = userView.Address,
                 Country = userView.Country,
                 City = userView.City
                 
@@ -122,13 +122,13 @@ namespace Pharmacy.Areas.Identity.Pages.Account.Manage
             var userView = await _userManager.FindByNameAsync(userName);
             if (Input.FirstName != userView.FirstName ||
                 Input.LastName != userView.LastName ||
-                Input.Adress != userView.Adress ||
+                Input.Address != userView.Address ||
                 Input.Country != userView.Country ||
                 Input.City != userView.City )
             {
                 userView.FirstName = Input.FirstName;
                 userView.LastName = Input.LastName;
-                userView.Adress = Input.Adress;
+                userView.Address = Input.Address;
                 userView.Country = Input.Country;
                 userView.City = Input.City;
 

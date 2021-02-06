@@ -1,4 +1,4 @@
-﻿@model IEnumerable<Pharmacy.Models.Entities.Appointment>
+﻿@model IEnumerable<Pharmacy.Models.DTO.AppointmentDTO>
 
 @{
     ViewData["Title"] = "Index";
@@ -14,7 +14,7 @@
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.MedicalExpertID)
+                Medical Expert
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.PatientID)
@@ -38,10 +38,14 @@
 @foreach (var item in Model) {
         <tr>
             <td>
-                @Html.DisplayFor(modelItem => item.MedicalExpertID)
+                <a asp-controller="AppUsers" asp-action="Details" asp-route-id="@item.MedicalExpertID">
+                    @Html.DisplayFor(modelItem => item.MedicalExpertNameAndSurname)
+                </a> 
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.PatientID)
+                <a asp-controller="AppUsers" asp-action="Details" asp-route-id="@item.PatientID">
+                    @Html.DisplayFor(modelItem => item.PatientNameAndSurname)
+                </a> 
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Price)

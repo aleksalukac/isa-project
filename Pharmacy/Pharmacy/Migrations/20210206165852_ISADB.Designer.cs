@@ -7,11 +7,11 @@ using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Pharmacy.Data;
 
-namespace Pharmacy.Data.Migrations
+namespace Pharmacy.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20210206095244_ISADB31")]
-    partial class ISADB31
+    [Migration("20210206165852_ISADB")]
+    partial class ISADB
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -20,6 +20,21 @@ namespace Pharmacy.Data.Migrations
                 .UseIdentityColumns()
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("ProductVersion", "5.0.2");
+
+            modelBuilder.Entity("AppointmentDrug", b =>
+                {
+                    b.Property<long>("AppointmentsId")
+                        .HasColumnType("bigint");
+
+                    b.Property<long>("PrescribedDrugsId")
+                        .HasColumnType("bigint");
+
+                    b.HasKey("AppointmentsId", "PrescribedDrugsId");
+
+                    b.HasIndex("PrescribedDrugsId");
+
+                    b.ToTable("AppointmentDrug");
+                });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
                 {
@@ -169,6 +184,12 @@ namespace Pharmacy.Data.Migrations
                     b.Property<string>("PharmacyAdministratorId")
                         .HasColumnType("nvarchar(450)");
 
+                    b.Property<DateTime>("StartDateTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<TimeSpan>("TimeSpan")
+                        .HasColumnType("time");
+
                     b.HasKey("Id");
 
                     b.HasIndex("EmployeeId");
@@ -185,11 +206,8 @@ namespace Pharmacy.Data.Migrations
                         .HasColumnType("bigint")
                         .UseIdentityColumn();
 
-                    b.Property<string>("AppUserId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("AppUserId1")
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<TimeSpan>("Duration")
+                        .HasColumnType("time");
 
                     b.Property<string>("MedicalExpertID")
                         .HasColumnType("nvarchar(max)");
@@ -203,11 +221,13 @@ namespace Pharmacy.Data.Migrations
                     b.Property<string>("Report")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<DateTime>("StartDateTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("Type")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
-
-                    b.HasIndex("AppUserId");
-
-                    b.HasIndex("AppUserId1");
 
                     b.ToTable("Appointments");
                 });
@@ -219,8 +239,11 @@ namespace Pharmacy.Data.Migrations
                         .HasColumnType("bigint")
                         .UseIdentityColumn();
 
-                    b.Property<float>("AvrageScore")
-                        .HasColumnType("real");
+                    b.Property<double>("AverageScore")
+                        .HasColumnType("float");
+
+                    b.Property<double>("Cost")
+                        .HasColumnType("float");
 
                     b.Property<long?>("DrugId")
                         .HasColumnType("bigint");
@@ -260,7 +283,7 @@ namespace Pharmacy.Data.Migrations
                     b.ToTable("Drugs");
                 });
 
-            modelBuilder.Entity("Pharmacy.Models.Entities.DrugAndQuantity", b =>
+            modelBuilder.Entity("Pharmacy.Models.Entities.DrugAndQuantities", b =>
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
@@ -273,10 +296,10 @@ namespace Pharmacy.Data.Migrations
                     b.Property<long?>("OrderId")
                         .HasColumnType("bigint");
 
-                    b.Property<long>("Quantity")
+                    b.Property<long>("PharmacyId")
                         .HasColumnType("bigint");
 
-                    b.Property<long?>("SupplyOrderId")
+                    b.Property<long>("Quantity")
                         .HasColumnType("bigint");
 
                     b.HasKey("Id");
@@ -285,9 +308,7 @@ namespace Pharmacy.Data.Migrations
 
                     b.HasIndex("OrderId");
 
-                    b.HasIndex("SupplyOrderId");
-
-                    b.ToTable("DrugAndQuantity");
+                    b.ToTable("tbDrugAndQuantities");
                 });
 
             modelBuilder.Entity("Pharmacy.Models.Entities.DrugType", b =>
@@ -309,11 +330,20 @@ namespace Pharmacy.Data.Migrations
                         .HasColumnType("bigint")
                         .UseIdentityColumn();
 
-                    b.Property<decimal>("Cost")
-                        .HasColumnType("decimal(18,2)");
+                    b.Property<double>("Cost")
+                        .HasColumnType("float");
+
+                    b.Property<bool>("ReSupply")
+                        .HasColumnType("bit");
 
                     b.Property<bool>("Reserved")
                         .HasColumnType("bit");
+
+                    b.Property<bool>("Sold")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime>("TimeOfTransaction")
+                        .HasColumnType("datetime2");
 
                     b.HasKey("Id");
 
@@ -333,7 +363,7 @@ namespace Pharmacy.Data.Migrations
                     b.Property<string>("AdminUserID")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<float>("AvrageScore")
+                    b.Property<float>("AverageScore")
                         .HasColumnType("real");
 
                     b.Property<string>("Name")
@@ -416,22 +446,6 @@ namespace Pharmacy.Data.Migrations
                     b.ToTable("SupplyOrders");
                 });
 
-            modelBuilder.Entity("Pharmacy.Models.Entities.TimeSpan", b =>
-                {
-                    b.Property<long>("Id")
-                        .HasColumnType("bigint");
-
-                    b.Property<DateTime>("BeginTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTimeOffset>("Duration")
-                        .HasColumnType("datetimeoffset");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("TimeSpan");
-                });
-
             modelBuilder.Entity("Pharmacy.Models.Entities.Users.AppUser", b =>
                 {
                     b.Property<string>("Id")
@@ -440,10 +454,10 @@ namespace Pharmacy.Data.Migrations
                     b.Property<int>("AccessFailedCount")
                         .HasColumnType("int");
 
-                    b.Property<string>("Adress")
+                    b.Property<string>("Address")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<float>("AvrageScore")
+                    b.Property<float>("AverageScore")
                         .HasColumnType("real");
 
                     b.Property<string>("City")
@@ -521,6 +535,21 @@ namespace Pharmacy.Data.Migrations
                     b.ToTable("AppUsers");
                 });
 
+            modelBuilder.Entity("AppointmentDrug", b =>
+                {
+                    b.HasOne("Pharmacy.Models.Entities.Appointment", null)
+                        .WithMany()
+                        .HasForeignKey("AppointmentsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Pharmacy.Models.Entities.Drug", null)
+                        .WithMany()
+                        .HasForeignKey("PrescribedDrugsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
@@ -588,17 +617,6 @@ namespace Pharmacy.Data.Migrations
                     b.Navigation("PharmacyAdministrator");
                 });
 
-            modelBuilder.Entity("Pharmacy.Models.Entities.Appointment", b =>
-                {
-                    b.HasOne("Pharmacy.Models.Entities.Users.AppUser", null)
-                        .WithMany("AppointmentsForMedical")
-                        .HasForeignKey("AppUserId");
-
-                    b.HasOne("Pharmacy.Models.Entities.Users.AppUser", null)
-                        .WithMany("AppointmentsForUser")
-                        .HasForeignKey("AppUserId1");
-                });
-
             modelBuilder.Entity("Pharmacy.Models.Entities.Drug", b =>
                 {
                     b.HasOne("Pharmacy.Models.Entities.Drug", null)
@@ -616,7 +634,7 @@ namespace Pharmacy.Data.Migrations
                     b.Navigation("Type");
                 });
 
-            modelBuilder.Entity("Pharmacy.Models.Entities.DrugAndQuantity", b =>
+            modelBuilder.Entity("Pharmacy.Models.Entities.DrugAndQuantities", b =>
                 {
                     b.HasOne("Pharmacy.Models.Entities.Drug", "Drug")
                         .WithMany()
@@ -625,10 +643,6 @@ namespace Pharmacy.Data.Migrations
                     b.HasOne("Pharmacy.Models.Entities.Order", null)
                         .WithMany("DrugAndQuantities")
                         .HasForeignKey("OrderId");
-
-                    b.HasOne("Pharmacy.Models.Entities.SupplyOrder", null)
-                        .WithMany("Order")
-                        .HasForeignKey("SupplyOrderId");
 
                     b.Navigation("Drug");
                 });
@@ -678,31 +692,6 @@ namespace Pharmacy.Data.Migrations
                     b.Navigation("Pharmacy");
                 });
 
-            modelBuilder.Entity("Pharmacy.Models.Entities.TimeSpan", b =>
-                {
-                    b.HasOne("Pharmacy.Models.Entities.AbsenceRequest", null)
-                        .WithOne("TimeSpan")
-                        .HasForeignKey("Pharmacy.Models.Entities.TimeSpan", "Id")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Pharmacy.Models.Entities.Appointment", null)
-                        .WithOne("TimeSpan")
-                        .HasForeignKey("Pharmacy.Models.Entities.TimeSpan", "Id")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("Pharmacy.Models.Entities.AbsenceRequest", b =>
-                {
-                    b.Navigation("TimeSpan");
-                });
-
-            modelBuilder.Entity("Pharmacy.Models.Entities.Appointment", b =>
-                {
-                    b.Navigation("TimeSpan");
-                });
-
             modelBuilder.Entity("Pharmacy.Models.Entities.Drug", b =>
                 {
                     b.Navigation("SimilarDrugs");
@@ -722,18 +711,12 @@ namespace Pharmacy.Data.Migrations
 
             modelBuilder.Entity("Pharmacy.Models.Entities.SupplyOrder", b =>
                 {
-                    b.Navigation("Order");
-
                     b.Navigation("SupplyOffers");
                 });
 
             modelBuilder.Entity("Pharmacy.Models.Entities.Users.AppUser", b =>
                 {
                     b.Navigation("AbsenceRequests");
-
-                    b.Navigation("AppointmentsForMedical");
-
-                    b.Navigation("AppointmentsForUser");
                 });
 #pragma warning restore 612, 618
         }

@@ -39,7 +39,6 @@ namespace Pharmacy.Controllers
             return View();
         }
 
-
         [Authorize(Roles = "PharmacyAdmin")]
         public IActionResult Pharmacy()
         {

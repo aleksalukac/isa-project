@@ -23,33 +23,30 @@
                 <select asp-for="Form" class="form-control">
                     <option>
                         Pill
-                    </option> 
-                    <option>
-                        Syrup
-                    </option> 
-                    <option>
-                        Tablet
-                    </option> 
-                    <option>
-                        ThinFilm
-                    </option> 
-                    <option>
-                        LiquidSolution
-                    </option> 
-                    <option>
-                        Powder
-                    </option> 
-                    <option>
-                        Seed
-                    </option> 
-                    <option>
-                        Pastes
-                    </option> 
-                    <option>
-                        BuccalFilm
                     </option>
                     <option>
-                        Supplier
+                        Syrup
+                    </option>
+                    <option>
+                        Tablet
+                    </option>
+                    <option>
+                        ThinFilm
+                    </option>
+                    <option>
+                        LiquidSolution
+                    </option>
+                    <option>
+                        Powder
+                    </option>
+                    <option>
+                        Seed
+                    </option>
+                    <option>
+                        Pastes
+                    </option>
+                    <option>
+                        BuccalFilm
                     </option>
                 </select>
                 <span asp-validation-for="Form" class="text-danger"></span>
@@ -58,6 +55,11 @@
                 <label asp-for="Ingredients" class="control-label"></label>
                 <input asp-for="Ingredients" class="form-control" />
                 <span asp-validation-for="Ingredients" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Cost" class="control-label"></label>
+                <input asp-for="Cost" class="form-control" />
+                <span asp-validation-for="Cost" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="Drugmaker" class="control-label"></label>

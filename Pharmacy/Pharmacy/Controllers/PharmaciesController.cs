@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -21,6 +23,7 @@ namespace Pharmacy.Controllers
         }
 
         // GET: Pharmacies
+        [AllowAnonymous]
         public async Task<IActionResult> Index(string searchString = "", string filter = "")
         {
             var pharmacies = await _context.tbPharmacys.ToListAsync();
@@ -62,6 +65,8 @@ namespace Pharmacy.Controllers
                 return NotFound();
             }
 
+            Regex rgx = new Regex("[^a-zA-Z0-9 -]");
+            ViewData["Address"] = rgx.Replace(pharmacy.Address, "").Replace(" ", "%20");
             return View(pharmacy);
         }
 

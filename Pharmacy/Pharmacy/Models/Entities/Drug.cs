@@ -18,9 +18,11 @@ namespace Pharmacy.Models.Entities
         public string Ingredients { get; set; }
         public string Drugmaker { get; set; }
         public bool IsPrescribable { get; set; }
+        public List<Appointment> Appointments { get; set; }
         public List<Drug> SimilarDrugs { get; set; } 
         public string Notes { get; set; }
-        public float AvrageScore { get; set; }
+        public double AverageScore { get; set; }
+        public double Cost { get; set; }
     }
 
     public class DrugType

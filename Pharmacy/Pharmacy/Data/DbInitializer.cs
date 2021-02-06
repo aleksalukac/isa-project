@@ -30,11 +30,21 @@ namespace Pharmacy.Data
 }
 
 /*
- *  var role = new IdentityRole();
-                role.Name = "Pharmacist";
-                role = new IdentityRole();
-                role.Name = "Dermatologist";
-                role = new IdentityRole();
-                role.Name = "Supplier";
-                role = new IdentityRole();
-                role.Name = "PharmacyAdmin";*/
+ *          var role = new IdentityRole();
+            role.Name = "Pharmacist";
+            await _roleManager.CreateAsync(role);
+            role = new IdentityRole();
+            role.Name = "Dermatologist";
+            await _roleManager.CreateAsync(role);
+            role = new IdentityRole();
+            role.Name = "Supplier";
+            await _roleManager.CreateAsync(role);
+            role = new IdentityRole();
+            role.Name = "PharmacyAdmin";
+            await _roleManager.CreateAsync(role);
+            role = new IdentityRole();
+            role.Name = "Admin";
+            await _roleManager.CreateAsync(role);
+            role = new IdentityRole();
+            role.Name = "User";
+            await _roleManager.CreateAsync(role);*/

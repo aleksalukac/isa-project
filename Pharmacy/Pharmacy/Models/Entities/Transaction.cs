@@ -7,14 +7,12 @@ using System.Text;
 namespace Pharmacy.Models.Entities
 {
     //razervation class
-    [Table("tbOrders")]
-    public class Order
+    [Table("tbTransaction")]
+    public class Transaction
     {
         public long Id { get; set; }
-        public DrugAndQuantities DrugAndQuantities { get; set; }
-        public AppUser User { get; set; }
+        public Drug Drug {get; set;}
         public double Cost { get; set; }
         public DateTime TimeOfTransaction { get; set; }
-        public bool TransactionComplete { get; set; }
     }
 }

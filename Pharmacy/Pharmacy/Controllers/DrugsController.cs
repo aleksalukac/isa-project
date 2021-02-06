@@ -23,9 +23,22 @@ namespace Pharmacy.Controllers
         }
 
         // GET: Drugs
-        public async Task<IActionResult> Index(string searchString = "", string filter = "")
+        public async Task<IActionResult> Index(string searchString = "", string filter = "", string pharmacy = "")
         {
-            var drugs = await _context.tbDrugs.ToListAsync();
+
+            List<Drug> drugs;
+            if (long.TryParse(pharmacy, out long pharmacyId))
+            {
+                drugs = await (from drug in _context.tbDrugs
+                                join drugsQuant in _context.DrugAndQuantity on drug equals drugsQuant.Drug
+                                where drugsQuant.PharmacyId == pharmacyId && drugsQuant.Quantity != 0
+                                select drug).ToListAsync();
+            }
+            else
+            {
+                drugs = await _context.tbDrugs.ToListAsync();
+            }
+
             List<Drug> filteredDrugs = new List<Drug>();
 
             if(string.IsNullOrEmpty(searchString))
@@ -50,7 +63,8 @@ namespace Pharmacy.Controllers
                 }
             }
 
-            return View(filteredDrugs);
+            ViewData["PharmacyList"] = await _context.tbPharmacys.ToListAsync();
+            return View(filteredDrugs.Distinct());
         }
 
         // GET: Drugs/Details/5
@@ -114,7 +128,7 @@ namespace Pharmacy.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(long id, [Bind("Id,Name,Form,Ingredients,Drugmaker,IsPrescribable,Notes,AvrageScore")] Drug drug)
+        public async Task<IActionResult> Edit(long id, [Bind("Id,Name,Form,Ingredients,Drugmaker,IsPrescribable,Notes,AverageScore")] Drug drug)
         {
             if (id != drug.Id)
             {

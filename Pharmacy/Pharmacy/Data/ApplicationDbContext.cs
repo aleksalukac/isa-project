@@ -38,7 +38,7 @@ namespace Pharmacy.Data
 
         //public DbSet<Models.Entities.TimeSpan> TimeSpan { get; set; }
 
-        public DbSet<DrugAndQuantity> DrugAndQuantity { get; set; }
+        public DbSet<DrugAndQuantities> DrugAndQuantity { get; set; }
 
         public DbSet<AppUser> AppUsers { get; set; }
 
@@ -51,14 +51,14 @@ namespace Pharmacy.Data
                 .HasMany(p => p.AbsenceRequests)
                 .WithOne();
 
-            modelBuilder.Entity<AppUser>().ToTable("AppUsers")
+           /* modelBuilder.Entity<AppUser>().ToTable("AppUsers")
                 .HasMany(p => p.AppointmentsForMedical)
                 .WithOne();
 
             modelBuilder.Entity<AppUser>().ToTable("AppUsers")
                 .HasMany(p => p.AppointmentsForUser)
                 .WithOne();
-
+           */
 
 
             modelBuilder.Entity<IdentityRole>().ToTable("Roles");
@@ -66,9 +66,9 @@ namespace Pharmacy.Data
             modelBuilder.Entity<IdentityUserLogin<string>>().ToTable("UserLogins");
             modelBuilder.Entity<IdentityUserRole<string>>().ToTable("UserRoles");
 
-            modelBuilder.Entity<Report>().ToTable("Reports")
-                .HasOne(p => p.User)
-                .WithMany();
+            modelBuilder.Entity<Report>().ToTable("Reports");
+            //    .HasOne(p => p.User)
+            //    .WithMany();
 
             modelBuilder.Entity<Drug>().ToTable("Drugs");
 
@@ -87,19 +87,18 @@ namespace Pharmacy.Data
                 .HasOne(p => p.TimeSpan)
                 .WithOne()
                 .HasForeignKey<Models.Entities.TimeSpan>(p => p.Id);*/
-/*
-            modelBuilder.Entity<Appointment>().ToTable("Appointments")
-                .HasOne(p => p.MedicalExpert)
-                .WithMany();
+            /*
+                        modelBuilder.Entity<Appointment>().ToTable("Appointments")
+                            .HasOne(p => p.MedicalExpert)
+                            .WithMany();
 
-            modelBuilder.Entity<Appointment>().ToTable("Appointments")
-                .HasOne(p => p.Patient)
-                .WithMany();*/
+                        modelBuilder.Entity<Appointment>().ToTable("Appointments")
+                            .HasOne(p => p.Patient)
+                            .WithMany();*/
 
 
-            modelBuilder.Entity<SupplyOrder>().ToTable("SupplyOrders")
-                .HasMany(p => p.Order)
-                .WithOne();
+            modelBuilder.Entity<SupplyOrder>().ToTable("SupplyOrders");
+
             modelBuilder.Entity<SupplyOffer>().ToTable("SupplyOffers");
 
             modelBuilder.Entity<AbsenceRequest>().ToTable("AbsenceRequests")
