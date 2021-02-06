@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Pharmacy.Data;
 
 namespace Pharmacy.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20210206141122_isadb4")]
+    partial class isadb4
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -189,6 +191,12 @@ namespace Pharmacy.Data.Migrations
                         .HasColumnType("bigint")
                         .UseIdentityColumn();
 
+                    b.Property<string>("AppUserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("AppUserId1")
+                        .HasColumnType("nvarchar(450)");
+
                     b.Property<TimeSpan>("Duration")
                         .HasColumnType("time");
 
@@ -207,10 +215,11 @@ namespace Pharmacy.Data.Migrations
                     b.Property<DateTime>("StartDateTime")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("Type")
-                        .HasColumnType("int");
-
                     b.HasKey("Id");
+
+                    b.HasIndex("AppUserId");
+
+                    b.HasIndex("AppUserId1");
 
                     b.ToTable("Appointments");
                 });
@@ -585,6 +594,17 @@ namespace Pharmacy.Data.Migrations
                     b.Navigation("PharmacyAdministrator");
                 });
 
+            modelBuilder.Entity("Pharmacy.Models.Entities.Appointment", b =>
+                {
+                    b.HasOne("Pharmacy.Models.Entities.Users.AppUser", null)
+                        .WithMany("AppointmentsForMedical")
+                        .HasForeignKey("AppUserId");
+
+                    b.HasOne("Pharmacy.Models.Entities.Users.AppUser", null)
+                        .WithMany("AppointmentsForUser")
+                        .HasForeignKey("AppUserId1");
+                });
+
             modelBuilder.Entity("Pharmacy.Models.Entities.Drug", b =>
                 {
                     b.HasOne("Pharmacy.Models.Entities.Drug", null)
@@ -685,6 +705,10 @@ namespace Pharmacy.Data.Migrations
             modelBuilder.Entity("Pharmacy.Models.Entities.Users.AppUser", b =>
                 {
                     b.Navigation("AbsenceRequests");
+
+                    b.Navigation("AppointmentsForMedical");
+
+                    b.Navigation("AppointmentsForUser");
                 });
 #pragma warning restore 612, 618
         }

@@ -19,26 +19,39 @@
     <a class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Register">Register</a>
 
 </p>
-<form asp-controller="AppUsers" asp-action="PharmacistList" class="form-inline">
-    <p>
-        Search: <input type="text" name="searchString" class="form-control" />
-
-        <select name="filter" id="filter" class="form-control">
-            <option value="FirstName" class="option">FirstName</option>
-            <option value="LastName" class="option">LastName</option>
-            <option value="AvrageScore" class="option">Rating</option>
-            <option value="City" class="option">City</option>
-            <option value="Country" class="option">Country</option>
-        </select>
-        <select name="pharmacy" id="pharmacy" class="form-control">
-            @foreach (Pharmacy.Models.Entities.Pharmacy item in (List<Pharmacy.Models.Entities.Pharmacy>)@ViewData["PharmacyList"])
-            {
-                <option value=@item.Id class="option">@item.Name</option>
-            }
-        </select>
-        <input type="submit" value="Filter" class="btn btn-primary" />
-    </p>
-</form>
+<div class="row">
+    <div class="col-md-2">
+    </div>
+    <div class="col-md-8">
+        <form asp-controller="AppUsers" asp-action="PharmacistList" class="form-inline">
+            <div class="form-group mb-2">
+                <label for="searchString" class="sr-only">Search:</label>
+                <input type="text" id="searchString" name="searchString" class="form-control" />
+            </div>
+            <div class="form-group mb-2">
+                <label for="filter" class="sr-only">Filter</label>
+                <select name="filter" id="filter" class="form-control">
+                    <option value="FirstName" class="option">FirstName</option>
+                    <option value="LastName" class="option">LastName</option>
+                    <option value="AvrageScore" class="option">Rating</option>
+                    <option value="City" class="option">City</option>
+                    <option value="Country" class="option">Country</option>
+                </select>
+            </div>
+            <div class="form-group mx-sm-3 mb-2">
+                <select name="pharmacy" id="pharmacy" class="form-control">
+                    @foreach (Pharmacy.Models.Entities.Pharmacy item in (List<Pharmacy.Models.Entities.Pharmacy>)@ViewData["PharmacyList"])
+                    {
+                    <option value=@item.Id class="option">@item.Name</option>
+                    }
+                </select>
+                <button type="submit" class="btn btn-primary">Filter</button>
+            </div>
+        </form>
+    </div>
+    <div class="col-md-2">
+    </div>
+</div>
 <table class="table">
     <thead>
         <tr>

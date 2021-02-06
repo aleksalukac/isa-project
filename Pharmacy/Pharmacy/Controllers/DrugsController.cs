@@ -62,8 +62,9 @@ namespace Pharmacy.Controllers
                     filteredDrugs.Add(drug);
                 }
             }
+
             ViewData["PharmacyList"] = await _context.tbPharmacys.ToListAsync();
-            return View(filteredDrugs);
+            return View(filteredDrugs.Distinct());
         }
 
         // GET: Drugs/Details/5

@@ -45,8 +45,16 @@ namespace Pharmacy.Controllers
         }
 
         // GET: Orders/Create
-        public IActionResult Create()
+        //[HttpGet("Orders/Create/{DrugId}/{PharmacyId}")]
+        public async Task<IActionResult> Create(long? DrugId)
         {
+            //var drug = await _context.tbDrugs.FirstOrDefaultAsync(m => m.Id == DrugId);
+            //var order = new Order();
+            //var pharmacy = await (from drug in _context.tbDrugs
+            //                    join drugsQuant in _context.DrugAndQuantity on drug equals drugsQuant.Drug
+           //                     where drugsQuant.PharmacyId == pharmacyId && drugsQuant.Quantity != 0
+           //                     select drug).ToListAsync();
+            ViewData["PharmacyList"] = await _context.tbPharmacys.ToListAsync();
             return View();
         }
 
@@ -55,8 +63,11 @@ namespace Pharmacy.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Cost,Reserved")] Order order)
+        public async Task<IActionResult> Create(long? Id,long? PharmcyId, long? DrugId)
         {
+            var order = new Order();
+            order.Reserved = true;
+
             if (ModelState.IsValid)
             {
                 _context.Add(order);
@@ -65,6 +76,7 @@ namespace Pharmacy.Controllers
             }
             return View(order);
         }
+
 
         // GET: Orders/Edit/5
         public async Task<IActionResult> Edit(long? id)

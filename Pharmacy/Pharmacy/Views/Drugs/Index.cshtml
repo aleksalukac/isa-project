@@ -1,4 +1,11 @@
 ﻿@model IEnumerable<Pharmacy.Models.Entities.Drug>
+@using Microsoft.AspNetCore.Authorization
+@inject IAuthorizationService AuthorizationService
+
+@using Microsoft.AspNetCore.Identity
+@using Pharmacy.Models.Entities.Users
+@inject SignInManager<Pharmacy.Models.Entities.Users.AppUser> SignInManager
+@inject UserManager<AppUser> UserManager
 
 @{
     ViewData["Title"] = "Index";
@@ -10,27 +17,34 @@
 <p>
     <a asp-action="Create">Create New</a>
 </p>
-<form asp-controller="Drugs" asp-action="Index">
-    <p>
-        Search: <input type="text" name="searchString" />
+<div class="row">
+    <div class="col-md-2">
+    </div>
+    <div class="col-md-8">
+        <form asp-controller="Drugs" asp-action="Index" class="form-inline">
+            <p>
+                Search: <input type="text" name="searchString" />
 
-        <select name="filter" id="filter" style="background-color: transparent;">
-            <option value="Name" class="option">Name</option>
-            <option value="AvrageScore" class="option">Rating</option>
-            <option value="Type" class="option">Type</option>
-            <option value="Form" class="option">Form</option>
-            <option value="Drugmaker" class="option">Drugmaker</option>
-        </select>
-        <select name="pharmacy" id="pharmacy" class="form-control">
-            @foreach (Pharmacy.Models.Entities.Pharmacy item in (List<Pharmacy.Models.Entities.Pharmacy>)@ViewData["PharmacyList"])
-            {
-                <option value=@item.Id class="option">@item.Name</option>
-            }
-        </select>
-        <input type="submit" value="Filter" />
-    </p>
-</form>
-
+                <select name="filter" id="filter" style="background-color: transparent;">
+                    <option value="Name" class="option">Name</option>
+                    <option value="AvrageScore" class="option">Rating</option>
+                    <option value="Type" class="option">Type</option>
+                    <option value="Form" class="option">Form</option>
+                    <option value="Drugmaker" class="option">Drugmaker</option>
+                </select>
+                <select name="pharmacy" id="pharmacy" class="form-control">
+                    @foreach (Pharmacy.Models.Entities.Pharmacy item in (List<Pharmacy.Models.Entities.Pharmacy>)@ViewData["PharmacyList"])
+                    {
+                        <option value=@item.Id class="option">@item.Name</option>
+                    }
+                </select>
+                <input type="submit" value="Filter" />
+            </p>
+        </form>
+    </div>
+    <div class="col-md-2">
+    </div>
+</div>
 <table class="table">
 
     <thead>
@@ -85,9 +99,12 @@
                     @Html.DisplayFor(modelItem => item.AvrageScore)
                 </td>
                 <td>
-                    <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                    @if ((await AuthorizationService.AuthorizeAsync(User, null, "PharmacyAdminPolicy")).Succeeded)
+                    {
+                        <a asp-action="Edit" asp-route-id="@item.Id">Edit</a>
+                    }
                     <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                    <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                    <a asp-controller="Orders" asp-action="Create" asp-route-id="@item.Id/">Order</a>
                 </td>
             </tr>
         }

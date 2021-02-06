@@ -25,8 +25,6 @@ namespace Pharmacy.Models.Entities.Users
         public float AvrageScore { get; set; }
         [ForeignKey("Pharmacy")]
         public long PharmacyId { get; set; }
-        public List<Appointment> AppointmentsForUser { get; set; }
-        public List<Appointment> AppointmentsForMedical { get; set; }
         public List<AbsenceRequest> AbsenceRequests { get; internal set; }
     }
 }

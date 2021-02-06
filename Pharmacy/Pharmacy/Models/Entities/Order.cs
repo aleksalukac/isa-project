@@ -12,6 +12,9 @@ namespace Pharmacy.Models.Entities
         public long Id { get; set; }
         public List<DrugAndQuantities> DrugAndQuantities { get; set; }
         public double Cost { get; set; }
+        public DateTime TimeOfTransaction { get; set; }
         public bool Reserved { get; set; }
+        public bool Sold { get; set; }
+        public bool ReSupply { get; set; }
     }
 }

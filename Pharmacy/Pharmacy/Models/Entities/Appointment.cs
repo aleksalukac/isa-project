@@ -23,27 +23,11 @@ namespace Pharmacy.Models.Entities
         public string Report { get; set; }
         public DateTime StartDateTime { get; set; }
         public TimeSpan Duration { get; set; }
+        public AppointmentType Type { get; set; }
     }
-
-/*    public enum Rating
+    public enum AppointmentType
     {
-        Terrible = 1,
-        Disatisfied,
-        OK,
-        Satisfied,
-        Perfect
-    }*/
+        Exam,
+        Counseling
+    }
 }
-
-/*
-private _price;
-public float Price { get { return this.Price; }  set { th = value >= 0 ? value : 0; } }
-*/
-/*
-public void SetPrice(float price)
-{
-    if (price < 0)
-        throw new Exception("Price cannot be negative");
-
-    Price = price;
-}*/
