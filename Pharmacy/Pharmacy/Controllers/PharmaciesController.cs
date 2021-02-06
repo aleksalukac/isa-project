@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -62,6 +63,8 @@ namespace Pharmacy.Controllers
                 return NotFound();
             }
 
+            Regex rgx = new Regex("[^a-zA-Z0-9 -]");
+            ViewData["Address"] = rgx.Replace(pharmacy.Address, "").Replace(" ", "%20");
             return View(pharmacy);
         }
 

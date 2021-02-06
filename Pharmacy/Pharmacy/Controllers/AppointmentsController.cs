@@ -33,9 +33,8 @@ namespace Pharmacy.Controllers
                 AppUser medicalExpert = _context.tbAppUsers.Find(appointment.MedicalExpertID);
                 AppUser patient = _context.tbAppUsers.Find(appointment.PatientID);
 
-                string patientFullName = patient == null ? "" : patient.FirstName + patient.LastName;
-                string medicalExpertFullname = medicalExpert == null ? "" : medicalExpert.FirstName + medicalExpert.LastName;
-
+                string patientFullName = patient == null ? "" : patient.FirstName + " " + patient.LastName;
+                string medicalExpertFullname = medicalExpert == null ? "" : medicalExpert.FirstName + " " + medicalExpert.LastName;
 
                 appointmentDTOList.Add(new AppointmentDTO(appointment,
                     medicalExpertFullname, patientFullName));

@@ -23,17 +23,28 @@ namespace Pharmacy.Controllers
             _context = context;
         }
 
-        [HttpGet("AppUsers/Details/{roleName}")]
-        // GET: Appointments
-        public async Task<IActionResult> Details(string roleName = "User")
+        // GET: AppUsers/Details/5
+        public async Task<IActionResult> Details(string? id)
         {
-            List<string> entryPoint = await (from userrole in _context.UserRoles
-                              join role in _context.Roles on userrole.RoleId equals role.Id
-                              where role.Name == roleName
-                              select userrole.UserId).ToListAsync();
+            if (id == null)
+            {
+                return NotFound();
+            }
 
-            ViewData["roleName"] = roleName;
-            return View(await _context.AppUsers.Where(e => entryPoint.Contains(e.Id)).ToListAsync());
+            var appUser = await _context.tbAppUsers
+                .FirstOrDefaultAsync(m => m.Id == id);
+            if (appUser == null)
+            {
+                return NotFound();
+            }
+
+            List<string> userRole = await (from userrole in _context.UserRoles
+                                             join role in _context.Roles on userrole.RoleId equals role.Id
+                                             where userrole.UserId == id
+                                             select role.Name).ToListAsync();
+            ViewData["roleName"] = userRole.Count == 0 ? "" : userRole[0];
+            ViewData["pharmacyId"] = appUser.PharmacyId;
+            return View(appUser);
         }
 
         // GET: AppUsers/UserList
