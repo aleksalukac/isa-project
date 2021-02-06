@@ -14,15 +14,7 @@ namespace Pharmacy.Models.Entities
         public long Id { get; set; }
         public List<SupplyOffer> SupplyOffers { get; set; }
         public Pharmacy Pharmacy { get; set; }
-        public List<DrugAndQuantity> Order { get; set; }
+        //public List<DrugAndQuantity> Order { get; set; }
     }
 
-    public class DrugAndQuantity
-    {
-        public long Id { get; set; }
-        public Drug Drug { get; set; }
-        public uint Quantity { get; set; }
-
-        //public SupplyOrder SupplyOrder;
-    }
 }

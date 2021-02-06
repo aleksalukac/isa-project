@@ -10,7 +10,7 @@ namespace Pharmacy.Models.Entities
     public class Order
     {
         public long Id { get; set; }
-        public List<DrugAndQuantity> DrugAndQuantities { get; set; }
+        public List<DrugAndQuantities> DrugAndQuantities { get; set; }
         public decimal Cost { get; set; }
         public bool Reserved { get; set; }
     }
