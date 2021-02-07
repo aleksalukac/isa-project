@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -17,21 +18,22 @@ namespace Pharmacy.Controllers
     public class AppointmentsController : Controller
     {
         private readonly ApplicationDbContext _context;
-        private readonly AppointmentService _appointmentService;
+        private readonly IAppointmentService _appointmentService;
         private readonly UserManager<AppUser> _userManager;
 
-        public AppointmentsController(ApplicationDbContext context, 
-            AppointmentService appointmentService, UserManager<AppUser> userManager)
+        public AppointmentsController(ApplicationDbContext context, UserManager<AppUser> userManager, IAppointmentService appointmentService)
         {
             _context = context;
             _appointmentService = appointmentService;
             _userManager = userManager;
         }
 
+        [Authorize(Roles = "PharmacyAdmin")]
         // GET: Appointments
         public async Task<IActionResult> Index()
         {
-            var appointmentList = _appointmentService.GetAll().Result;
+            var user = await _userManager.GetUserAsync(User);
+            var appointmentList = _appointmentService.GetAllForPharmacy(user.PharmacyId).Result;
 
             var appointmentDTOList = new List<AppointmentDTO>();
 
