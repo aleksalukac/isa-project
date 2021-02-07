@@ -13,6 +13,7 @@ using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using Pharmacy.Areas.Identity;
 using Pharmacy.Data;
+using Pharmacy.Models.DTO;
 using Pharmacy.Models.Entities;
 using Pharmacy.Models.Entities.Users;
 
@@ -104,6 +105,48 @@ namespace Pharmacy.Controllers
             return View(await _context.tbOrders.Where(m => m.User.Id == user.Id && timeNow < m.TimeOfTransaction).ToListAsync());
         }
 
+        [Authorize(Roles = "Pharmacist")]
+        // GET: Orders/SearchOrder
+        public IActionResult SearchOrder()
+        {
+            return View();
+        }
+
+        [HttpGet]
+        [Authorize(Roles = "Pharmacist")]
+        // POST: Orders/CheckoutOrder/5
+        public async Task<IActionResult> CheckoutOrder(long? id)
+        {
+            if (!id.HasValue)
+            {
+                return NotFound();
+            }
+
+            var user = await _userManager.GetUserAsync(User);
+
+            var orders = await _context.tbOrders.Include(x => x.DrugAndQuantities).
+                Where(x => x.DrugAndQuantities.PharmacyId == user.PharmacyId && x.Id == id).ToListAsync();
+
+            if (orders.Count == 0)
+            {
+                return NotFound();
+            }
+
+            return View(orders.FirstOrDefault());
+        }
+
+        // POST: Orders/CheckoutOrder/{Id},{Cost},{TransactionComplete}
+        // To protect from overposting attacks, enable the specific properties you want to bind to.
+        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [HttpPost]
+        [Authorize(Roles = "Pharmacist")]
+        public async Task<IActionResult> CheckoutOrder([Bind("Id,Cost,TransactionComplete")] Order order)
+        {
+            _context.Update(order);
+            await _context.SaveChangesAsync();
+            return View("SearchOrder");
+        }
+
         // POST: Orders/Create
         [Authorize]
         [HttpPost]
@@ -154,7 +197,7 @@ namespace Pharmacy.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(long id, [Bind("Id,Cost")] Order order)
+        public async Task<IActionResult> Edit(long id, [Bind("Id,Cost,TransactionComplete")] Order order)
         {
             if (id != order.Id)
             {
