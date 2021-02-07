@@ -12,7 +12,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace Pharmacy.Controllers
 {
-    [Authorize("PharmacyAdmin")]
+    [Authorize(Roles ="PharmacyAdmin")]
     public class ColumnChartController : Controller
     {
         private readonly ApplicationDbContext _context;

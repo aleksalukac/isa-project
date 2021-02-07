@@ -1,11 +1,9 @@
-﻿@model IEnumerable<Pharmacy.Models.Entities.Pharmacy>
-@using Microsoft.AspNetCore.Authorization
+﻿@using Microsoft.AspNetCore.Authorization
 @inject IAuthorizationService AuthorizationService
 
 @using Microsoft.AspNetCore.Identity
 @using Pharmacy.Models.Entities.Users
-@inject SignInManager<Pharmacy.Models.Entities.Users.AppUser> SignInManager
-@inject UserManager<AppUser> UserManager
+@model IEnumerable<Pharmacy.Models.Entities.Pharmacy>
 
 @{
     ViewData["Title"] = "Index";
@@ -40,7 +38,12 @@
             <th>
                 @Html.DisplayNameFor(model => model.Address)
             </th>
-            <th></th>
+            <th>
+                @Html.DisplayNameFor(model => model.Name)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.AverageScore)
+            </th>
         </tr>
     </thead>
     <tbody>
@@ -48,14 +51,21 @@
         {
             <tr>
                 <td>
-                    @Html.DisplayFor(modelItem => item.Address)
+                    @item.Address
                 </td>
                 <td>
-                    @if ((await AuthorizationService.AuthorizeAsync(User, null, "PharmacyAdminPolicy")).Succeeded)
+                    @item.Name
+                </td>
+                <td>
+                    @item.AverageScore
+                </td>
+                <td>
+                    @if ((string)ViewData["PharmacyId"] == item.AdminUserID)
                     {
                         <a asp-action="Edit" asp-route-id="@item.Id">Edit</a>
-                    }|
-                    <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                    }
+                    |
+                    <a asp-action="Details" asp-route-id="@item.Id">Details</a>
                     @if ((await AuthorizationService.AuthorizeAsync(User, null, "AdminPolicy")).Succeeded)
                     {
                         <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>

@@ -1,0 +1,16 @@
+﻿@model Pharmacy.Models.Entities.AbsenceRequest
+
+@{
+    ViewData["Title"] = "RejectText";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>Details</h1>
+<p>
+    If you have any explanation for rejecting the absence
+    <form>
+        <input type="text" formmethod="post" id="configname" name="configname" />
+        <button type="submit" formmethod="post" onclick="RejectTextPost()">Submit</button>
+    </form>
+</p>
+}

@@ -66,13 +66,22 @@
                                 <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Appointments">Appointments</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="AppUsers" asp-action="PharmacistList">Pharmacist</a>
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Pharmacy">Pharmacy</a>
                             </li>
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Pharmacies">Pharmacy</a>
+                            <li class="dropdown">
+                                <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    Check Profiles
+                                </button>
+                                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="AppUsers" asp-action="DermatologistList">Dermatologist</a>
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="AppUsers" asp-action="PharmacistList">Pharmacist</a>
+                                </div>
                             </li>
                             <li>
                                 <a class="nav-link text-dark" asp-area="" asp-controller="ColumnChart" asp-action="Index">Statistic</a>
+                            </li>
+                            <li>
+                                <a class="nav-link text-dark" asp-area="" asp-controller="AbsenceRequests" asp-action="CheckingForApproveal">Abesnce Requiest</a>
                             </li>
                         }
                         else if ((await AuthorizationService.AuthorizeAsync(User, null, "UserPolicy")).Succeeded)
