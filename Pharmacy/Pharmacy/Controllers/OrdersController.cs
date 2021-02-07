@@ -1,12 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Text.Encodings.Web;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
+using Pharmacy.Areas.Identity;
 using Pharmacy.Data;
 using Pharmacy.Models.Entities;
 using Pharmacy.Models.Entities.Users;
@@ -17,18 +22,26 @@ namespace Pharmacy.Controllers
     {
         private readonly ApplicationDbContext _context;
         private readonly UserManager<AppUser> _userManager;
+        private readonly EmailSender _emailSender;
 
-        public OrdersController(UserManager<AppUser> userManager, ApplicationDbContext context)
+        public OrdersController(UserManager<AppUser> userManager,
+            ApplicationDbContext context,
+            IEmailSender emailSender)
         {
             _userManager = userManager;
             _context = context;
+            using (StreamReader r = new StreamReader("./Areas/Identity/emailCredentials.json"))
+            {
+                string json = r.ReadToEnd();
+                _emailSender = JsonConvert.DeserializeObject<EmailSender>(json);
+            }
         }
 
         // GET: Orders
-        public async Task<IActionResult> Index()
+        /*public async Task<IActionResult> Index()
         {
             return View(await _context.tbOrders.ToListAsync());
-        }
+        }*/
 
         // GET: Orders/Details/5
         public async Task<IActionResult> Details(long? id)
@@ -55,24 +68,28 @@ namespace Pharmacy.Controllers
         }
 
         // GET: Orders/Create
-        [HttpGet("Orders/Create/{drugId}")]
-        public async Task<IActionResult> Create(long? drugId)
+        [HttpGet("Orders/Create/{drugQuantId}")]
+        public async Task<IActionResult> Create(long? drugQuantId)
         {
-            if (drugId == null)
+            if (drugQuantId == null)
             {
                 return NotFound();
             }
-            var drugsQuantList = await (from drug in _context.tbDrugs
+            /*var drugsQuantList = await (from drug in _context.tbDrugs
                                 join drugsQuant in _context.DrugAndQuantity on drug equals drugsQuant.Drug
                                 where drugsQuant.Drug.Id == drugId && drugsQuant.Quantity > 0
                                 select drugsQuant.PharmacyId).ToListAsync();
            
-            Drug drugInstance = await _context.tbDrugs.FindAsync(drugId);
-            
-            ViewData["PharmacyList"] = await _context.tbPharmacys.Where(e => drugsQuantList.Contains(e.Id)).ToListAsync();
-            ViewData["DrugName"] = drugInstance.Name;
-            ViewData["DrugId"] = drugInstance.Id;
-            //ViewData["DrugCost"] = drugInstance.Cost;
+            Drug drugInstance = await _context.tbDrugs.FindAsync(drugId);*/
+            var drugQuantity = await _context.DrugAndQuantity
+                .Include(drugQuant => drugQuant.Drug)
+                .FirstOrDefaultAsync(m => m.Id == drugQuantId);
+
+            var pharmacy = await _context.tbPharmacys.FindAsync(drugQuantity.PharmacyId);
+            ViewData["Pharmacy"] = pharmacy.Name;
+            ViewData["DrugName"] = drugQuantity.Drug.Name;
+            ViewData["drugQuantityId"] = drugQuantity.Id;
+            ViewData["DrugCost"] = drugQuantity.Price;
             
             return View();
         }
@@ -91,12 +108,9 @@ namespace Pharmacy.Controllers
         [Authorize]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(long? drugId, double? cost, long? pharmacy, DateTime? time)
+        public async Task<IActionResult> Create(long? drugQuantId, double? cost, long? pharmacy, DateTime? time)
         {
-            var drugsQuantEl = await (from drug in _context.tbDrugs
-                                        join drugsQuant in _context.DrugAndQuantity on drug equals drugsQuant.Drug
-                                        where drugsQuant.Drug.Id == drugId && drugsQuant.PharmacyId == pharmacy && drugsQuant.Quantity > 0
-                                        select drugsQuant).FirstAsync();
+            var drugsQuantEl = await _context.DrugAndQuantity.FindAsync(drugQuantId);
             //change drugs and quant
             drugsQuantEl.Quantity -= 1;
             _context.Update(drugsQuantEl);
@@ -109,14 +123,13 @@ namespace Pharmacy.Controllers
             order.Cost = (double)cost;
             order.User = await _userManager.GetUserAsync(User);
             order.TransactionComplete = false;
+            _context.Add(order);
+            await _context.SaveChangesAsync();
+            //return RedirectToAction(nameof(Index));
+            await _emailSender.SendEmailAsync(order.User.Email, "Pharmacy Order",
+                $"Order indetification code is: {order.Id}");
 
-            if (ModelState.IsValid)
-            {
-                _context.Add(order);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-            }
-            return View(order);
+            return RedirectToAction(nameof(ScheduledOrders));// ScheduledOrders();
         }
 
 

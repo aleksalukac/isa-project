@@ -1,4 +1,4 @@
-﻿@model IEnumerable<Pharmacy.Models.Entities.Drug>
+﻿@model IEnumerable<Pharmacy.Models.DTO.DrugDTO>
 @using Microsoft.AspNetCore.Authorization
 @inject IAuthorizationService AuthorizationService
 
@@ -65,7 +65,10 @@
                 @Html.DisplayNameFor(model => model.IsPrescribable)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Notes)
+                @Html.DisplayNameFor(model => model.PharmacyName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Cost)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.AverageScore)
@@ -93,7 +96,10 @@
                 @Html.DisplayFor(modelItem => item.IsPrescribable)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Notes)
+                @Html.DisplayFor(modelItem => item.PharmacyName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Cost)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.AverageScore)
@@ -104,7 +110,7 @@
                     <a asp-action="Edit" asp-route-id="@item.Id">Edit</a>
                 }
                 <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-controller="Orders" asp-action="Create" asp-route-id="@item.Id">Order</a>
+                <a asp-controller="Orders" asp-action="Create" asp-route-id="@item.DrugAndQuantitiesId">Order</a>
             </td>
         </tr>
         }
