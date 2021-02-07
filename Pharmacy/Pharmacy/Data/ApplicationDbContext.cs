@@ -36,11 +36,13 @@ namespace Pharmacy.Data
 
         public DbSet<DrugType> DrugType { get; set; }
 
-        //public DbSet<Models.Entities.TimeSpan> TimeSpan { get; set; }
-
         public DbSet<DrugAndQuantities> DrugAndQuantity { get; set; }
 
         public DbSet<AppUser> AppUsers { get; set; }
+
+        public DbSet<Complaint> Complaint { get; set; }
+
+        public DbSet<Rating> Rating { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -115,5 +117,6 @@ namespace Pharmacy.Data
 
 
         }
+
     }
 }

@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Pharmacy.Data;
 
 namespace Pharmacy.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20210207161801_ISADB5")]
+    partial class ISADB5
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -408,41 +410,6 @@ namespace Pharmacy.Migrations
                     b.ToTable("Pharmacys");
                 });
 
-            modelBuilder.Entity("Pharmacy.Models.Entities.Rating", b =>
-                {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
-                        .UseIdentityColumn();
-
-                    b.Property<long?>("DrugId")
-                        .HasColumnType("bigint");
-
-                    b.Property<string>("EmployeeId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<long?>("PharmacyId")
-                        .HasColumnType("bigint");
-
-                    b.Property<int>("Score")
-                        .HasColumnType("int");
-
-                    b.Property<string>("UserId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("DrugId");
-
-                    b.HasIndex("EmployeeId");
-
-                    b.HasIndex("PharmacyId");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("tbRating");
-                });
-
             modelBuilder.Entity("Pharmacy.Models.Entities.Report", b =>
                 {
                     b.Property<long>("Id")
@@ -735,33 +702,6 @@ namespace Pharmacy.Migrations
                         .HasForeignKey("UserId");
 
                     b.Navigation("DrugAndQuantities");
-
-                    b.Navigation("User");
-                });
-
-            modelBuilder.Entity("Pharmacy.Models.Entities.Rating", b =>
-                {
-                    b.HasOne("Pharmacy.Models.Entities.Drug", "Drug")
-                        .WithMany()
-                        .HasForeignKey("DrugId");
-
-                    b.HasOne("Pharmacy.Models.Entities.Users.AppUser", "Employee")
-                        .WithMany()
-                        .HasForeignKey("EmployeeId");
-
-                    b.HasOne("Pharmacy.Models.Entities.Pharmacy", "Pharmacy")
-                        .WithMany()
-                        .HasForeignKey("PharmacyId");
-
-                    b.HasOne("Pharmacy.Models.Entities.Users.AppUser", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId");
-
-                    b.Navigation("Drug");
-
-                    b.Navigation("Employee");
-
-                    b.Navigation("Pharmacy");
 
                     b.Navigation("User");
                 });
