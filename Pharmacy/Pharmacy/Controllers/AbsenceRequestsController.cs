@@ -13,7 +13,6 @@ using Pharmacy.Models.Entities.Users;
 
 namespace Pharmacy.Controllers
 {
-    [Authorize]
     public class AbsenceRequestsController : Controller
     {
         private readonly UserManager<AppUser> _userManager;
@@ -168,5 +167,97 @@ namespace Pharmacy.Controllers
         {
             return _context.tbAbsenceRequests.Any(e => e.Id == id);
         }
+
+        public async Task<IActionResult> CheckingForApproveal()
+        {
+            var userName = await _userManager.GetUserAsync(User);
+            var listOfUnApproved = await _context.tbAbsenceRequests.Where(x => x.Approved == false && x.PharmacyAdministratorId == userName.Id).ToListAsync();
+            return View(listOfUnApproved);
+        }
+
+        public async Task<IActionResult> Approve(long id)
+        {
+
+            var absenceRequest = _context.tbAbsenceRequests.Find(id);
+            absenceRequest.Approved = true;
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    _context.Update(absenceRequest);
+                    await _context.SaveChangesAsync();
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!AbsenceRequestExists(absenceRequest.Id))
+                    {
+                        return NotFound();
+                    }
+                    else
+                    {
+                        throw;
+                    }
+                }
+                return RedirectToAction(nameof(Index));
+            }
+            return View(absenceRequest);
+        }
+
+        public async Task<IActionResult> Reject(long id)
+        {
+            var absenceRequest = _context.tbAbsenceRequests.Find(id);
+            absenceRequest.Approved = false;
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    _context.Update(absenceRequest);
+                    await _context.SaveChangesAsync();
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!AbsenceRequestExists(absenceRequest.Id))
+                    {
+                        return NotFound();
+                    }
+                    else
+                    {
+                        throw;
+                    }
+                }
+                return RedirectToAction("RejectText", "AbsenceRequests", new { id = absenceRequest.Id});
+            }
+            return RedirectToAction("RejectText", "AbsenceRequests", new { id = absenceRequest.Id });
+        }
+
+        // AbsenceRequestsController/RejectText/3
+        public async Task<IActionResult> RejectText(long id)
+        {
+            var absenceRequest = _context.tbAbsenceRequests.Find(id);
+            absenceRequest.Approved = false;
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    _context.Update(absenceRequest);
+                    await _context.SaveChangesAsync();
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!AbsenceRequestExists(absenceRequest.Id))
+                    {
+                        return NotFound();
+                    }
+                    else
+                    {
+                        throw;
+                    }
+                }
+                return View();
+            }
+            return View();
+        }
+
+
     }
 }
