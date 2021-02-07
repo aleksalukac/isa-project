@@ -95,6 +95,20 @@ namespace Pharmacy.Controllers
             return View(appointment);
         }
 
+        [Authorize(Roles = "Pharmacist,Dermatologist")]
+        // GET: Appointments/CreateForMyself
+        public IActionResult CreateForMyself()
+        {
+            List<AppUser> entryPoint = (from user in _context.tbAppUsers
+                                        join userrole in _context.UserRoles on user.Id equals userrole.UserId
+                                        join role in _context.Roles on userrole.RoleId equals role.Id
+                                        where role.Name == "Dermatologist"
+                                        select user).ToList();
+
+            ViewData["DermatologistList"] = entryPoint;
+            return View();
+        }
+
         [Authorize(Roles = "PharmacyAdmin")]
         // GET: Appointments/Create
         public IActionResult Create()

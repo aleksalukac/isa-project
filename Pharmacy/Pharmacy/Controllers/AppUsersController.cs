@@ -44,6 +44,14 @@ namespace Pharmacy.Controllers
                                              select role.Name).ToListAsync();
             ViewData["roleName"] = userRole.Count == 0 ? "" : userRole[0];
             ViewData["pharmacyId"] = appUser.PharmacyId;
+            /*
+            if(ViewData["roleName"].Equals("Patient"))
+            {
+                ViewData["allergies"] = await (from drug in _context.tbDrugs
+                                               join allergicDrugs in _context.Dru
+                                               )
+            }
+            */
             return View(appUser);
         }
 
