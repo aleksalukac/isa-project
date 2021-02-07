@@ -11,8 +11,10 @@ namespace Pharmacy.Models.Entities
     {
         public long Id { get; set; }
         public AppUser Employee { get; set; }
-        public TimeSpan TimeSpan { get; set; }
         public DateTime StartDateTime { get; set; }
-        public AppUser PharmacyAdministrator { get; set; }
+        public DateTime EndDateTime { get; set; }
+
+        [ForeignKey("AppUser")]
+        public string PharmacyAdministratorId { get; set; }
     }
 }
