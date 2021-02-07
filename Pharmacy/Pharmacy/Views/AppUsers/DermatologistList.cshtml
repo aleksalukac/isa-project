@@ -76,6 +76,12 @@
             <th>
                 @Html.DisplayNameFor(model => model.AverageScore)
             </th>
+            <th>
+                Work Time Start
+            </th>
+            <th>
+                Work Time End
+            </th>
             <th></th>
         </tr>
     </thead>
@@ -103,6 +109,12 @@
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.AverageScore)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.WorkHoursStart)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.WorkHoursEnd)
             </td>
             @if ((await AuthorizationService.AuthorizeAsync(User, null, "AdminPolicy")).Succeeded)
             {

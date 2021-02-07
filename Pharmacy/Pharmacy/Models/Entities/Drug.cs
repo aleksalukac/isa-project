@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore.Storage.ValueConversion.Internal;
 using Newtonsoft.Json.Converters;
+using Pharmacy.Models.Entities.Users;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -19,9 +20,10 @@ namespace Pharmacy.Models.Entities
         public string Drugmaker { get; set; }
         public bool IsPrescribable { get; set; }
         public List<Appointment> Appointments { get; set; }
-        public List<Drug> SimilarDrugs { get; set; } 
+        public List<Drug> SimilarDrugs { get; set; }
         public string Notes { get; set; }
         public double AverageScore { get; set; }
+        public List<AppUser> AllergicUsers { get; set; }
     }
 
     public class DrugType

@@ -31,8 +31,8 @@
             <div class="form-group mb-2">
                 <label for="filter" class="sr-only">Filter</label>
                 <select name="filter" id="filter" class="form-control">
-                    <option value="FirstName" class="option">FirstName</option>
-                    <option value="LastName" class="option">LastName</option>
+                    <option value="FirstName" class="option">First Name</option>
+                    <option value="LastName" class="option">Last Name</option>
                     <option value="AverageScore" class="option">Rating</option>
                     <option value="City" class="option">City</option>
                     <option value="Country" class="option">Country</option>
@@ -82,36 +82,42 @@
     <tbody>
         @foreach (var item in Model)
         {
-            <tr>
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.FirstName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.LastName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Address)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.City)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Email)
+            </td>
+            <td>
+                @ViewData["roleName"]
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.AverageScore)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.WorkHoursStart)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.WorkHoursEnd)
+            </td>
+            @if ((await AuthorizationService.AuthorizeAsync(User, null, "PharmacyAdminPolicy")).Succeeded)
+            {
                 <td>
-                    @Html.DisplayFor(modelItem => item.FirstName)
+                    <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                    <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
                 </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.LastName)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Address)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.City)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Email)
-                </td>
-                <td>
-                    @ViewData["roleName"]
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.AverageScore)
-                </td>
-                @if ((await AuthorizationService.AuthorizeAsync(User, null, "PharmacyAdminPolicy")).Succeeded)
-                {
-                    <td>
-                        <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                        <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-                    </td>
-                }
-            </tr>
+            }
+        </tr>
         }
     </tbody>
 </table>

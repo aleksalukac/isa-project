@@ -16,6 +16,7 @@ using Pharmacy.Data;
 using Pharmacy.Models.DTO;
 using Pharmacy.Models.Entities;
 using Pharmacy.Models.Entities.Users;
+using Pharmacy.Services;
 
 namespace Pharmacy.Controllers
 {
@@ -23,14 +24,16 @@ namespace Pharmacy.Controllers
     {
         private readonly ApplicationDbContext _context;
         private readonly UserManager<AppUser> _userManager;
+        private readonly IOrderService _orderService;
         private readonly EmailSender _emailSender;
 
         public OrdersController(UserManager<AppUser> userManager,
-            ApplicationDbContext context,
+            ApplicationDbContext context, IOrderService orderService,
             IEmailSender emailSender)
         {
             _userManager = userManager;
             _context = context;
+            _orderService = orderService;
             using (StreamReader r = new StreamReader("./Areas/Identity/emailCredentials.json"))
             {
                 string json = r.ReadToEnd();
@@ -124,8 +127,7 @@ namespace Pharmacy.Controllers
 
             var user = await _userManager.GetUserAsync(User);
 
-            var orders = await _context.tbOrders.Include(x => x.DrugAndQuantities).
-                Where(x => x.DrugAndQuantities.PharmacyId == user.PharmacyId && x.Id == id).ToListAsync();
+            var orders = _orderService.GetByPharmacyAndId(user.PharmacyId, id.Value).Result;
 
             if (orders.Count == 0)
             {
@@ -142,8 +144,7 @@ namespace Pharmacy.Controllers
         [Authorize(Roles = "Pharmacist")]
         public async Task<IActionResult> CheckoutOrder([Bind("Id,Cost,TransactionComplete")] Order order)
         {
-            _context.Update(order);
-            await _context.SaveChangesAsync();
+            _orderService.Update(order);
             return View("SearchOrder");
         }
 

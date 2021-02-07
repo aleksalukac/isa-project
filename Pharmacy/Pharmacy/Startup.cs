@@ -41,6 +41,7 @@ namespace Pharmacy
             services.AddControllersWithViews();
 
             services.AddScoped<IAppointmentService, AppointmentService>();
+            services.AddScoped<IOrderService, OrderService>();
 
             services.AddAuthorization(options =>
             {

@@ -12,9 +12,13 @@
 
 <h1>Index</h1>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
+@if ((await AuthorizationService.AuthorizeAsync(User, null, "AdminPolicy")).Succeeded)
+{
+    <p>
+        <a asp-action="Create">Create New</a>
+    </p>
+
+}
 
 <form asp-controller="Pharmacy" asp-action="Index">
     <p>

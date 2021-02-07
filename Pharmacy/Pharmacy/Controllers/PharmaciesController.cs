@@ -75,6 +75,7 @@ namespace Pharmacy.Controllers
             return View(pharmacy);
         }
 
+        [Authorize(Roles = "Admin")]
         // GET: Pharmacies/Create
         public IActionResult Create()
         {
@@ -86,6 +87,7 @@ namespace Pharmacy.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Create([Bind("Id,Address,Name")] Pharmacy.Models.Entities.Pharmacy pharmacy)
         {
             if (ModelState.IsValid)
@@ -97,6 +99,7 @@ namespace Pharmacy.Controllers
             return View(pharmacy);
         }
 
+        [Authorize(Roles = "PharmacyAdmin,Admin")]
         // GET: Pharmacies/Edit/5
         public async Task<IActionResult> Edit(long? id)
         {
@@ -118,6 +121,7 @@ namespace Pharmacy.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "PharmacyAdmin,Admin")]
         public async Task<IActionResult> Edit(long id, [Bind("Id,Name,Address")] Pharmacy.Models.Entities.Pharmacy pharmacy)
         {
             if (id != pharmacy.Id)
@@ -149,6 +153,7 @@ namespace Pharmacy.Controllers
         }
 
         // GET: Pharmacies/Delete/5
+        [Authorize(Roles = "PharmacyAdmin,Admin")]
         public async Task<IActionResult> Delete(long? id)
         {
             if (id == null)
@@ -169,6 +174,7 @@ namespace Pharmacy.Controllers
         // POST: Pharmacies/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "PharmacyAdmin,Admin")]
         public async Task<IActionResult> DeleteConfirmed(long id)
         {
             var pharmacy = await _context.tbPharmacys.FindAsync(id);

@@ -14,6 +14,15 @@
     <thead>
         <tr>
             <th>
+                Drug
+            </th>
+            <th>
+                Employee
+            </th>
+            <th>
+                Pharmacy
+            </th>
+            <th>
                 @Html.DisplayNameFor(model => model.Score)
             </th>
             <th></th>
@@ -22,6 +31,15 @@
     <tbody>
 @foreach (var item in Model) {
         <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Drug)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Employee.FirstName) @Html.DisplayFor(modelItem => item.Employee.LastName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Pharmacy.Name)
+            </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Score)
             </td>
