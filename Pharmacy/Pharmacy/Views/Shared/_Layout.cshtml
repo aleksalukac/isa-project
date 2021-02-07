@@ -34,8 +34,14 @@
                             <li class="nav-item">
                                 <a class="nav-link text-dark" asp-area="" asp-controller="AppUsers" asp-action="PharmacistList">Pharmacist</a>
                             </li>
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Pharmacies" asp-action="Edit" asp-route-id="1">Pharmacy</a>
+                            <li class="dropdown">
+                                <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    Check Profiles
+                                </button>
+                                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="AppUsers" asp-action="DermatologistList">Dermatologist</a>
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="AppUsers" asp-action="PharmacistList">Pharmacist</a>
+                                </div>
                             </li>
                             <li>
                                 <a class="nav-link text-dark" asp-area="" asp-controller="ColumnChart" asp-action="Index">Statistic</a>
