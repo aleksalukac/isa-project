@@ -1,4 +1,9 @@
-﻿@model IEnumerable<Pharmacy.Models.Entities.Pharmacy>
+﻿@using Microsoft.AspNetCore.Authorization
+@inject IAuthorizationService AuthorizationService
+
+@using Microsoft.AspNetCore.Identity
+@using Pharmacy.Models.Entities.Users
+@model IEnumerable<Pharmacy.Models.Entities.Pharmacy>
 
 @{
     ViewData["Title"] = "Index";
@@ -38,30 +43,31 @@
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @item.Address
-            </td>
-            <td>
-                @item.Name
-            </td>
-            <td>
-                @item.AverageScore
-            </td>
-            <td>
-                @if ((string)ViewData["PharmacyId"] == item.AdminUserID)
-                {
-                    <a asp-action="Edit" asp-route-id="@item.Id">Edit</a>
-                }
-                |
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a>
-                @if ((await AuthorizationService.AuthorizeAsync(User, null, "AdminPolicy")).Succeeded)
-                {
-                    <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-                }
-            </td>
-        </tr>
-}
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @item.Address
+                </td>
+                <td>
+                    @item.Name
+                </td>
+                <td>
+                    @item.AverageScore
+                </td>
+                <td>
+                    @if ((string)ViewData["PharmacyId"] == item.AdminUserID)
+                    {
+                        <a asp-action="Edit" asp-route-id="@item.Id">Edit</a>
+                    }
+                    |
+                    <a asp-action="Details" asp-route-id="@item.Id">Details</a>
+                    @if ((await AuthorizationService.AuthorizeAsync(User, null, "AdminPolicy")).Succeeded)
+                    {
+                        <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                    }
+                </td>
+            </tr>
+        }
     </tbody>
 </table>
