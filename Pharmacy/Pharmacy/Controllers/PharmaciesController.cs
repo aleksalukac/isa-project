@@ -4,21 +4,25 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using Pharmacy.Data;
 using Pharmacy.Models.Entities;
+using Pharmacy.Models.Entities.Users;
 
 namespace Pharmacy.Controllers
 {
     public class PharmaciesController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly UserManager<AppUser> _userManager;
 
-        public PharmaciesController(ApplicationDbContext context)
+        public PharmaciesController(UserManager<AppUser> userManager, ApplicationDbContext context)
         {
+            _userManager = userManager;
             _context = context;
         }
 
@@ -27,6 +31,7 @@ namespace Pharmacy.Controllers
         public async Task<IActionResult> Index(string searchString = "", string filter = "")
         {
             var pharmacies = await _context.tbPharmacys.ToListAsync();
+            ViewData["PharmacyId"] = (await _userManager.GetUserAsync(User)).Id;
             List<Pharmacy.Models.Entities.Pharmacy> filteredPharmacies = new List<Pharmacy.Models.Entities.Pharmacy>();
 
             if (searchString == null || searchString.Length == 0)
@@ -81,7 +86,7 @@ namespace Pharmacy.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Address")] Pharmacy.Models.Entities.Pharmacy pharmacy)
+        public async Task<IActionResult> Create([Bind("Id,Address,Name")] Pharmacy.Models.Entities.Pharmacy pharmacy)
         {
             if (ModelState.IsValid)
             {
