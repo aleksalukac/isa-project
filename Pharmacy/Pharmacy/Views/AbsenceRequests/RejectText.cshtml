@@ -6,12 +6,11 @@
 }
 
 <h1>Details</h1>
-
-
 <p>
-    ASP.NET Web Pages make it easy to build powerful .NET based applications for the web.
-    Enter your name:
-    @Html.TextBox("name")
-    <input id="Button1" type="button" value="button" />
+    If you have any explanation for rejecting the absence
+    <form>
+        <input type="text" formmethod="post" id="configname" name="configname" />
+        <button type="submit" formmethod="post" onclick="RejectTextPost()">Submit</button>
+    </form>
 </p>
 }

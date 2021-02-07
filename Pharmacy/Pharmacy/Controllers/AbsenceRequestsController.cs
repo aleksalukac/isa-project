@@ -1,12 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
+using Pharmacy.Areas.Identity;
 using Pharmacy.Data;
 using Pharmacy.Models.Entities;
 using Pharmacy.Models.Entities.Users;
@@ -18,14 +22,21 @@ namespace Pharmacy.Controllers
         private readonly UserManager<AppUser> _userManager;
         private readonly SignInManager<Pharmacy.Models.Entities.Users.AppUser> _signInManager;
         private readonly ApplicationDbContext _context;
+        private readonly EmailSender _emailSender;
 
         public AbsenceRequestsController(ApplicationDbContext context, UserManager<AppUser> userManager,
-                SignInManager<AppUser> signInManager)
+                SignInManager<AppUser> signInManager,
+                IEmailSender emailSender)
         {
             _context = context; 
             _userManager = userManager;
-            _signInManager = signInManager;
+            _signInManager = signInManager; 
+            using (StreamReader r = new StreamReader("./Areas/Identity/emailCredentials.json"))
+            {
+                string json = r.ReadToEnd();
+                _emailSender = JsonConvert.DeserializeObject<EmailSender>(json);
             }
+        }
 
         // GET: AbsenceRequests
         public async Task<IActionResult> Index()
@@ -180,13 +191,16 @@ namespace Pharmacy.Controllers
 
             var absenceRequest = _context.tbAbsenceRequests.Find(id);
             absenceRequest.Approved = true;
-            if (ModelState.IsValid)
-            {
+
                 try
                 {
                     _context.Update(absenceRequest);
                     await _context.SaveChangesAsync();
-                }
+
+                    var user = await _userManager.GetUserAsync(User);
+                    await _emailSender.SendEmailAsync(user.Email, "Absence Requiest Respons of Admin",
+                        $"Your absence Requiest has been approved");
+            }
                 catch (DbUpdateConcurrencyException)
                 {
                     if (!AbsenceRequestExists(absenceRequest.Id))
@@ -199,65 +213,67 @@ namespace Pharmacy.Controllers
                     }
                 }
                 return RedirectToAction(nameof(Index));
-            }
-            return View(absenceRequest);
         }
 
         public async Task<IActionResult> Reject(long id)
         {
             var absenceRequest = _context.tbAbsenceRequests.Find(id);
             absenceRequest.Approved = false;
-            if (ModelState.IsValid)
+
+            try
             {
-                try
-                {
-                    _context.Update(absenceRequest);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!AbsenceRequestExists(absenceRequest.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction("RejectText", "AbsenceRequests", new { id = absenceRequest.Id});
+                _context.Update(absenceRequest);
+                await _context.SaveChangesAsync();
             }
-            return RedirectToAction("RejectText", "AbsenceRequests", new { id = absenceRequest.Id });
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!AbsenceRequestExists(absenceRequest.Id))
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    throw;
+                }
+            }
+            return RedirectToAction("RejectText", "AbsenceRequests", new { id = absenceRequest.Id});
         }
 
         // AbsenceRequestsController/RejectText/3
+        
+        [HttpGet]
         public async Task<IActionResult> RejectText(long id)
         {
             var absenceRequest = _context.tbAbsenceRequests.Find(id);
             absenceRequest.Approved = false;
-            if (ModelState.IsValid)
+            
+            try
             {
-                try
+                _context.Update(absenceRequest);
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!AbsenceRequestExists(absenceRequest.Id))
                 {
-                    _context.Update(absenceRequest);
-                    await _context.SaveChangesAsync();
+                    return NotFound();
                 }
-                catch (DbUpdateConcurrencyException)
+                else
                 {
-                    if (!AbsenceRequestExists(absenceRequest.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
+                    throw;
                 }
-                return View();
             }
             return View();
         }
 
+        [HttpPost]
+        public async Task<IActionResult> RejectText(string configname)
+        {
+            var user = await _userManager.GetUserAsync(User);
+            await _emailSender.SendEmailAsync(user.Email, "Absence Requiest Respons of admin :",
+                $" "+ configname);
+            return RedirectToAction(nameof(Index));
+        }
 
     }
 }
