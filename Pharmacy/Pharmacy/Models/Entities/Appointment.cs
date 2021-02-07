@@ -25,6 +25,8 @@ namespace Pharmacy.Models.Entities
         public TimeSpan Duration { get; set; }
         public AppointmentType Type { get; set; }
         public List<Drug> PrescribedDrugs { get; set; }
+        [ForeignKey("Pharmacy")]
+        public long PhrmacyId { get; set; }
     }
     public enum AppointmentType
     {

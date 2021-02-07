@@ -72,7 +72,7 @@ namespace Pharmacy.Controllers
             ViewData["PharmacyList"] = await _context.tbPharmacys.Where(e => drugsQuantList.Contains(e.Id)).ToListAsync();
             ViewData["DrugName"] = drugInstance.Name;
             ViewData["DrugId"] = drugInstance.Id;
-            ViewData["DrugCost"] = drugInstance.Cost;
+            //ViewData["DrugCost"] = drugInstance.Cost;
             
             return View();
         }
