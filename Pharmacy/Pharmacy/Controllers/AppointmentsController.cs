@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -9,26 +10,55 @@ using Pharmacy.Data;
 using Pharmacy.Models.DTO;
 using Pharmacy.Models.Entities;
 using Pharmacy.Models.Entities.Users;
+using Pharmacy.Services;
 
 namespace Pharmacy.Controllers
 {
     public class AppointmentsController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly AppointmentService _appointmentService;
+        private readonly UserManager<AppUser> _userManager;
 
-        public AppointmentsController(ApplicationDbContext context)
+        public AppointmentsController(ApplicationDbContext context, 
+            AppointmentService appointmentService, UserManager<AppUser> userManager)
         {
             _context = context;
+            _appointmentService = appointmentService;
+            _userManager = userManager;
         }
 
         // GET: Appointments
         public async Task<IActionResult> Index()
         {
-            var appointmentList = await _context.tbAppointments.ToListAsync();
+            var appointmentList = _appointmentService.GetAll().Result;
 
             var appointmentDTOList = new List<AppointmentDTO>();
 
             foreach(var appointment in appointmentList)
+            {
+                AppUser medicalExpert = _context.tbAppUsers.Find(appointment.MedicalExpertID);
+                AppUser patient = _context.tbAppUsers.Find(appointment.PatientID);
+
+                string patientFullName = patient == null ? "" : patient.FirstName + " " + patient.LastName;
+                string medicalExpertFullname = medicalExpert == null ? "" : medicalExpert.FirstName + " " + medicalExpert.LastName;
+
+                appointmentDTOList.Add(new AppointmentDTO(appointment,
+                    medicalExpertFullname, patientFullName));
+            }
+
+            return View(appointmentDTOList);
+        }
+
+        // GET: MyAppointments
+        public async Task<IActionResult> MyAppointments()
+        {
+            var user = await _userManager.GetUserAsync(User);
+            var appointmentList = _appointmentService.GetByUser(user.Id).Result;
+
+            var appointmentDTOList = new List<AppointmentDTO>();
+
+            foreach (var appointment in appointmentList)
             {
                 AppUser medicalExpert = _context.tbAppUsers.Find(appointment.MedicalExpertID);
                 AppUser patient = _context.tbAppUsers.Find(appointment.PatientID);

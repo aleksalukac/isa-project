@@ -19,7 +19,13 @@ namespace Pharmacy.Services
 
         public async Task<Appointment> GetById(long id)
         {
-            return await _context.tbAppointments.FindAsync(id);
+            return await _context.tbAppointments
+                .FirstOrDefaultAsync(m => m.Id == id);
+        }
+
+        public async Task<List<Appointment>> GetAll()
+        {
+            return await _context.tbAppointments.ToListAsync();
         }
 
         public async Task<List<Appointment>> GetByUser(string id)

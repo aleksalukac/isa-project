@@ -16,7 +16,7 @@
 <h1>Details</h1>
 <hr />
 <div>
-    <h4>@ViewData["userRole"]</h4>
+    <h4>@ViewData["roleName"]</h4>
 
     <dl class="row">
         <b>
@@ -27,10 +27,13 @@
                 Surname: @Html.DisplayFor(model => model.LastName)
             </td><br />
             <td class="col-sm-2">
+                Email: @Html.DisplayFor(model => model.Email)
+            </td><br />
+            <td class="col-sm-2">
                 Profession: @ViewData["roleName"]
             </td><br />
 
-            @if (ViewData["userRole"] == "Dermatologist" || ViewData["userRole"] == "Pharmacist")
+            @if (ViewData["roleName"].Equals("Dermatologist") || ViewData["roleName"].Equals("Pharmacist"))
             {
                 <td class="col-sm-2">
                     <a asp-controller="Pharmacies" asp-action="Details" asp-route-id="@ViewData["pharmacyId"]">
