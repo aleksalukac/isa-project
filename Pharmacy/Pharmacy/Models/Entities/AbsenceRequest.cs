@@ -16,5 +16,6 @@ namespace Pharmacy.Models.Entities
         public DateTime EndDateTime { get; set; }
         [ForeignKey("AppUser")]
         public string PharmacyAdministratorId { get; set; }
+        public bool Approved { get; set; }
     }
 }
