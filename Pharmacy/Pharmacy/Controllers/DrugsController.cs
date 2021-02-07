@@ -70,7 +70,7 @@ namespace Pharmacy.Controllers
             }
 
             ViewData["PharmacyList"] = await _context.tbPharmacys.ToListAsync();
-            return View(filteredDrugs.Distinct());
+            return View(filteredDrugs);
         }
 
         // GET: Drugs/Details/5
