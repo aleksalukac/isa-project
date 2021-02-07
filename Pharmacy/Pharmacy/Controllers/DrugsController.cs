@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using Pharmacy.Data;
+using Pharmacy.Models.DTO;
 using Pharmacy.Models.Entities;
 
 namespace Pharmacy.Controllers
@@ -23,23 +24,28 @@ namespace Pharmacy.Controllers
         }
 
         // GET: Drugs
-        public async Task<IActionResult> Index(string searchString = "", string filter = "", string pharmacy = "")
+        public async Task<IActionResult> Index(string searchString = "", string filter = "", string pharmacyId = "")
         {
 
-            List<Drug> drugs;
-            if (long.TryParse(pharmacy, out long pharmacyId))
+            List<DrugDTO> drugs;
+            if (long.TryParse(pharmacyId, out long pharmacyId2))
             {
                 drugs = await (from drug in _context.tbDrugs
                                 join drugsQuant in _context.DrugAndQuantity on drug equals drugsQuant.Drug
-                                where drugsQuant.PharmacyId == pharmacyId && drugsQuant.Quantity != 0
-                                select drug).ToListAsync();
+                                join pharmacy in _context.tbPharmacys on drugsQuant.PharmacyId equals pharmacy.Id
+                                where drugsQuant.PharmacyId == pharmacyId2 && drugsQuant.Quantity > 0
+                                select new DrugDTO(drug.Id,drugsQuant.Id, drug.Name, drug.Type,drug.Form,drug.Ingredients, drug.Drugmaker,drug.IsPrescribable,drug.AverageScore,pharmacy.Name, drugsQuant.Price)).ToListAsync();
             }
             else
             {
-                drugs = await _context.tbDrugs.ToListAsync();
+                drugs = await (from drug in _context.tbDrugs
+                               join drugsQuant in _context.DrugAndQuantity on drug equals drugsQuant.Drug
+                               join pharmacy in _context.tbPharmacys on drugsQuant.PharmacyId equals pharmacy.Id
+                               where drugsQuant.Quantity > 0
+                               select new DrugDTO(drug.Id, drugsQuant.Id, drug.Name, drug.Type, drug.Form, drug.Ingredients, drug.Drugmaker, drug.IsPrescribable, drug.AverageScore, pharmacy.Name, drugsQuant.Price)).ToListAsync();
             }
 
-            List<Drug> filteredDrugs = new List<Drug>();
+            List<DrugDTO> filteredDrugs = new List<DrugDTO>();
 
             if(string.IsNullOrEmpty(searchString))
             {

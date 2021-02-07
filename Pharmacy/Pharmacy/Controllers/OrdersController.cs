@@ -55,7 +55,7 @@ namespace Pharmacy.Controllers
         }
 
         // GET: Orders/Create
-        [HttpGet("Orders/Create/{drugId}")]
+        [HttpGet("Orders/Create/{drugQuantId}")]
         public async Task<IActionResult> Create(long? drugId)
         {
             if (drugId == null)
