@@ -1,0 +1,33 @@
+﻿@{
+    ViewData["Title"] = "Search order";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<h4>Order</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form method="get">
+            <div class="form-group">
+                <label class="control-label"></label>
+                <input id="value" name="Value" class="form-control" />
+                <span class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input onclick="sendOrderId()" value="Search" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    function sendOrderId() {
+        var value = document.getElementById("value").value;
+        if (value != "") {
+            window.location.href = '../' + 'Orders/CheckoutOrder/' + value.toString();
+        }
+        
+    }
+</script>
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

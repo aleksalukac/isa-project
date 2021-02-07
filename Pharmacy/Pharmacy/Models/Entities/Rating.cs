@@ -17,7 +17,6 @@ namespace Pharmacy.Models.Entities
         public AppUser Employee { get; set; }
         public Drug Drug { get; set; }
         public Pharmacy Pharmacy { get; set; }
-        [Required]
         public int Score { get; set; }
     }
 }
