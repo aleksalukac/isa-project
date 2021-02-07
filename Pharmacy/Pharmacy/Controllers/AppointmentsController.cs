@@ -52,6 +52,8 @@ namespace Pharmacy.Controllers
             return View(appointmentDTOList);
         }
 
+
+        [Authorize(Roles = "Pharmacist,Dermatologist,Patient")]
         // GET: MyAppointments
         public async Task<IActionResult> MyAppointments()
         {
@@ -93,6 +95,7 @@ namespace Pharmacy.Controllers
             return View(appointment);
         }
 
+        [Authorize(Roles = "PharmacyAdmin")]
         // GET: Appointments/Create
         public IActionResult Create()
         {
@@ -111,6 +114,7 @@ namespace Pharmacy.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "PharmacyAdmin")]
         public async Task<IActionResult> Create([Bind("Id,MedicalExpertID,PatientID,Price,Report,StartDateTime,Duration")] Appointment appointment)
         {
             if (ModelState.IsValid)
