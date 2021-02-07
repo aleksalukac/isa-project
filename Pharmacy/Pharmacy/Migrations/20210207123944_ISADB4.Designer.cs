@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Pharmacy.Data;
 
 namespace Pharmacy.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20210207123944_ISADB4")]
+    partial class ISADB4
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -176,24 +178,23 @@ namespace Pharmacy.Migrations
                         .HasColumnType("bigint")
                         .UseIdentityColumn();
 
-                    b.Property<string>("AppUserId")
+                    b.Property<string>("EmployeeId")
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<string>("EmployeeId")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("EndDateTime")
-                        .HasColumnType("datetime2");
-
                     b.Property<string>("PharmacyAdministratorId")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<DateTime>("StartDateTime")
                         .HasColumnType("datetime2");
 
+                    b.Property<TimeSpan>("TimeSpan")
+                        .HasColumnType("time");
+
                     b.HasKey("Id");
 
-                    b.HasIndex("AppUserId");
+                    b.HasIndex("EmployeeId");
+
+                    b.HasIndex("PharmacyAdministratorId");
 
                     b.ToTable("AbsenceRequests");
                 });
@@ -604,9 +605,18 @@ namespace Pharmacy.Migrations
 
             modelBuilder.Entity("Pharmacy.Models.Entities.AbsenceRequest", b =>
                 {
-                    b.HasOne("Pharmacy.Models.Entities.Users.AppUser", null)
+                    b.HasOne("Pharmacy.Models.Entities.Users.AppUser", "Employee")
                         .WithMany("AbsenceRequests")
-                        .HasForeignKey("AppUserId");
+                        .HasForeignKey("EmployeeId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("Pharmacy.Models.Entities.Users.AppUser", "PharmacyAdministrator")
+                        .WithMany()
+                        .HasForeignKey("PharmacyAdministratorId");
+
+                    b.Navigation("Employee");
+
+                    b.Navigation("PharmacyAdministrator");
                 });
 
             modelBuilder.Entity("Pharmacy.Models.Entities.Drug", b =>

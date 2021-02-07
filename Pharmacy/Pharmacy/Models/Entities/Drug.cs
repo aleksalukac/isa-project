@@ -22,7 +22,6 @@ namespace Pharmacy.Models.Entities
         public List<Drug> SimilarDrugs { get; set; } 
         public string Notes { get; set; }
         public double AverageScore { get; set; }
-        public double Cost { get; set; }
     }
 
     public class DrugType

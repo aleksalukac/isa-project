@@ -16,6 +16,7 @@ namespace Pharmacy.Models.Entities
         [ForeignKey("Pharmacy")]
         public long PharmacyId { get; set; }
         public uint Quantity { get; set; }
+        public double Price { get; set; }
 
     }
 }
