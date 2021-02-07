@@ -14,7 +14,6 @@ namespace Pharmacy.Controllers
 {
     public class HomeController : Controller
     {
-
         private readonly ILogger<HomeController> _logger;
 
         public bool ShowPharmacyToolBar { get; set; }
@@ -26,12 +25,8 @@ namespace Pharmacy.Controllers
 
         public IActionResult Index()
         {
-
-
             return View();
         }
-
-
 
         [Authorize(Roles = "User")]
         public IActionResult Privacy()

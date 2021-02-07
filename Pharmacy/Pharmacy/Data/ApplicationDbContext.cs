@@ -51,14 +51,14 @@ namespace Pharmacy.Data
                 .HasMany(p => p.AbsenceRequests)
                 .WithOne();
 
-           /* modelBuilder.Entity<AppUser>().ToTable("AppUsers")
-                .HasMany(p => p.AppointmentsForMedical)
-                .WithOne();
+            /* modelBuilder.Entity<AppUser>().ToTable("AppUsers")
+                 .HasMany(p => p.AppointmentsForMedical)
+                 .WithOne();
 
-            modelBuilder.Entity<AppUser>().ToTable("AppUsers")
-                .HasMany(p => p.AppointmentsForUser)
-                .WithOne();
-           */
+             modelBuilder.Entity<AppUser>().ToTable("AppUsers")
+                 .HasMany(p => p.AppointmentsForUser)
+                 .WithOne();
+            */
 
 
             modelBuilder.Entity<IdentityRole>().ToTable("Roles");
@@ -78,8 +78,8 @@ namespace Pharmacy.Data
 
 
             modelBuilder.Entity<Pharmacy.Models.Entities.Pharmacy>().ToTable("Pharmacys");
-             //   .HasMany(p => p.Employees)
-             //   .WithOne();
+            //   .HasMany(p => p.Employees)
+            //   .WithOne();
 
             modelBuilder.Entity<Order>().ToTable("Orders");
 

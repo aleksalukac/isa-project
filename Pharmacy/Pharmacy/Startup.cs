@@ -9,6 +9,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Pharmacy.Data;
 using Pharmacy.Models.Entities.Users;
+using Pharmacy.Services;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -38,6 +39,8 @@ namespace Pharmacy
                 .AddRoles<IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>();
             services.AddControllersWithViews();
+
+            services.AddScoped<IAppointmentService, AppointmentService>();
 
             services.AddAuthorization(options =>
             {
