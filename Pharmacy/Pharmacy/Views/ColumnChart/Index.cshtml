@@ -1,7 +1,7 @@
 ﻿<title>@ViewData["Title"] - Column Chart</title>
 <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
 
-<div id="chart_div"></div>
+<div id="chart_divY"></div>
 <script type="text/javascript">
 
     google.charts.load('current', {
@@ -12,7 +12,7 @@
     function LoadData() {
         $.ajax({
 
-            url: 'ColumnChart/PopulationChart',
+            url: 'ColumnChart/PopulationChartYear',
             dataType: "json",
             type: "GET",
             error: function (xhr, status, error) {
@@ -20,23 +20,133 @@
                 toastr.error(err.message);
             },
             success: function (data) {
-                PopulationChart(data);
+                PopulationChartYear(data);
                 return false;
             }
         });
         return false;
     }
 
-    function PopulationChart(data) {
+    function PopulationChartYear(data) {
         var dataArray = [
-            ['City', '2020 Population', '2010 Population', '2000 Population', '1990 Population']
+            ['Period', 'Spent Drugs per Year']
         ];
         $.each(data, function (i, item) {
-            dataArray.push([item.cityName, item.populationYear2020, item.populationYear2010, item.populationYear2000, item.populationYear1990]);
+            dataArray.push([item.cityName, item.populationYear2020]);
         });
         var data = google.visualization.arrayToDataTable(dataArray);
         var options = {
-            title: 'Population of Largest Cities of Odisha ',
+            title: 'Yearly spend drugs ',
+            chartArea: {
+                width: '50%'
+            },
+            colors: ['#b0120a', '#7b1fa2', '#ffab91', '#d95f02'],
+            hAxis: {
+                title: 'Period',
+                minValue: 0
+            },
+            vAxis: {
+                title: 'Total Spent Drugs'
+            }
+        };
+        var chart = new google.visualization.ColumnChart(document.getElementById('chart_divY'));
+
+        chart.draw(data, options);
+        return false;
+    }
+</script>
+
+<div id="chart_divQ"></div>
+<script type="text/javascript">
+
+    google.charts.load('current', {
+        packages: ['corechart', 'bar']
+    });
+    google.charts.setOnLoadCallback(LoadData);
+
+    function LoadData() {
+        $.ajax({
+
+            url: 'ColumnChart/PopulationChartQuarter',
+            dataType: "json",
+            type: "GET",
+            error: function (xhr, status, error) {
+                var err = eval("(" + xhr.responseText + ")");
+                toastr.error(err.message);
+            },
+            success: function (data) {
+                PopulationChartQuarter(data);
+                return false;
+            }
+        });
+        return false;
+    }
+
+    function PopulationChartQuarter(data) {
+        var dataArray = [
+            ['Period', 'Spent Drugs for each quarter until this moment']
+        ];
+        $.each(data, function (i, item) {
+            dataArray.push([item.cityName, item.populationYear2020]);
+        });
+        var data = google.visualization.arrayToDataTable(dataArray);
+        var options = {
+            title: 'Quarterly spend drugs ',
+            chartArea: {
+                width: '50%'
+            },
+            colors: ['#b0120a', '#7b1fa2', '#ffab91', '#d95f02'],
+            hAxis: {
+                title: 'Period',
+                minValue: 0
+            },
+            vAxis: {
+                title: 'Total Spent Drugs'
+            }
+        };
+        var chart = new google.visualization.ColumnChart(document.getElementById('chart_divQ'));
+
+        chart.draw(data, options);
+        return false;
+    }
+</script>
+
+<div id="chart_divC"></div>
+<script type="text/javascript">
+
+    google.charts.load('current', {
+        packages: ['corechart', 'bar']
+    });
+    google.charts.setOnLoadCallback(LoadData);
+
+    function LoadData() {
+        $.ajax({
+
+            url: 'ColumnChart/PopulationChartMonth',
+            dataType: "json",
+            type: "GET",
+            error: function (xhr, status, error) {
+                var err = eval("(" + xhr.responseText + ")");
+                toastr.error(err.message);
+            },
+            success: function (data) {
+                PopulationChartMonth(data);
+                return false;
+            }
+        });
+        return false;
+    }
+
+    function PopulationChartMonth(data) {
+        var dataArray = [
+            ['Period', 'Spent Drugs per Months']
+        ];
+        $.each(data, function (i, item) {
+            dataArray.push([item.cityName, item.populationYear2020]);
+        });
+        var data = google.visualization.arrayToDataTable(dataArray);
+        var options = {
+            title: 'Monthly spend drugs',
             chartArea: {
                 width: '50%'
             },
@@ -49,9 +159,9 @@
                 title: 'Total Population'
             }
         };
-        var chart = new google.visualization.ColumnChart(document.getElementById('chart_div'));
+        var chart = new google.visualization.ColumnChart(document.getElementById('chart_divC'));
 
         chart.draw(data, options);
         return false;
     }
-</script>  
+</script>
