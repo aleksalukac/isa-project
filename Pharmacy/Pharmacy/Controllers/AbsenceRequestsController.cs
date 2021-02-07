@@ -2,22 +2,31 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Pharmacy.Data;
 using Pharmacy.Models.Entities;
+using Pharmacy.Models.Entities.Users;
 
 namespace Pharmacy.Controllers
 {
+    [Authorize]
     public class AbsenceRequestsController : Controller
     {
+        private readonly UserManager<AppUser> _userManager;
+        private readonly SignInManager<Pharmacy.Models.Entities.Users.AppUser> _signInManager;
         private readonly ApplicationDbContext _context;
 
-        public AbsenceRequestsController(ApplicationDbContext context)
+        public AbsenceRequestsController(ApplicationDbContext context, UserManager<AppUser> userManager,
+                SignInManager<AppUser> signInManager)
         {
-            _context = context;
-        }
+            _context = context; 
+            _userManager = userManager;
+            _signInManager = signInManager;
+            }
 
         // GET: AbsenceRequests
         public async Task<IActionResult> Index()
@@ -44,7 +53,7 @@ namespace Pharmacy.Controllers
         }
 
         // GET: AbsenceRequests/Create
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
             return View();
         }
@@ -56,6 +65,16 @@ namespace Pharmacy.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,EmployeeId,StartDateTime,EndDateTime,PharmacyAdministratorId")] AbsenceRequest absenceRequest)
         {
+
+            var userName = await _userManager.GetUserAsync(User);
+            //var userView = await _userManager.FindByNameAsync(userName);
+
+            absenceRequest.EmployeeId = userName.Id;
+
+            Pharmacy.Models.Entities.Pharmacy pharmacy = _context.tbPharmacys.Find(userName.PharmacyId);
+            AppUser pharmacyAdmin = _context.tbAppUsers.Find(pharmacy.AdminUserID);
+            absenceRequest.PharmacyAdministratorId = pharmacyAdmin.Id;
+
             if (ModelState.IsValid)
             {
                 _context.Add(absenceRequest);
