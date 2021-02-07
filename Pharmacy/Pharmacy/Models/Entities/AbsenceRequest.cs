@@ -10,10 +10,10 @@ namespace Pharmacy.Models.Entities
     public class AbsenceRequest
     {
         public long Id { get; set; }
-        public AppUser Employee { get; set; }
+        [ForeignKey("AppUser")]
+        public string EmployeeId { get; set; }
         public DateTime StartDateTime { get; set; }
         public DateTime EndDateTime { get; set; }
-
         [ForeignKey("AppUser")]
         public string PharmacyAdministratorId { get; set; }
     }

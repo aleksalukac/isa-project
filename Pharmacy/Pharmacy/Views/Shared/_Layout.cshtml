@@ -28,7 +28,6 @@
                     <ul class="navbar-nav flex-grow-1">
                         @if ((await AuthorizationService.AuthorizeAsync(User, null, "PharmacyAdminPolicy")).Succeeded)
                         {
-
                             <li class="nav-item">
                                 <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Appointments">Appointments</a>
                             </li>
@@ -69,6 +68,9 @@
                         {
                             <li class="nav-item">
                                 <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Drugs">Drugs</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="AbsenceRequests">AbsenceRequests</a>
                             </li>
                         }
                         else if ((await AuthorizationService.AuthorizeAsync(User, null, "AdminPolicy")).Succeeded)

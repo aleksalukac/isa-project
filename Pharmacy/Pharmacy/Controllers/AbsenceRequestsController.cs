@@ -54,7 +54,7 @@ namespace Pharmacy.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id")] AbsenceRequest absenceRequest)
+        public async Task<IActionResult> Create([Bind("Id,EmployeeId,StartDateTime,EndDateTime,PharmacyAdministratorId")] AbsenceRequest absenceRequest)
         {
             if (ModelState.IsValid)
             {
@@ -86,7 +86,7 @@ namespace Pharmacy.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(long id, [Bind("Id")] AbsenceRequest absenceRequest)
+        public async Task<IActionResult> Edit(long id, [Bind("Id,EmployeeId,StartDateTime,EndDateTime,PharmacyAdministratorId")] AbsenceRequest absenceRequest)
         {
             if (id != absenceRequest.Id)
             {

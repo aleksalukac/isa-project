@@ -101,10 +101,11 @@ namespace Pharmacy.Data
 
             modelBuilder.Entity<SupplyOffer>().ToTable("SupplyOffers");
 
-            modelBuilder.Entity<AbsenceRequest>().ToTable("AbsenceRequests")
-                .HasOne(y => y.Employee)
-                .WithMany(x => x.AbsenceRequests)
-                .OnDelete(DeleteBehavior.Restrict);
+            modelBuilder.Entity<AbsenceRequest>().ToTable("AbsenceRequests");
+            //modelBuilder.Entity<AbsenceRequest>().ToTable("AbsenceRequests")
+            //    .HasOne(y => y.Employee)
+            //    .WithMany(x => x.AbsenceRequests)
+            //    .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<AbsenceRequest>().ToTable("AbsenceRequests");/*
                 .HasOne(p => p.TimeSpan)

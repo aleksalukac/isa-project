@@ -14,6 +14,26 @@
         <form asp-action="Create">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
+                <label asp-for="EmployeeId" class="control-label"></label>
+                <input asp-for="EmployeeId" class="form-control" />
+                <span asp-validation-for="EmployeeId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="StartDateTime" class="control-label"></label>
+                <input asp-for="StartDateTime" class="form-control" />
+                <span asp-validation-for="StartDateTime" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="EndDateTime" class="control-label"></label>
+                <input asp-for="EndDateTime" class="form-control" />
+                <span asp-validation-for="EndDateTime" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="PharmacyAdministratorId" class="control-label"></label>
+                <input asp-for="PharmacyAdministratorId" class="form-control" />
+                <span asp-validation-for="PharmacyAdministratorId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />
             </div>
         </form>
