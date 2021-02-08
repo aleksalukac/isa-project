@@ -154,6 +154,8 @@ namespace Pharmacy.Areas.Identity.Pages.Account
                     };
                 }
 
+
+
                 var result = await _userManager.CreateAsync(user, Input.Password);
 
                 if (Input.Role != null && Input.Role != "")

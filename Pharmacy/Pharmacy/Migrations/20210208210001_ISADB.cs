@@ -19,7 +19,8 @@ namespace Pharmacy.Migrations
                     Report = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     StartDateTime = table.Column<DateTime>(type: "datetime2", nullable: false),
                     Duration = table.Column<TimeSpan>(type: "time", nullable: false),
-                    Type = table.Column<int>(type: "int", nullable: false)
+                    Type = table.Column<int>(type: "int", nullable: false),
+                    PhrmacyId = table.Column<long>(type: "bigint", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -39,6 +40,8 @@ namespace Pharmacy.Migrations
                     Penalty = table.Column<int>(type: "int", nullable: false),
                     AverageScore = table.Column<float>(type: "real", nullable: false),
                     PharmacyId = table.Column<long>(type: "bigint", nullable: false),
+                    WorkHoursStart = table.Column<TimeSpan>(type: "time", nullable: false),
+                    WorkHoursEnd = table.Column<TimeSpan>(type: "time", nullable: false),
                     UserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     NormalizedUserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     Email = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
@@ -72,23 +75,6 @@ namespace Pharmacy.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Orders",
-                columns: table => new
-                {
-                    Id = table.Column<long>(type: "bigint", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Cost = table.Column<double>(type: "float", nullable: false),
-                    TimeOfTransaction = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Reserved = table.Column<bool>(type: "bit", nullable: false),
-                    Sold = table.Column<bool>(type: "bit", nullable: false),
-                    ReSupply = table.Column<bool>(type: "bit", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Orders", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Pharmacys",
                 columns: table => new
                 {
@@ -119,28 +105,38 @@ namespace Pharmacy.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "UserSubscribed",
+                columns: table => new
+                {
+                    Id = table.Column<long>(type: "bigint", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    UserId = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    PharmacyId = table.Column<long>(type: "bigint", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_UserSubscribed", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "AbsenceRequests",
                 columns: table => new
                 {
                     Id = table.Column<long>(type: "bigint", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    EmployeeId = table.Column<string>(type: "nvarchar(450)", nullable: true),
-                    TimeSpan = table.Column<TimeSpan>(type: "time", nullable: false),
+                    EmployeeId = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     StartDateTime = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    PharmacyAdministratorId = table.Column<string>(type: "nvarchar(450)", nullable: true)
+                    EndDateTime = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    PharmacyAdministratorId = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Approved = table.Column<bool>(type: "bit", nullable: false),
+                    AppUserId = table.Column<string>(type: "nvarchar(450)", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_AbsenceRequests", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_AbsenceRequests_AppUsers_EmployeeId",
-                        column: x => x.EmployeeId,
-                        principalTable: "AppUsers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_AbsenceRequests_AppUsers_PharmacyAdministratorId",
-                        column: x => x.PharmacyAdministratorId,
+                        name: "FK_AbsenceRequests_AppUsers_AppUserId",
+                        column: x => x.AppUserId,
                         principalTable: "AppUsers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
@@ -221,7 +217,6 @@ namespace Pharmacy.Migrations
                     IsPrescribable = table.Column<bool>(type: "bit", nullable: false),
                     Notes = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     AverageScore = table.Column<double>(type: "float", nullable: false),
-                    Cost = table.Column<double>(type: "float", nullable: false),
                     DrugId = table.Column<long>(type: "bigint", nullable: true),
                     PharmacyId = table.Column<long>(type: "bigint", nullable: true)
                 },
@@ -302,6 +297,40 @@ namespace Pharmacy.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "tbComplaints",
+                columns: table => new
+                {
+                    Id = table.Column<long>(type: "bigint", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: true),
+                    EmployeeId = table.Column<string>(type: "nvarchar(450)", nullable: true),
+                    PharmacyId = table.Column<long>(type: "bigint", nullable: true),
+                    ReportText = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_tbComplaints", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_tbComplaints_AppUsers_EmployeeId",
+                        column: x => x.EmployeeId,
+                        principalTable: "AppUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_tbComplaints_AppUsers_UserId",
+                        column: x => x.UserId,
+                        principalTable: "AppUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_tbComplaints_Pharmacys_PharmacyId",
+                        column: x => x.PharmacyId,
+                        principalTable: "Pharmacys",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "AspNetRoleClaims",
                 columns: table => new
                 {
@@ -371,6 +400,30 @@ namespace Pharmacy.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "AppUserDrug",
+                columns: table => new
+                {
+                    AllergicDrugsId = table.Column<long>(type: "bigint", nullable: false),
+                    AllergicUsersId = table.Column<string>(type: "nvarchar(450)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_AppUserDrug", x => new { x.AllergicDrugsId, x.AllergicUsersId });
+                    table.ForeignKey(
+                        name: "FK_AppUserDrug_AppUsers_AllergicUsersId",
+                        column: x => x.AllergicUsersId,
+                        principalTable: "AppUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_AppUserDrug_Drugs_AllergicDrugsId",
+                        column: x => x.AllergicDrugsId,
+                        principalTable: "Drugs",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "tbDrugAndQuantities",
                 columns: table => new
                 {
@@ -379,7 +432,7 @@ namespace Pharmacy.Migrations
                     DrugId = table.Column<long>(type: "bigint", nullable: true),
                     PharmacyId = table.Column<long>(type: "bigint", nullable: false),
                     Quantity = table.Column<long>(type: "bigint", nullable: false),
-                    OrderId = table.Column<long>(type: "bigint", nullable: true)
+                    Price = table.Column<double>(type: "float", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -390,10 +443,45 @@ namespace Pharmacy.Migrations
                         principalTable: "Drugs",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "tbRating",
+                columns: table => new
+                {
+                    Id = table.Column<long>(type: "bigint", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: true),
+                    EmployeeId = table.Column<string>(type: "nvarchar(450)", nullable: true),
+                    DrugId = table.Column<long>(type: "bigint", nullable: true),
+                    PharmacyId = table.Column<long>(type: "bigint", nullable: true),
+                    Score = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_tbRating", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_tbDrugAndQuantities_Orders_OrderId",
-                        column: x => x.OrderId,
-                        principalTable: "Orders",
+                        name: "FK_tbRating_AppUsers_EmployeeId",
+                        column: x => x.EmployeeId,
+                        principalTable: "AppUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_tbRating_AppUsers_UserId",
+                        column: x => x.UserId,
+                        principalTable: "AppUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_tbRating_Drugs_DrugId",
+                        column: x => x.DrugId,
+                        principalTable: "Drugs",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_tbRating_Pharmacys_PharmacyId",
+                        column: x => x.PharmacyId,
+                        principalTable: "Pharmacys",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
@@ -425,20 +513,70 @@ namespace Pharmacy.Migrations
                         onDelete: ReferentialAction.Restrict);
                 });
 
-            migrationBuilder.CreateIndex(
-                name: "IX_AbsenceRequests_EmployeeId",
-                table: "AbsenceRequests",
-                column: "EmployeeId");
+            migrationBuilder.CreateTable(
+                name: "Orders",
+                columns: table => new
+                {
+                    Id = table.Column<long>(type: "bigint", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    DrugAndQuantitiesId = table.Column<long>(type: "bigint", nullable: true),
+                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: true),
+                    Cost = table.Column<double>(type: "float", nullable: false),
+                    TimeOfTransaction = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    TransactionComplete = table.Column<bool>(type: "bit", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Orders", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Orders_AppUsers_UserId",
+                        column: x => x.UserId,
+                        principalTable: "AppUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Orders_tbDrugAndQuantities_DrugAndQuantitiesId",
+                        column: x => x.DrugAndQuantitiesId,
+                        principalTable: "tbDrugAndQuantities",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "tbSaleItems",
+                columns: table => new
+                {
+                    Id = table.Column<long>(type: "bigint", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    DrugAndQuantitiesId = table.Column<long>(type: "bigint", nullable: true),
+                    BeforePrice = table.Column<double>(type: "float", nullable: false),
+                    EndTime = table.Column<DateTime>(type: "datetime2", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_tbSaleItems", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_tbSaleItems_tbDrugAndQuantities_DrugAndQuantitiesId",
+                        column: x => x.DrugAndQuantitiesId,
+                        principalTable: "tbDrugAndQuantities",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
 
             migrationBuilder.CreateIndex(
-                name: "IX_AbsenceRequests_PharmacyAdministratorId",
+                name: "IX_AbsenceRequests_AppUserId",
                 table: "AbsenceRequests",
-                column: "PharmacyAdministratorId");
+                column: "AppUserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_AppointmentDrug_PrescribedDrugsId",
                 table: "AppointmentDrug",
                 column: "PrescribedDrugsId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_AppUserDrug_AllergicUsersId",
+                table: "AppUserDrug",
+                column: "AllergicUsersId");
 
             migrationBuilder.CreateIndex(
                 name: "EmailIndex",
@@ -471,6 +609,16 @@ namespace Pharmacy.Migrations
                 name: "IX_Drugs_TypeId",
                 table: "Drugs",
                 column: "TypeId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Orders_DrugAndQuantitiesId",
+                table: "Orders",
+                column: "DrugAndQuantitiesId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Orders_UserId",
+                table: "Orders",
+                column: "UserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Reports_EmployeeId",
@@ -510,14 +658,49 @@ namespace Pharmacy.Migrations
                 column: "PharmacyId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_tbComplaints_EmployeeId",
+                table: "tbComplaints",
+                column: "EmployeeId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_tbComplaints_PharmacyId",
+                table: "tbComplaints",
+                column: "PharmacyId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_tbComplaints_UserId",
+                table: "tbComplaints",
+                column: "UserId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_tbDrugAndQuantities_DrugId",
                 table: "tbDrugAndQuantities",
                 column: "DrugId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_tbDrugAndQuantities_OrderId",
-                table: "tbDrugAndQuantities",
-                column: "OrderId");
+                name: "IX_tbRating_DrugId",
+                table: "tbRating",
+                column: "DrugId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_tbRating_EmployeeId",
+                table: "tbRating",
+                column: "EmployeeId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_tbRating_PharmacyId",
+                table: "tbRating",
+                column: "PharmacyId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_tbRating_UserId",
+                table: "tbRating",
+                column: "UserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_tbSaleItems_DrugAndQuantitiesId",
+                table: "tbSaleItems",
+                column: "DrugAndQuantitiesId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_UserClaims_UserId",
@@ -544,10 +727,16 @@ namespace Pharmacy.Migrations
                 name: "AppointmentDrug");
 
             migrationBuilder.DropTable(
+                name: "AppUserDrug");
+
+            migrationBuilder.DropTable(
                 name: "AspNetRoleClaims");
 
             migrationBuilder.DropTable(
                 name: "AspNetUserTokens");
+
+            migrationBuilder.DropTable(
+                name: "Orders");
 
             migrationBuilder.DropTable(
                 name: "Reports");
@@ -556,7 +745,13 @@ namespace Pharmacy.Migrations
                 name: "SupplyOffers");
 
             migrationBuilder.DropTable(
-                name: "tbDrugAndQuantities");
+                name: "tbComplaints");
+
+            migrationBuilder.DropTable(
+                name: "tbRating");
+
+            migrationBuilder.DropTable(
+                name: "tbSaleItems");
 
             migrationBuilder.DropTable(
                 name: "UserClaims");
@@ -568,22 +763,25 @@ namespace Pharmacy.Migrations
                 name: "UserRoles");
 
             migrationBuilder.DropTable(
+                name: "UserSubscribed");
+
+            migrationBuilder.DropTable(
                 name: "Appointments");
 
             migrationBuilder.DropTable(
                 name: "SupplyOrders");
 
             migrationBuilder.DropTable(
-                name: "Drugs");
-
-            migrationBuilder.DropTable(
-                name: "Orders");
+                name: "tbDrugAndQuantities");
 
             migrationBuilder.DropTable(
                 name: "AppUsers");
 
             migrationBuilder.DropTable(
                 name: "Roles");
+
+            migrationBuilder.DropTable(
+                name: "Drugs");
 
             migrationBuilder.DropTable(
                 name: "DrugType");

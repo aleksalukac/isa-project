@@ -399,24 +399,6 @@ namespace Pharmacy.Migrations
                     b.ToTable("Orders");
                 });
 
-            modelBuilder.Entity("Pharmacy.Models.Entities.PatientAllergy", b =>
-                {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
-                        .UseIdentityColumn();
-
-                    b.Property<long>("DrugID")
-                        .HasColumnType("bigint");
-
-                    b.Property<string>("PatientID")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("PatientAllergies");
-                });
-
             modelBuilder.Entity("Pharmacy.Models.Entities.Pharmacy", b =>
                 {
                     b.Property<long>("Id")
@@ -569,6 +551,24 @@ namespace Pharmacy.Migrations
                     b.HasIndex("PharmacyId");
 
                     b.ToTable("SupplyOrders");
+                });
+
+            modelBuilder.Entity("Pharmacy.Models.Entities.UserSubscribed", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .UseIdentityColumn();
+
+                    b.Property<long>("PharmacyId")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("UserSubscribed");
                 });
 
             modelBuilder.Entity("Pharmacy.Models.Entities.Users.AppUser", b =>

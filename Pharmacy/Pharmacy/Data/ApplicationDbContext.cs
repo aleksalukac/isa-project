@@ -44,15 +44,15 @@ namespace Pharmacy.Data
 
         public DbSet<Rating> Rating { get; set; }
 
-        public DbSet<PatientAllergy> PatientAllergy { get; set; }
-
         public DbSet<SaleItems> SaleItems { get; set; }
+
+        public DbSet<UserSubscribed> UserSubscribed { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
 
             base.OnModelCreating(modelBuilder);
-
+            
             modelBuilder.Entity<AppUser>().ToTable("AppUsers")
                 .HasMany(p => p.AbsenceRequests)
                 .WithOne();
@@ -81,10 +81,7 @@ namespace Pharmacy.Data
 
             modelBuilder.Entity<AbsenceRequest>().ToTable("AbsenceRequests");
 
-            modelBuilder.Entity<AbsenceRequest>().ToTable("AbsenceRequests");
-
-            modelBuilder.Entity<PatientAllergy>().ToTable("PatientAllergies");
-
+            modelBuilder.Entity<UserSubscribed>().ToTable("UserSubscribed");
         }
     }
 }

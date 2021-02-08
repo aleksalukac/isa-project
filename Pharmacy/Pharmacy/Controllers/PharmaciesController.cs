@@ -52,7 +52,31 @@ namespace Pharmacy.Controllers
                 }
             }
 
-            return View(filteredPharmacies);
+            return View(FilterPharmacies(filteredPharmacies, searchString, filter));
+        }
+
+        private static List<Pharmacy.Models.Entities.Pharmacy> FilterPharmacies(List<Pharmacy.Models.Entities.Pharmacy> pharmacies, string searchString, string filter)
+        {
+            List<Pharmacy.Models.Entities.Pharmacy> filteredUsers = new List<Pharmacy.Models.Entities.Pharmacy>();
+            if (string.IsNullOrEmpty(searchString))
+            {
+                filteredUsers = pharmacies;
+            }
+            else
+            {
+                foreach (var user in pharmacies)
+                {
+                    var json = JsonConvert.SerializeObject(user);
+                    var dictionary = JsonConvert.DeserializeObject<Dictionary<string, string>>(json);
+
+                    if (dictionary[filter] != null && dictionary[filter].ToUpper().Contains(searchString.ToUpper()))
+                    {
+                        filteredUsers.Add(user);
+                    }
+                }
+            }
+
+            return filteredUsers;
         }
 
         // GET: Pharmacies/Details/5
@@ -133,7 +157,10 @@ namespace Pharmacy.Controllers
             {
                 try
                 {
-                    _context.Update(pharmacy);
+                    var pharmacytmp = await _context.tbPharmacys.FindAsync(id);
+                    pharmacytmp.Name = pharmacy.Name;
+                    pharmacytmp.Address = pharmacy.Address;
+                    _context.Update(pharmacytmp);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
