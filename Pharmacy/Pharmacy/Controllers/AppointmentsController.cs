@@ -52,6 +52,39 @@ namespace Pharmacy.Controllers
             return View(appointmentDTOList);
         }
 
+        [Authorize(Roles = "Pharmacist,Dermatologist")]
+        public async Task<IActionResult> Calendar()
+        {
+            var user = await _userManager.GetUserAsync(User);
+            var appointmentList = _appointmentService.GetByUser(user.Id).Result;
+
+            string codeForFront = "[";
+
+            int i = 0;
+            foreach (var appointment in appointmentList)
+            {
+                if(i++ > 0)
+                {
+                    codeForFront += ",";
+                }
+                AppUser medicalExpert = _context.tbAppUsers.Find(appointment.MedicalExpertID);
+                AppUser patient = _context.tbAppUsers.Find(appointment.PatientID);
+
+                string patientFullName = patient == null ? "" : patient.FirstName + " " + patient.LastName;
+
+                DateTime endTime = appointment.StartDateTime + appointment.Duration;
+
+                codeForFront += "{ title: '" + patientFullName + "', url: 'Details/" + appointment.Id + "', start: '" + 
+                    appointment.StartDateTime.ToString("yyyy’-‘MM’-‘dd’T’HH’:’mm’:’ss") + "', " +
+                    "end: '" + endTime.ToString("yyyy’-‘MM’-‘dd’T’HH’:’mm’:’ss") + "'}\n";
+            }
+            codeForFront += "]";
+
+            codeForFront = codeForFront.Replace("‘", "").Replace("’","");
+            ViewData["codeForFront"] = codeForFront;
+
+            return View();
+        }
 
         [Authorize(Roles = "Pharmacist,Dermatologist,Patient")]
         // GET: MyAppointments
