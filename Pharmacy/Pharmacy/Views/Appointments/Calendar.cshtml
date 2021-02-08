@@ -1,0 +1,46 @@
+﻿@model IEnumerable<Pharmacy.Models.DTO.AppointmentDTO>
+
+@{
+    ViewData["Title"] = "My Calendar";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>Calendar</h1>
+
+<!--https://codepen.io/nijin39/pen/JbQBXM-->
+
+<br />
+<div class="ui container">
+    <div class="ui container">
+        <div class="ui grid">
+            <div class="ui sixteen column">
+                <div id="calendar"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cpwebassets.codepen.io/assets/common/stopExecutionOnTimeout-157cd5b220a5c80d4ff8e0e70ac069bffd87a61252088146915e8726e5d9f147.js"></script>
+
+<script src='https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.7/semantic.min.js'></script>
+<script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js'></script>
+<script src='https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.17.1/moment.min.js'></script>
+<script src='https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.1.0/fullcalendar.min.js'></script>
+<script>
+    $(document).ready(function () {
+
+        $('#calendar').fullCalendar({
+            header: {
+                left: 'prev,next today',
+                center: 'title',
+                right: 'month,basicWeek,basicDay'
+            },
+            defaultDate: new Date().toISOString().split('T')[0],
+            navLinks: true, // can click day/week names to navigate views
+            editable: true,
+            eventLimit: true, // allow "more" link when too many events
+        events: @Html.Raw(ViewData["codeForFront"])
+        });
+
+    });
+</script>

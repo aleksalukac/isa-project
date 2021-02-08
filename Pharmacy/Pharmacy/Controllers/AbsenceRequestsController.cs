@@ -14,6 +14,7 @@ using Pharmacy.Areas.Identity;
 using Pharmacy.Data;
 using Pharmacy.Models.Entities;
 using Pharmacy.Models.Entities.Users;
+using Pharmacy.Services;
 
 namespace Pharmacy.Controllers
 {
@@ -23,14 +24,19 @@ namespace Pharmacy.Controllers
         private readonly SignInManager<Pharmacy.Models.Entities.Users.AppUser> _signInManager;
         private readonly ApplicationDbContext _context;
         private readonly EmailSender _emailSender;
+        private readonly IUserService _userService;
+        private readonly IAbsenceRequestService _absenceRequestService;
 
         public AbsenceRequestsController(ApplicationDbContext context, UserManager<AppUser> userManager,
-                SignInManager<AppUser> signInManager,
+                SignInManager<AppUser> signInManager, IUserService userService, IAbsenceRequestService absenceRequestService,
                 IEmailSender emailSender)
         {
             _context = context; 
             _userManager = userManager;
-            _signInManager = signInManager; 
+            _signInManager = signInManager;
+            _userService = userService;
+            _absenceRequestService = absenceRequestService;
+
             using (StreamReader r = new StreamReader("./Areas/Identity/emailCredentials.json"))
             {
                 string json = r.ReadToEnd();
@@ -39,12 +45,21 @@ namespace Pharmacy.Controllers
         }
 
         // GET: AbsenceRequests
+        [Authorize(Roles = "Dermatologist,Pharmacist,PharmacyAdmin")]
         public async Task<IActionResult> Index()
         {
+            var user = await _userManager.GetUserAsync(User);
+
+            if (_userService.GetUserRole(user.Id).Equals("Pharmacist") || _userService.GetUserRole(user.Id).Equals("Dermatologist"))
+            {
+                return View(_absenceRequestService.GetByUser(user.Id));
+            }
+
             return View(await _context.tbAbsenceRequests.ToListAsync());
         }
 
         // GET: AbsenceRequests/Details/5
+        [Authorize(Roles = "Dermatologist,Pharmacist,PharmacyAdmin")]
         public async Task<IActionResult> Details(long? id)
         {
             if (id == null)
@@ -63,6 +78,7 @@ namespace Pharmacy.Controllers
         }
 
         // GET: AbsenceRequests/Create
+        [Authorize(Roles = "Dermatologist,Pharmacist")]
         public async Task<IActionResult> Create()
         {
             return View();
@@ -73,11 +89,10 @@ namespace Pharmacy.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Dermatologist,Pharmacist")]
         public async Task<IActionResult> Create([Bind("Id,EmployeeId,StartDateTime,EndDateTime,PharmacyAdministratorId")] AbsenceRequest absenceRequest)
         {
-
             var userName = await _userManager.GetUserAsync(User);
-            //var userView = await _userManager.FindByNameAsync(userName);
 
             absenceRequest.EmployeeId = userName.Id;
 
@@ -95,6 +110,7 @@ namespace Pharmacy.Controllers
         }
 
         // GET: AbsenceRequests/Edit/5
+        [Authorize(Roles = "Dermatologist,Pharmacist,PharmacyAdmin")]
         public async Task<IActionResult> Edit(long? id)
         {
             if (id == null)
@@ -115,6 +131,7 @@ namespace Pharmacy.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Dermatologist,Pharmacist,PharmacyAdmin")]
         public async Task<IActionResult> Edit(long id, [Bind("Id,EmployeeId,StartDateTime,EndDateTime,PharmacyAdministratorId")] AbsenceRequest absenceRequest)
         {
             if (id != absenceRequest.Id)
@@ -146,6 +163,7 @@ namespace Pharmacy.Controllers
         }
 
         // GET: AbsenceRequests/Delete/5
+        [Authorize(Roles = "Dermatologist,Pharmacist,PharmacyAdmin")]
         public async Task<IActionResult> Delete(long? id)
         {
             if (id == null)

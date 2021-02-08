@@ -13,7 +13,23 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - Pharmacy</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="~/css/site.css" />
+
+    <link href='https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.1.0/fullcalendar.print.min.css' rel='stylesheet' media='print' />
+
+    <link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.1.0/fullcalendar.min.css'>
+    <link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.7/semantic.min.css'>
+
+    <script>
+        window.console = window.console || function (t) { };
+    </script>
+
+    <script>
+        if (document.location.search.match(/type=embed/gi)) {
+            window.parent.postMessage("resize", "*");
+        }
+    </script>
+
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js'></script>
 </head>
 <body>
     <header>
@@ -38,8 +54,14 @@
                                 <a class="nav-link text-dark" asp-area="" asp-controller="AppUsers" asp-action="DermatologistList">Dermatologist</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Pharmacies">Pharmacy</a>
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Pharmacies" asp-action="Index">Pharmacy</a>
                                 <!--asp-action="Edit" asp-route-id="1"-->
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Drugs">Drugs</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="AbsenceRequests" asp-action="Index">AbsenceRequests</a>
                             </li>
                         }
                         @if ((await AuthorizationService.AuthorizeAsync(User, null, "PharmacistPolicy")).Succeeded)
@@ -54,10 +76,13 @@
                                 <a class="nav-link text-dark" asp-area="" asp-controller="AppUsers" asp-action="DermatologistList">Dermatologist</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Pharmacies">Pharmacy</a>
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Pharmacies" asp-action="Index">Pharmacy</a>
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link text-dark" asp-area="" asp-controller="Orders" asp-action="SearchOrder">Checkout orders</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="AbsenceRequest" asp-action="Index">AbsenceRequest</a>
                             </li>
                         }
                         @if ((await AuthorizationService.AuthorizeAsync(User, null, "PharmacyAdminPolicy")).Succeeded)
@@ -107,15 +132,6 @@
                             </li>
 
                         }
-                        else if ((await AuthorizationService.AuthorizeAsync(User, null, "DermatologistPolicy")).Succeeded)
-                        {
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Drugs">Drugs</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="AbsenceRequests">AbsenceRequests</a>
-                            </li>
-                        }
                         else if ((await AuthorizationService.AuthorizeAsync(User, null, "AdminPolicy")).Succeeded)
                         {
                             <li class="nav-item">
@@ -149,7 +165,7 @@
             &copy; 2021 - Pharmacy - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
         </div>
     </footer>
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)

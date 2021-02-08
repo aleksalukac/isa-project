@@ -46,6 +46,8 @@ namespace Pharmacy.Data
 
         public DbSet<PatientAllergy> PatientAllergy { get; set; }
 
+        public DbSet<SaleItems> SaleItems { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
 
