@@ -27,7 +27,8 @@ namespace Pharmacy.Controllers
         }
 
         // GET: Pharmacies
-        
+
+        [Authorize]
         public async Task<IActionResult> Index(string searchString = "", string filter = "")
         {
             var pharmacies = await _context.tbPharmacys.ToListAsync();
