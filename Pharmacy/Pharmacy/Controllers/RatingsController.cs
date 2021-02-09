@@ -106,9 +106,9 @@ namespace Pharmacy.Controllers
             var loggedInUser = await _userManager.GetUserAsync(User);
 
             List<long> pharmacyOrders = await _context.tbOrders
-                .Include(x => x.User)
+                .Include(x => x.UserId)
                 .Include(x => x.DrugAndQuantities)
-                .Where(x => x.TransactionComplete && x.User.Id == loggedInUser.Id)
+                .Where(x => x.TransactionComplete && x.UserId == loggedInUser.Id)
                 .Select(x => x.DrugAndQuantities.PharmacyId)
                 .ToListAsync();
 

@@ -151,12 +151,11 @@ namespace Pharmacy.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [Authorize(Roles = "Pharmacist")]
-        public async Task<IActionResult> EndOrder([Bind("Id,Cost,TransactionComplete")] Order order)
+        public async Task<IActionResult> EndOrder([Bind("Id,Cost,TransactionComplete,UserId")] Order order)
         {
-            Order oldOrder = await _orderService.GetById(order.Id);
-            bool alreadyCompleted = oldOrder.TransactionComplete;
+            bool alreadyCompleted = await _orderService.IsOrderCompleted(order.Id);
 
-            AppUser user = await _userService.GetById(oldOrder.UserId);
+            AppUser user = await _userService.GetById(order.UserId);
 
             if (!alreadyCompleted && order.TransactionComplete)
             {

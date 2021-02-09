@@ -30,6 +30,15 @@ namespace Pharmacy.Services
             return orders;
         }
 
+        public async Task<bool> IsOrderCompleted(long id)
+        {
+            bool isCompleted = await (from order in _context.tbOrders
+                                     where order.Id == id 
+                                     select order.TransactionComplete).FirstOrDefaultAsync();
+
+            return isCompleted;
+        }
+
         public async Task Update(Order order)
         {
             if(order != null)
