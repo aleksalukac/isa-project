@@ -171,8 +171,8 @@ namespace Pharmacy.Controllers
             return View();
         }
 
-        [Authorize(Roles = "PharmacyAdmin")]
         // GET: Appointments/Create
+        [Authorize(Roles = "PharmacyAdmin")]
         public IActionResult Create()
         {
             List<AppUser> entryPoint = (from user in _context.tbAppUsers

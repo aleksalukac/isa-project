@@ -31,6 +31,11 @@ namespace Pharmacy.Services
             return userRole.FirstOrDefault();
         }
 
+        public async Task<AppUser> GetById(string id)
+        {
+            return await _context.tbAppUsers.FindAsync(id);
+        }
+
         public async Task<List<AppUser>> GetByList(List<string> idList)
         {
             List<AppUser> users = await _context.AppUsers
@@ -38,6 +43,13 @@ namespace Pharmacy.Services
                                           .ToListAsync();
 
             return users;
+        }
+
+        public async Task<bool> Update(AppUser user)
+        {
+            _context.Update(user);
+
+            return true;
         }
     }
 }
