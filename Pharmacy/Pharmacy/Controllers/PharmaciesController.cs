@@ -27,7 +27,7 @@ namespace Pharmacy.Controllers
         }
 
         // GET: Pharmacies
-        [AllowAnonymous]
+        
         public async Task<IActionResult> Index(string searchString = "", string filter = "")
         {
             var pharmacies = await _context.tbPharmacys.ToListAsync();
@@ -213,6 +213,18 @@ namespace Pharmacy.Controllers
         private bool PharmacyExists(long id)
         {
             return _context.tbPharmacys.Any(e => e.Id == id);
+        }
+
+        public async Task<IActionResult> Subscribe(long? id)
+        {
+            var user = await _userManager.GetUserAsync(User);
+            UserSubscribed userSubscribed = new UserSubscribed();
+            userSubscribed.PharmacyId = (long) id;
+            userSubscribed.UserId =  user.Id;
+            _context.Add(userSubscribed);
+            await _context.SaveChangesAsync();
+
+            return View();
         }
     }
 }

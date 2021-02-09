@@ -76,6 +76,13 @@
                     {
                         <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
                     }
+                    @if ((await AuthorizationService.AuthorizeAsync(User, null, "UserPolicy")).Succeeded)
+                    {
+                        <p>
+                            <a asp-action="Subscribe" asp-route-id="@item.Id">Subscribe</a>
+                        </p>
+
+                    }
                 </td>
             </tr>
         }

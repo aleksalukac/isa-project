@@ -1,22 +1,36 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
+using Pharmacy.Areas.Identity;
 using Pharmacy.Data;
 using Pharmacy.Models.Entities;
+using Pharmacy.Models.Entities.Users;
 
 namespace Pharmacy.Controllers
 {
     public class SaleItemsController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly UserManager<AppUser> _userManager;
+        private readonly EmailSender _emailSender;
 
-        public SaleItemsController(ApplicationDbContext context)
+        public SaleItemsController(UserManager<AppUser> userManager, ApplicationDbContext context, IEmailSender emailSender)
         {
             _context = context;
+            _userManager = userManager;
+            using (StreamReader r = new StreamReader("./Areas/Identity/emailCredentials.json"))
+            {
+                string json = r.ReadToEnd();
+                _emailSender = JsonConvert.DeserializeObject<EmailSender>(json);
+            }
         }
 
         // GET: SaleItems
@@ -62,13 +76,33 @@ namespace Pharmacy.Controllers
             if (ModelState.IsValid)
             {
                 saleItems.DrugAndQuantitiesId = DrugAndQuantitiesId;
-                var drugAndQuantity = await _context.DrugAndQuantity.FindAsync(DrugAndQuantitiesId);
+                var drugAndQuantity = await _context.DrugAndQuantity.Include(x => x.Drug).FirstOrDefaultAsync(x => x.Id == DrugAndQuantitiesId) ;
+                //var drugAndQuantity = await _context.DrugAndQuantity.FindAsync(DrugAndQuantitiesId);
                 var price = drugAndQuantity.Price;
                 drugAndQuantity.Price = saleItems.BeforePrice;
                 saleItems.BeforePrice = price;
                 _context.Update(drugAndQuantity);
                 _context.Add(saleItems);
                 await _context.SaveChangesAsync();
+
+                // Sending Email to each user
+                var pharmacyAdmin = await _userManager.GetUserAsync(User);
+                var userSub = await _context.UserSubscribed.Where(x => x.PharmacyId == pharmacyAdmin.PharmacyId).Select(x => x.UserId).ToArrayAsync();
+                List<string> entryPoint = await (from userrole in _context.UserRoles
+                                                 join role in _context.Roles on userrole.RoleId equals role.Id
+                                                 where role.Name == "User"
+                                                 select userrole.UserId).ToListAsync();
+                var user = await _context.AppUsers.Where(e => entryPoint.Contains(e.Id)).Where(x => userSub.Contains(x.Id)).ToListAsync();
+
+                var drugAtDiscort = await _context.tbDrugs.FindAsync(drugAndQuantity.Drug.Id);
+                var pharmacy = await _context.tbPharmacys.FindAsync(pharmacyAdmin.PharmacyId);
+                
+                foreach (AppUser UsersEmail in user)
+                {
+                    await _emailSender.SendEmailAsync(UsersEmail.Email, "DISCORT AT" + pharmacy.Name,
+                         $"Order " + drugAtDiscort.Name + " for  ONLY " + drugAndQuantity.Price+ " until "+saleItems.EndTime+"! Save "+ (saleItems.BeforePrice - drugAndQuantity.Price) + "  EUROS");
+                }
+
                 return RedirectToAction(nameof(Index));
             }
             return View(saleItems);
@@ -121,6 +155,7 @@ namespace Pharmacy.Controllers
                     }
                 }
                 return RedirectToAction(nameof(Index));
+
             }
             return View(saleItems);
         }
