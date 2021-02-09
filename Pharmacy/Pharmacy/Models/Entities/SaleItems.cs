@@ -12,7 +12,9 @@ namespace Pharmacy.Models.Entities
     public class SaleItems
     {
         public long Id { get; set; }
-        public DrugAndQuantities DrugAndQuantities { get; set; }
+
+        [ForeignKey("tbDrugAndQuantities")]
+        public long DrugAndQuantitiesId { get; set; }
         public double BeforePrice { get; set; }
         public DateTime EndTime { get; set; }
 

@@ -9,6 +9,8 @@ using System.Linq;
 using Microsoft.EntityFrameworkCore;
 using System.Globalization;
 using Microsoft.AspNetCore.Authorization;
+using Pharmacy.Models.Entities.Users;
+using Microsoft.AspNetCore.Identity;
 
 namespace Pharmacy.Controllers
 {
@@ -16,9 +18,11 @@ namespace Pharmacy.Controllers
     public class ColumnChartController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly UserManager<AppUser> _userManager;
 
-        public ColumnChartController(ApplicationDbContext context)
+        public ColumnChartController(ApplicationDbContext context, UserManager<AppUser> userManager)
         {
+            _userManager = userManager;
             _context = context;
         }
 
@@ -82,10 +86,96 @@ namespace Pharmacy.Controllers
             var populationList = GetCityPopulationListQuarterAsync().Result;
             return Json(populationList);
         }
+
         [HttpGet]
         public JsonResult PopulationChartMonth()
         {
             var populationList = GetCityPopulationListMonthAsync().Result;
+            return Json(populationList);
+        }
+
+
+        public async Task<List<PopulationModel>> GetAppoitmentListYearAsync()
+        {
+            var list = new List<PopulationModel>();
+            var user = await _userManager.GetUserAsync(User);
+            list.Add(new PopulationModel { CityName = "This Year", PopulationYear2020 = (int)(await _context.tbAppointments.Where(x => x.PhrmacyId == user.PharmacyId && x.StartDateTime.Year == DateTime.Now.Year).ToListAsync()).Count()});
+            list.Add(new PopulationModel { CityName = "Last Year", PopulationYear2020 = (int)(await _context.tbAppointments.Where(x => x.PhrmacyId == user.PharmacyId && x.StartDateTime.Year == DateTime.Now.Year - 1).ToListAsync()).Count() });
+            list.Add(new PopulationModel { CityName = "2 Years Ago", PopulationYear2020 = (int)(await _context.tbAppointments.Where(x => x.PhrmacyId == user.PharmacyId && x.StartDateTime.Year == DateTime.Now.Year - 2).ToListAsync()).Count() });
+            list.Add(new PopulationModel { CityName = "3 Years Ago", PopulationYear2020 = (int)(await _context.tbAppointments.Where(x => x.PhrmacyId == user.PharmacyId && x.StartDateTime.Year == DateTime.Now.Year - 3).ToListAsync()).Count() });
+
+            return list;
+        }
+
+        public async Task<List<PopulationModel>> GetAppoitmentQuarterAsync()
+        {
+            var list = new List<PopulationModel>();
+            var user = await _userManager.GetUserAsync(User);
+            list.Add(new PopulationModel { CityName = "First Quarter", PopulationYear2020 = (int)(await _context.tbAppointments.Where(x => x.PhrmacyId == user.PharmacyId && x.StartDateTime <= DateTime.Now && x.StartDateTime >= DateTime.Now.AddMonths(-3)).ToListAsync()).Count() });
+            list.Add(new PopulationModel { CityName = "Second Quarter", PopulationYear2020 = (int)(await _context.tbAppointments.Where(x => x.PhrmacyId == user.PharmacyId && x.StartDateTime <= DateTime.Now.AddMonths(-3) && x.StartDateTime >= DateTime.Now.AddMonths(-6)).ToListAsync()).Count() });
+            list.Add(new PopulationModel { CityName = "Third Quarter", PopulationYear2020 = (int)(await _context.tbAppointments.Where(x => x.PhrmacyId == user.PharmacyId && x.StartDateTime <= DateTime.Now.AddMonths(-6) && x.StartDateTime >= DateTime.Now.AddMonths(-9)).ToListAsync()).Count() });
+            list.Add(new PopulationModel { CityName = "Forth Quarter", PopulationYear2020 = (int)(await _context.tbAppointments.Where(x => x.PhrmacyId == user.PharmacyId && x.StartDateTime <= DateTime.Now.AddMonths(-9) && x.StartDateTime >= DateTime.Now.AddMonths(-12)).ToListAsync()).Count() });
+
+            return list;
+        }
+
+        public async Task<List<PopulationModel>> GetAppoitmentMonthAsync()
+        {
+            var list = new List<PopulationModel>();
+            var user = await _userManager.GetUserAsync(User);
+            for (int i = 0; i < 12; i++)
+            {
+                list.Add(new PopulationModel { CityName = new DateTime(1, i + 1, 1).ToString("MMMM", CultureInfo.CreateSpecificCulture("en-GB")), PopulationYear2020 = (int)(await _context.tbAppointments.Where(x => x.StartDateTime.Month == i + 1 && (x.StartDateTime.Year == DateTime.Now.Year || x.StartDateTime.Year == DateTime.Now.Year - 1)).ToListAsync()).Count() });
+
+            }
+
+            return list;
+        }
+
+        [HttpGet]
+        public JsonResult AppoitmentChartYear()
+        {
+            var populationList = GetAppoitmentListYearAsync().Result;
+            return Json(populationList);
+        }
+
+        [HttpGet]
+        public JsonResult AppoitmentChartQuarter()
+        {
+            var populationList = GetAppoitmentQuarterAsync().Result;
+            return Json(populationList);
+        }
+
+        [HttpGet]
+        public JsonResult AppoitmentChartMonth()
+        {
+            var populationList = GetAppoitmentMonthAsync().Result;
+            return Json(populationList);
+        }
+
+
+        public async Task<List<PopulationModel>> GetTotalRevenueAsync()
+        {
+            var list = new List<PopulationModel>();
+            var user = await _userManager.GetUserAsync(User);
+            for (int i = 0; i < 12; i++)
+            {
+                var priceApp = (int)(await _context.tbAppointments.Where(x => x.StartDateTime.Month == i + 1 && (x.StartDateTime.Year == DateTime.Now.Year || x.StartDateTime.Year == DateTime.Now.Year - 1)).ToListAsync()).Sum(app => app.Price);
+                var priceDrugs = (int)(await _context.tbOrders.Where(x => x.TimeOfTransaction.Month == i + 1 && (x.TimeOfTransaction.Year == DateTime.Now.Year || x.TimeOfTransaction.Year == DateTime.Now.Year - 1)).ToListAsync()).Sum(x => x.Cost);
+                list.Add(new PopulationModel
+                {
+                    CityName = new DateTime(1, i + 1, 1).ToString("MMMM", CultureInfo.CreateSpecificCulture("en-GB")),
+                    PopulationYear2020 = priceApp + priceDrugs
+                });
+            }
+
+            return list;
+        }
+
+        [HttpGet]
+        public JsonResult TotalRevenue()
+        {
+            var populationList = GetTotalRevenueAsync().Result;
             return Json(populationList);
         }
     }

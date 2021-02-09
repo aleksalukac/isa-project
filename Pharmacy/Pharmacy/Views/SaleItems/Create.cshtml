@@ -1,0 +1,66 @@
+﻿
+@model Pharmacy.Models.Entities.SaleItems
+
+
+@{
+    ViewData["Title"] = "Create";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>Create</h1>
+
+<h4>SaleItems</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="BeforePrice" class="control-label"></label>
+                <input asp-for="BeforePrice" class="form-control" />
+                <span asp-validation-for="BeforePrice" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="EndTime" class="control-label"></label>
+                <input asp-for="EndTime" class="form-control" />
+                <span asp-validation-for="EndTime" class="text-danger"></span>
+            </div>
+
+            <div class="form-group mx-sm-3 mb-2">
+                <select name="DrugAndQuantitiesId" id="DrugAndQuantitiesId" class="form-control">
+
+                    @foreach (Pharmacy.Models.Entities.DrugAndQuantities item in (List<Pharmacy.Models.Entities.DrugAndQuantities>)@ViewData["DrugAndQuantities"])
+                    {
+                        bool onSale = false;
+                        @foreach (Pharmacy.Models.Entities.SaleItems sale in (List<Pharmacy.Models.Entities.SaleItems>)@ViewData["SaleItems"])
+                        {
+                            if (sale.DrugAndQuantitiesId == item.Id)
+                            {
+                                onSale = true;
+                                break;
+                            }
+                        }
+                        @if (!onSale)
+                        {
+                            @foreach (Pharmacy.Models.Entities.Drug itemDrug in (List<Pharmacy.Models.Entities.Drug>)@ViewData["Drugs"])
+                            {
+                                <option value=@item.Id class="option">@itemDrug.Name with quantity @item.Quantity</option>
+                            }
+                        }
+                    }
+                </select>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
