@@ -29,7 +29,7 @@ namespace Pharmacy.Controllers
         // GET: Pharmacies
         public async Task<IActionResult> Index(string searchString = "", string filter = "", string sort = "")
         {
-            List<Models.Entities.Pharmacy> pharmacies = new;
+            List<Models.Entities.Pharmacy> pharmacies = new List<Models.Entities.Pharmacy>();
 
             if (sort != null)
             {
