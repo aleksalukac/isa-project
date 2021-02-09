@@ -26,14 +26,16 @@ namespace Pharmacy.Controllers
         private readonly UserManager<AppUser> _userManager;
         private readonly IOrderService _orderService;
         private readonly EmailSender _emailSender;
+        private readonly IUserService _userService;
 
         public OrdersController(UserManager<AppUser> userManager,
             ApplicationDbContext context, IOrderService orderService,
-            IEmailSender emailSender)
+            IUserService userService, IEmailSender emailSender)
         {
             _userManager = userManager;
             _context = context;
             _orderService = orderService;
+            _userService = userService;
             using (StreamReader r = new StreamReader("./Areas/Identity/emailCredentials.json"))
             {
                 string json = r.ReadToEnd();
@@ -127,12 +129,14 @@ namespace Pharmacy.Controllers
 
             var user = await _userManager.GetUserAsync(User);
 
-            var orders = _orderService.GetByPharmacyAndId(user.PharmacyId, id.Value).Result;
+            var orders = await _orderService.GetByPharmacyAndId(user.PharmacyId, id.Value);
 
             if (orders.Count == 0)
             {
                 return NotFound();
             }
+
+            ViewData["completed"] = orders.FirstOrDefault().TransactionComplete;
 
             return View(orders.FirstOrDefault());
         }
@@ -144,7 +148,20 @@ namespace Pharmacy.Controllers
         [Authorize(Roles = "Pharmacist")]
         public async Task<IActionResult> CheckoutOrder([Bind("Id,Cost,TransactionComplete")] Order order)
         {
-            _orderService.Update(order);
+            if(ViewData["complete"] != null)
+            {
+                if (!(bool)ViewData["completed"] && order.TransactionComplete)
+                {
+                    ;
+                    //slati mejl
+                    // penal ako dugo ceka
+                    if((DateTime.Now - order.TimeOfTransaction).TotalDays > 0)
+                    {
+                        //_userService.GetById(order.User);
+                    }
+                }
+            }
+            await _orderService.Update(order);
             return View("SearchOrder");
         }
 
