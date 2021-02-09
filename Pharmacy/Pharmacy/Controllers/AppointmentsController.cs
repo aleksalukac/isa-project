@@ -56,7 +56,7 @@ namespace Pharmacy.Controllers
         public async Task<IActionResult> Calendar()
         {
             var user = await _userManager.GetUserAsync(User);
-            var appointmentList = _appointmentService.GetByUser(user.Id).Result;
+            var appointmentList = _appointmentService.GetByMedicalExpert(user.Id).Result;
 
             string codeForFront = "[";
 
@@ -86,12 +86,41 @@ namespace Pharmacy.Controllers
             return View();
         }
 
+        [Authorize(Roles = "Pharmacist,Dermatologist")]
+        // GET: MyAppointments
+        public async Task<IActionResult> PatientAppointments(string id = "")
+        {
+            if(id.Length == 0)
+            {
+                return NotFound();
+            }
+
+            var user = await _userManager.GetUserAsync(User);
+            var appointmentList = _appointmentService.GetByPatient(id).Result;
+
+            var appointmentDTOList = new List<AppointmentDTO>();
+
+            foreach (var appointment in appointmentList)
+            {
+                AppUser medicalExpert = _context.tbAppUsers.Find(appointment.MedicalExpertID);
+                AppUser patient = _context.tbAppUsers.Find(appointment.PatientID);
+
+                string patientFullName = patient == null ? "" : patient.FirstName + " " + patient.LastName;
+                string medicalExpertFullname = medicalExpert == null ? "" : medicalExpert.FirstName + " " + medicalExpert.LastName;
+
+                appointmentDTOList.Add(new AppointmentDTO(appointment,
+                    medicalExpertFullname, patientFullName));
+            }
+
+            return View(appointmentDTOList);
+        }
+
         [Authorize(Roles = "Pharmacist,Dermatologist,Patient")]
         // GET: MyAppointments
         public async Task<IActionResult> MyAppointments()
         {
             var user = await _userManager.GetUserAsync(User);
-            var appointmentList = _appointmentService.GetByUser(user.Id).Result;
+            var appointmentList = _appointmentService.GetByMedicalExpert(user.Id).Result;
 
             var appointmentDTOList = new List<AppointmentDTO>();
 

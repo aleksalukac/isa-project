@@ -30,5 +30,14 @@ namespace Pharmacy.Services
 
             return userRole.FirstOrDefault();
         }
+
+        public async Task<List<AppUser>> GetByList(List<string> idList)
+        {
+            List<AppUser> users = await _context.AppUsers
+                                          .Where(l => idList.Any(id => id == l.Id))
+                                          .ToListAsync();
+
+            return users;
+        }
     }
 }

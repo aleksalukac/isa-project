@@ -10,9 +10,11 @@ namespace Pharmacy.Models.DTO
     {
         public string MedicalExpertNameAndSurname { get; set; }
         public string PatientNameAndSurname { get; set; }
+        public long AppointmentId { get; set; }
 
         public AppointmentDTO(Appointment appointment, string _medicalExpertNameAndSurname, string _patientNameAndSurname)
         {
+            this.AppointmentId = appointment.Id;
             this.MedicalExpertID = appointment.MedicalExpertID;
             this.PatientID = appointment.PatientID;
             this.Price = appointment.Price;

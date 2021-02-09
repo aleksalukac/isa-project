@@ -1,5 +1,13 @@
 ﻿@model Pharmacy.Models.Entities.Appointment
 
+@using Microsoft.AspNetCore.Authorization
+@inject IAuthorizationService AuthorizationService
+
+@using Microsoft.AspNetCore.Identity
+@using Pharmacy.Models.Entities.Users
+@inject SignInManager<Pharmacy.Models.Entities.Users.AppUser> SignInManager
+@inject UserManager<AppUser> UserManager
+
 @{
     ViewData["Title"] = "Edit";
     Layout = "~/Views/Shared/_Layout.cshtml";
@@ -18,7 +26,7 @@
                 <select asp-for="MedicalExpertID" class="form-control">
                     @foreach (Pharmacy.Models.Entities.Users.AppUser item in (List<Pharmacy.Models.Entities.Users.AppUser>)@ViewData["DermatologistList"])
                     {
-                    <option value=@item.Id class="option">@item.FirstName  @item.LastName</option>
+                        <option value=@item.Id class="option">@item.FirstName  @item.LastName</option>
                     }
                 </select>
             </div>
@@ -50,7 +58,10 @@
 </div>
 
 <div>
-    <a asp-action="Index">Back to List</a>
+    @if ((await AuthorizationService.AuthorizeAsync(User, null, "PharmacyAdminPolicy")).Succeeded)
+    {
+        <a asp-action="Index">Back to List</a>
+    }
 </div>
 
 @section Scripts {
