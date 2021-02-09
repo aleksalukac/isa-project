@@ -37,11 +37,20 @@ namespace Pharmacy.Services
             return appointments;
         }
 
-        public async Task<List<Appointment>> GetByUser(string id)
+        public async Task<List<Appointment>> GetByMedicalExpert(string id)
         {
             var appointments = await(from appointment in _context.tbAppointments
                                        where appointment.MedicalExpertID == id
                                        select appointment).ToListAsync();
+
+            return appointments;
+        }
+
+        public async Task<List<Appointment>> GetByPatient(string id)
+        {
+            var appointments = await (from appointment in _context.tbAppointments
+                                      where appointment.PatientID == id
+                                      select appointment).ToListAsync();
 
             return appointments;
         }
