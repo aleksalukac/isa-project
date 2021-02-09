@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
@@ -6,6 +7,7 @@ using Newtonsoft.Json;
 using Pharmacy.Data;
 using Pharmacy.Models;
 using Pharmacy.Models.Entities.Users;
+using Pharmacy.Services;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -17,10 +19,17 @@ namespace Pharmacy.Controllers
     public class AppUsersController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly UserManager<AppUser> _userManager;
+        private readonly IUserService _userService;
+        private readonly IAppointmentService _appointmentService;
 
-        public AppUsersController(ApplicationDbContext context)
+        public AppUsersController(ApplicationDbContext context, UserManager<AppUser> userManager,
+                                    IUserService userService, IAppointmentService appointmentService)
         {
             _context = context;
+            _userManager = userManager;
+            _userService = userService;
+            _appointmentService = appointmentService;
         }
 
         // GET: AppUsers/Details/5
@@ -65,6 +74,20 @@ namespace Pharmacy.Controllers
 
             ViewData["roleName"] = "User";
             return View(await _context.AppUsers.Where(e => entryPoint.Contains(e.Id)).ToListAsync());
+        }
+
+        // GET: AppUsers/PharmacyAdminList
+        [Authorize(Roles = "Dermatologist,Pharmacist")]
+        public async Task<IActionResult> MyPatients()
+        {
+            var user = await _userManager.GetUserAsync(User);
+
+            var appointmentsByMedicalExpert = _appointmentService.GetByMedicalExpert(user.Id).Result;
+
+            var patientIds = appointmentsByMedicalExpert.Select(x => x.PatientID);
+            patientIds = (new HashSet<string>(patientIds)).ToList();
+
+            return View(await _userService.GetByList(patientIds.ToList()));
         }
 
         // GET: AppUsers/PharmacyAdminList

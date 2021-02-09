@@ -10,7 +10,8 @@ namespace Pharmacy.Services
     {
         public Task<Appointment> GetById(long id);
         public Task<List<Appointment>> GetAll();
-        public Task<List<Appointment>> GetByUser(string id);
+        public Task<List<Appointment>> GetByMedicalExpert(string id);
         public Task<List<Appointment>> GetAllForPharmacy(long id);
+        public Task<List<Appointment>> GetByPatient(string id);
     }
 }
