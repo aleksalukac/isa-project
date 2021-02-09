@@ -79,7 +79,6 @@
                     }
                     @if ((await AuthorizationService.AuthorizeAsync(User, null, "UserPolicy")).Succeeded)
                     {
-                        <a asp-action="Subscribe" asp-route-id="@item.Id">Subscribe</a>
                         <a asp-action="UnSubscribe" asp-route-id="@item.Id">UnSubscribe</a>
                     }
                 </td>

@@ -42,122 +42,153 @@
                 </button>
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                     <ul class="navbar-nav flex-grow-1">
-                        @if ((await AuthorizationService.AuthorizeAsync(User, null, "DermatologistPolicy")).Succeeded)
+                        @if (SignInManager.IsSignedIn(User))
                         {
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Appointments" asp-action="MyAppointments">Appointments</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="AppUsers" asp-action="PharmacistList">Pharmacist</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="AppUsers" asp-action="DermatologistList">Dermatologist</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Pharmacies" asp-action="Index">Pharmacy</a>
-                            </li>
-
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="AppUsers" asp-action="MyPatients">My patients</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Drugs">Drugs</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="AbsenceRequests" asp-action="Index">AbsenceRequests</a>
-                            </li>
-                        }
-                        @if ((await AuthorizationService.AuthorizeAsync(User, null, "PharmacistPolicy")).Succeeded)
-                        {
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Appointments" asp-action="MyAppointments">Appointments</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="AppUsers" asp-action="PharmacistList">Pharmacist</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="AppUsers" asp-action="DermatologistList">Dermatologist</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Pharmacies" asp-action="Index">Pharmacy</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="AppUsers" asp-action="MyPatients">My patients</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Orders" asp-action="SearchOrder">Checkout orders</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="AbsenceRequest" asp-action="Index">AbsenceRequest</a>
-                            </li>
-                        }
-                        @if ((await AuthorizationService.AuthorizeAsync(User, null, "PharmacyAdminPolicy")).Succeeded)
-                        {
-                            <li class="dropdown">
-                                <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                    Check Profiles
-                                </button>
-                                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                    <a class="nav-link text-dark" asp-area="" asp-controller="AppUsers" asp-action="DermatologistList">Dermatologist</a>
+                            @if ((await AuthorizationService.AuthorizeAsync(User, null, "DermatologistPolicy")).Succeeded)
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="Appointments" asp-action="MyAppointments">Appointments</a>
+                                </li>
+                                <li class="nav-item">
                                     <a class="nav-link text-dark" asp-area="" asp-controller="AppUsers" asp-action="PharmacistList">Pharmacist</a>
-                                </div>
-                            </li>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="AppUsers" asp-action="DermatologistList">Dermatologist</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="Pharmacies" asp-action="Index">Pharmacy</a>
+                                </li>
+
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="AppUsers" asp-action="MyPatients">My patients</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Drugs">Drugs</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="AbsenceRequests" asp-action="Index">AbsenceRequests</a>
+                                </li>
+                            }
+                            @if ((await AuthorizationService.AuthorizeAsync(User, null, "PharmacistPolicy")).Succeeded)
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="Appointments" asp-action="MyAppointments">Appointments</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="AppUsers" asp-action="PharmacistList">Pharmacist</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="AppUsers" asp-action="DermatologistList">Dermatologist</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="Pharmacies" asp-action="Index">Pharmacy</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="AppUsers" asp-action="MyPatients">My patients</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="Orders" asp-action="SearchOrder">Checkout orders</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="AbsenceRequest" asp-action="Index">AbsenceRequest</a>
+                                </li>
+                            }
+                            @if ((await AuthorizationService.AuthorizeAsync(User, null, "PharmacyAdminPolicy")).Succeeded)
+                            {
+                                <li class="dropdown">
+                                    <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                        Check Profiles
+                                    </button>
+                                    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                        <a class="nav-link text-dark" asp-area="" asp-controller="AppUsers" asp-action="DermatologistList">Dermatologist</a>
+                                        <a class="nav-link text-dark" asp-area="" asp-controller="AppUsers" asp-action="PharmacistList">Pharmacist</a>
+                                    </div>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Appointments">Appointments</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Pharmacy">Pharmacy</a>
+                                </li>
+                                <li>
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="ColumnChart" asp-action="Index">Statistic</a>
+                                </li>
+                                <li>
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="AbsenceRequests" asp-action="CheckingForApproveal">Abesnce Requiest</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="Drugs" asp-action="Index">Drugs</a>
+                                </li>
+
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="SaleItems" asp-action="Index">Discount</a>
+                                </li>
+                            }
+                            else if ((await AuthorizationService.AuthorizeAsync(User, null, "UserPolicy")).Succeeded)
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="Drugs" asp-action="Index">Drugs</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="Orders" asp-action="ScheduledOrders">Scheduled Orders</a>
+                                </li>
+                                <li class="dropdown">
+                                    <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                        Ratings
+                                    </button>
+                                    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                        <a class="nav-link text-dark" asp-area="" asp-controller="Ratings" asp-action="Index">All Ratings</a>
+                                        <a class="nav-link text-dark" asp-area="" asp-controller="Ratings" asp-action="CreatePharmacy">Rate Pharmacies</a>
+                                        <a class="nav-link text-dark" asp-area="" asp-controller="Ratings" asp-action="CreateEmployee">Rate Staff</a>
+                                        <a class="nav-link text-dark" asp-area="" asp-controller="Ratings" asp-action="CreateDrugs">Rate Drugs</a>
+                                    </div>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="Appointments" asp-action="MyAppointmentsUser">Appointments</a>
+                                </li>
+                                <li class="dropdown">
+                                    <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                        Staff
+                                    </button>
+                                    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                        <a class="nav-link text-dark" asp-area="" asp-controller="AppUsers" asp-action="DermatologistList">Dermatologist</a>
+                                        <a class="nav-link text-dark" asp-area="" asp-controller="AppUsers" asp-action="PharmacistList">Pharmacist</a>
+                                    </div>
+                                </li>
+                                <li class="dropdown">
+                                    <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                        Pharmacies
+                                    </button>
+                                    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                        <a class="nav-link text-dark" asp-area="" asp-controller="Pharmacies" asp-action="Index">All Pharmacies</a>
+                                        <a class="nav-link text-dark" asp-area="" asp-controller="Pharmacies" asp-action="SubscribedPharmacy">Subscribed Pharmacies</a>
+                                    </div>
+                                </li>
+
+                            }
+                            else if ((await AuthorizationService.AuthorizeAsync(User, null, "AdminPolicy")).Succeeded)
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Drugs">Drugs</a>
+                                </li>
+                                <li class="dropdown">
+                                    <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                        Edit Users
+                                    </button>
+                                    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                        <a class="nav-link text-dark" asp-area="" asp-controller="AppUsers" asp-action="UserList">Users</a>
+                                        <a class="nav-link text-dark" asp-area="" asp-controller="AppUsers" asp-action="PharmacyAdminList">PharmacyAdmin</a>
+                                    </div>
+                                </li>
+                            }
+                        }
+                        else
+                        {
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Appointments">Appointments</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Pharmacy">Pharmacy</a>
-                            </li>
-                            <li>
-                                <a class="nav-link text-dark" asp-area="" asp-controller="ColumnChart" asp-action="Index">Statistic</a>
-                            </li>
-                            <li>
-                                <a class="nav-link text-dark" asp-area="" asp-controller="AbsenceRequests" asp-action="CheckingForApproveal">Abesnce Requiest</a>
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Pharmacies" asp-action="Index">Pharmacies</a>
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link text-dark" asp-area="" asp-controller="Drugs" asp-action="Index">Drugs</a>
-                            </li>
-
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="SaleItems" asp-action="Index">Discount</a>
-                            </li>
-                        }
-                        else if ((await AuthorizationService.AuthorizeAsync(User, null, "UserPolicy")).Succeeded)
-                        {
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Pharmacy">Pharmacies</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Drugs">Drugs</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Appointments">Appointments</a>
-                            </li>
-
-                            <li class="dropdown">
-                                <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                    Check Profiles
-                                </button>
-                                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                    <a class="nav-link text-dark" asp-area="" asp-controller="AppUsers" asp-action="DermatologistList">Dermatologist</a>
-                                    <a class="nav-link text-dark" asp-area="" asp-controller="AppUsers" asp-action="PharmacistList">Pharmacist</a>
-                                </div>
-                            </li>
-
-                        }
-                        else if ((await AuthorizationService.AuthorizeAsync(User, null, "AdminPolicy")).Succeeded)
-                        {
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Drugs">Drugs</a>
-                            </li>
-                            <li class="dropdown">
-                                <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                    Edit Users
-                                </button>
-                                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                    <a class="nav-link text-dark" asp-area="" asp-controller="AppUsers" asp-action="UserList">Users</a>
-                                    <a class="nav-link text-dark" asp-area="" asp-controller="AppUsers" asp-action="PharmacyAdminList">PharmacyAdmin</a>
-                                </div>
                             </li>
                         }
 

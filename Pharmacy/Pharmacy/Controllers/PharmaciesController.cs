@@ -27,10 +27,25 @@ namespace Pharmacy.Controllers
         }
 
         // GET: Pharmacies
-        
-        public async Task<IActionResult> Index(string searchString = "", string filter = "")
+        public async Task<IActionResult> Index(string searchString = "", string filter = "", string sort = "")
         {
-            var pharmacies = await _context.tbPharmacys.ToListAsync();
+            List<Models.Entities.Pharmacy> pharmacies = new;
+
+            if (sort != null)
+            {
+                pharmacies = await _context.tbPharmacys.ToListAsync();
+                if (sort == "Score")
+                {
+                    pharmacies = await _context.tbPharmacys.OrderBy(x => x.AverageScore).ToListAsync();
+                } else if (sort == "Name")
+                {
+                    pharmacies = await _context.tbPharmacys.OrderBy(x => x.Name).ToListAsync();
+                } else if (sort == "Adress")
+                {
+                    pharmacies = await _context.tbPharmacys.OrderBy(x => x.Address).ToListAsync();
+                }
+            }
+
             ViewData["PharmacyId"] = (await _userManager.GetUserAsync(User)).Id;
             List<Pharmacy.Models.Entities.Pharmacy> filteredPharmacies = new List<Pharmacy.Models.Entities.Pharmacy>();
 
@@ -225,6 +240,23 @@ namespace Pharmacy.Controllers
             await _context.SaveChangesAsync();
 
             return View();
+        }
+
+        public async Task<IActionResult> UnSubscribe(long? id)
+        {
+            var user = await _userManager.GetUserAsync(User);
+            var userSubcription = await _context.UserSubscribed.FirstOrDefaultAsync(x => x.PharmacyId == id && x.UserId == user.Id);
+            _context.Remove(userSubcription);
+            await _context.SaveChangesAsync();
+
+            return View();
+        }
+
+        public async Task<IActionResult> SubscribedPharmacy()
+        {
+            var user = await _userManager.GetUserAsync(User);
+            var userSubcription = await _context.UserSubscribed.Where(x => x.UserId == user.Id).Select(x => x.PharmacyId).ToListAsync();
+            return View(await _context.tbPharmacys.Where(x => userSubcription.Contains(x.Id)).ToListAsync());
         }
     }
 }

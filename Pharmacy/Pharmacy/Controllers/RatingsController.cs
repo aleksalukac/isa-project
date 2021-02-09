@@ -88,6 +88,7 @@ namespace Pharmacy.Controllers
                 //modify employee
                 rating.Employee.AverageScore = _context.Rating.Where(m => m.Employee.Id == rating.Employee.Id).Select(m => (float)m.Score).Average();
                 _context.Update(rating.Employee);
+                await _context.SaveChangesAsync();
 
                 return RedirectToAction(nameof(Index));
             }
@@ -143,7 +144,8 @@ namespace Pharmacy.Controllers
 
                 //modify employee
                 rating.Pharmacy.AverageScore = _context.Rating.Where(m => m.Pharmacy.Id == rating.Pharmacy.Id).Select(m => (float)m.Score).Average();
-                _context.Update(rating.Pharmacy);
+                _context.Update(rating);
+                await _context.SaveChangesAsync();
 
                 return RedirectToAction(nameof(Index));
             }
@@ -182,27 +184,47 @@ namespace Pharmacy.Controllers
                 return NotFound();
             }
 
-            if (ModelState.IsValid)
+            var ratingFromDB = await _context.Rating
+                .Include(x => x.Pharmacy)
+                .Include(x => x.Drug)
+                .Include(x => x.Employee)
+                .FirstOrDefaultAsync(x => x.Id == id);
+
+            ratingFromDB.Score = rating.Score;
+
+            try
             {
-                try
+                _context.Update(ratingFromDB);
+                await _context.SaveChangesAsync();
+
+                if (ratingFromDB.Pharmacy != null)
                 {
-                    _context.Update(rating);
-                    await _context.SaveChangesAsync();
+                    ratingFromDB.Pharmacy.AverageScore = _context.Rating.Where(m => m.Pharmacy.Id == ratingFromDB.Pharmacy.Id).Select(m => (float)m.Score).Average();
                 }
-                catch (DbUpdateConcurrencyException)
+                else if(ratingFromDB.Employee != null)
                 {
-                    if (!RatingExists(rating.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
+                    ratingFromDB.Employee.AverageScore = _context.Rating.Where(m => m.Pharmacy.Id == ratingFromDB.Pharmacy.Id).Select(m => (float)m.Score).Average();
                 }
-                return RedirectToAction(nameof(Index));
+                else if(ratingFromDB.Drug != null)
+                {
+                    ratingFromDB.Drug.AverageScore = _context.Rating.Where(m => m.Pharmacy.Id == ratingFromDB.Pharmacy.Id).Select(m => (float)m.Score).Average();
+                }
+
+                _context.Update(ratingFromDB);
+                await _context.SaveChangesAsync();
             }
-            return View(rating);
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!RatingExists(rating.Id))
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    throw;
+                }
+            }
+            return RedirectToAction(nameof(Index));
         }
 
         // GET: Ratings/Delete/5

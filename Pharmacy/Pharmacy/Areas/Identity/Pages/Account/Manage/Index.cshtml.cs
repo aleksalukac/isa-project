@@ -24,6 +24,7 @@ namespace Pharmacy.Areas.Identity.Pages.Account.Manage
         }
 
         public string Username { get; set; }
+        public int Penalty { get; set; }
 
         [TempData]
         public string StatusMessage { get; set; }
@@ -80,6 +81,7 @@ namespace Pharmacy.Areas.Identity.Pages.Account.Manage
             var userView = await _userManager.FindByNameAsync(userName);
 
             Username = userName;
+            Penalty = userView.Penalty;
 
             Input = new InputModel
             {
