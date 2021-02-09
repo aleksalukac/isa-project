@@ -62,6 +62,11 @@ namespace Pharmacy.Controllers
             if (ModelState.IsValid)
             {
                 saleItems.DrugAndQuantitiesId = DrugAndQuantitiesId;
+                var drugAndQuantity = await _context.DrugAndQuantity.FindAsync(DrugAndQuantitiesId);
+                var price = drugAndQuantity.Price;
+                drugAndQuantity.Price = saleItems.BeforePrice;
+                saleItems.BeforePrice = price;
+                _context.Update(drugAndQuantity);
                 _context.Add(saleItems);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
