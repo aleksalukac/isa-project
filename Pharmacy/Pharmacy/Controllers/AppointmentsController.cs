@@ -171,8 +171,8 @@ namespace Pharmacy.Controllers
             return View();
         }
 
-        [Authorize(Roles = "PharmacyAdmin")]
         // GET: Appointments/Create
+        [Authorize(Roles = "PharmacyAdmin")]
         public IActionResult Create()
         {
             List<AppUser> entryPoint = (from user in _context.tbAppUsers
@@ -195,9 +195,17 @@ namespace Pharmacy.Controllers
         {
             if (ModelState.IsValid)
             {
-                _context.Add(appointment);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                var b = await AppoitmenOverlapsAsync(appointment);
+                if (!b)
+                {
+                    _context.Add(appointment);
+                    await _context.SaveChangesAsync();
+                    return RedirectToAction(nameof(Index));
+                }
+                else
+                {
+                    return RedirectToAction(nameof(Overlapping));
+                }
             }
             return View(appointment);
         }
@@ -293,6 +301,27 @@ namespace Pharmacy.Controllers
         private bool AppointmentExists(long id)
         {
             return _context.tbAppointments.Any(e => e.Id == id);
+        }
+
+        private async Task<bool> AppoitmenOverlapsAsync(Appointment appointment)
+        {
+            // 1] [2   2] [1
+            var appotiments = await _context.tbAppointments.ToListAsync();
+            foreach(Appointment appointmentInList in  appotiments)
+            {
+                if(!((appointmentInList.StartDateTime >= appointment.StartDateTime.Add(appointment.Duration) || (appointmentInList.StartDateTime.Add(appointmentInList.Duration) <= appointment.StartDateTime))
+                    && (appointmentInList.StartDateTime >= appointment.StartDateTime && (appointmentInList.StartDateTime.Add(appointmentInList.Duration) <= appointment.StartDateTime.Add(appointmentInList.Duration)))))
+                {
+                    return true;
+                }
+            }
+            return false;
+
+        }
+
+        public async Task<IActionResult> Overlapping()
+        {
+            return View();
         }
     }
 }

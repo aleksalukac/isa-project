@@ -8,5 +8,7 @@ namespace Pharmacy.Services
     {
         public Task<string> GetUserRole(string id);
         public Task<List<AppUser>> GetByList(List<string> idList);
+        public Task<AppUser> GetById(string id);
+        public Task<bool> Update(AppUser user);
     }
 }
