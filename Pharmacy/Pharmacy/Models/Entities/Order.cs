@@ -12,7 +12,7 @@ namespace Pharmacy.Models.Entities
     {
         public long Id { get; set; }
         public DrugAndQuantities DrugAndQuantities { get; set; }
-        public AppUser User { get; set; }
+        public string UserId { get; set; }
         public double Cost { get; set; }
         public DateTime TimeOfTransaction { get; set; }
         public bool TransactionComplete { get; set; }

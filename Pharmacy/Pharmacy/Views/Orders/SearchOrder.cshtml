@@ -6,16 +6,15 @@
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <form method="get">
-            <div class="form-group">
-                <label class="control-label"></label>
-                <input id="value" name="Value" class="form-control" />
-                <span class="text-danger"></span>
+        <form asp-controller="Orders" asp-action="CheckoutOrder" class="form-inline">
+            <div class="form-group mb-2">
+                <label for="searchString" class="sr-only">Order id:</label>
+                <input type="text" id="searchString" name="idString" class="form-control" onkeypress='validate(event)' />
             </div>
-            <div class="form-group">
-                <input onclick="sendOrderId()" value="Search" class="btn btn-primary" />
-            </div>
+            <button type="submit" class="btn btn-primary">Search</button>
         </form>
+
+        @ViewData["orderNotFound"]
     </div>
 </div>
 
@@ -23,9 +22,28 @@
     function sendOrderId() {
         var value = document.getElementById("value").value;
         if (value != "") {
-            window.location.href = '../' + 'Orders/CheckoutOrder/' + value.toString();
+            $.get("/Orders/CheckoutOrder/" + value.toString()).done(function () {
+                window.location.replace("/");
+            })
         }
-        
+    }
+
+    function validate(evt) {
+        var theEvent = evt || window.event;
+
+        // Handle paste
+        if (theEvent.type === 'paste') {
+            key = event.clipboardData.getData('text/plain');
+        } else {
+            // Handle key press
+            var key = theEvent.keyCode || theEvent.which;
+            key = String.fromCharCode(key);
+        }
+        var regex = /[0-9]|\./;
+        if (!regex.test(key)) {
+            theEvent.returnValue = false;
+            if (theEvent.preventDefault) theEvent.preventDefault();
+        }
     }
 </script>
 @section Scripts {

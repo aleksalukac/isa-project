@@ -10,5 +10,6 @@ namespace Pharmacy.Services
     {
         public Task<List<Order>> GetByPharmacyAndId(long pharmacyId, long id);
         public Task Update(Order order);
+        public Task<Order> GetById(long id);
     }
 }

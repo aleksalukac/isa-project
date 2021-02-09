@@ -17,6 +17,11 @@ namespace Pharmacy.Services
             _context = context;
         }
 
+        public async Task<Order> GetById(long id)
+        {
+            return await _context.tbOrders.FindAsync(id);
+        }
+
         public async Task<List<Order>> GetByPharmacyAndId(long pharmacyId, long id)
         {
             var orders = await _context.tbOrders.Include(x => x.DrugAndQuantities).

@@ -107,33 +107,38 @@ namespace Pharmacy.Controllers
             var user = await _userManager.GetUserAsync(User);
             var timeNow = DateTime.Now;
 
-            return View(await _context.tbOrders.Where(m => m.User.Id == user.Id && timeNow < m.TimeOfTransaction).ToListAsync());
+            return View(await _context.tbOrders.Where(m => m.UserId == user.Id && timeNow < m.TimeOfTransaction).ToListAsync());
         }
 
-        [Authorize(Roles = "Pharmacist")]
         // GET: Orders/SearchOrder
+        [Authorize(Roles = "Pharmacist")]
         public IActionResult SearchOrder()
         {
+            ViewData["orderNotFound"] = "";
             return View();
         }
 
-        [HttpGet]
+        [HttpPost]
         [Authorize(Roles = "Pharmacist")]
         // POST: Orders/CheckoutOrder/5
-        public async Task<IActionResult> CheckoutOrder(long? id)
+        public async Task<IActionResult> CheckoutOrder(string idString = "")
         {
-            if (!id.HasValue)
+            bool isValid = long.TryParse(idString, out long id);
+
+            if(!isValid)
             {
-                return NotFound();
+                ViewData["orderNotFound"] = "Order expired or non existing.";
+                return View("SearchOrder");
             }
 
             var user = await _userManager.GetUserAsync(User);
 
-            var orders = await _orderService.GetByPharmacyAndId(user.PharmacyId, id.Value);
+            var orders = await _orderService.GetByPharmacyAndId(user.PharmacyId, id);
 
             if (orders.Count == 0)
             {
-                return NotFound();
+                ViewData["orderNotFound"] = "Order expired or non existing.";
+                return View("SearchOrder");
             }
 
             ViewData["completed"] = orders.FirstOrDefault().TransactionComplete;
@@ -141,27 +146,25 @@ namespace Pharmacy.Controllers
             return View(orders.FirstOrDefault());
         }
 
-        // POST: Orders/CheckoutOrder/{Id},{Cost},{TransactionComplete}
+        // POST: Orders/EndOrder/{Id},{Cost},{TransactionComplete}
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [Authorize(Roles = "Pharmacist")]
-        public async Task<IActionResult> CheckoutOrder([Bind("Id,Cost,TransactionComplete")] Order order)
+        public async Task<IActionResult> EndOrder([Bind("Id,Cost,TransactionComplete")] Order order)
         {
-            if(ViewData["complete"] != null)
+            Order oldOrder = await _orderService.GetById(order.Id);
+            bool alreadyCompleted = oldOrder.TransactionComplete;
+
+            AppUser user = await _userService.GetById(oldOrder.UserId);
+
+            if (!alreadyCompleted && order.TransactionComplete)
             {
-                if (!(bool)ViewData["completed"] && order.TransactionComplete)
-                {
-                    ;
-                    //slati mejl
-                    // penal ako dugo ceka
-                    if((DateTime.Now - order.TimeOfTransaction).TotalDays > 0)
-                    {
-                        //_userService.GetById(order.User);
-                    }
-                }
+                await _emailSender.SendEmailAsync(user.Email, "Pharmacy Order checked out",
+                    $"Order indetification code is: {order.Id}");
             }
             await _orderService.Update(order);
+
             return View("SearchOrder");
         }
 
@@ -177,17 +180,20 @@ namespace Pharmacy.Controllers
             _context.Update(drugsQuantEl);
             await _context.SaveChangesAsync();
 
+            AppUser currentUser = await _userManager.GetUserAsync(User);
+
             //make a new order
             var order = new Order();
             order.DrugAndQuantities = drugsQuantEl;
             order.TimeOfTransaction = (DateTime)time;
             order.Cost = (double)cost;
-            order.User = await _userManager.GetUserAsync(User);
+            order.UserId = currentUser.Id;
+            AppUser user = await _userManager.GetUserAsync(User);
             order.TransactionComplete = false;
             _context.Add(order);
             await _context.SaveChangesAsync();
             //return RedirectToAction(nameof(Index));
-            await _emailSender.SendEmailAsync(order.User.Email, "Pharmacy Order",
+            await _emailSender.SendEmailAsync(user.Email, "Pharmacy Order",
                 $"Order indetification code is: {order.Id}");
 
             return RedirectToAction(nameof(ScheduledOrders));// ScheduledOrders();

@@ -78,7 +78,7 @@ namespace Pharmacy.Controllers
 
         // GET: AppUsers/PharmacyAdminList
         [Authorize(Roles = "Dermatologist,Pharmacist")]
-        public async Task<IActionResult> MyPatients()
+        public async Task<IActionResult> MyPatients(string searchString = "", string filter = "", string pharmacy = "")
         {
             var user = await _userManager.GetUserAsync(User);
 
@@ -87,7 +87,9 @@ namespace Pharmacy.Controllers
             var patientIds = appointmentsByMedicalExpert.Select(x => x.PatientID);
             patientIds = (new HashSet<string>(patientIds)).ToList();
 
-            return View(await _userService.GetByList(patientIds.ToList()));
+            var patients = await _userService.GetByList(patientIds.ToList());
+
+            return View(FilterUsers(patients, searchString, filter));
         }
 
         // GET: AppUsers/PharmacyAdminList
