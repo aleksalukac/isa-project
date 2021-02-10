@@ -64,7 +64,7 @@ namespace Pharmacy.Controllers
             var employee = await _context.tbAppointments.Where(x => x.PatientID == loggedInUser.Id).Select(x => x.MedicalExpertID).ToListAsync();
 
             //remove already rated
-            var retedEmployee = await _context.Rating.Where(x => x.User.Id == loggedInUser.Id).Select(x => x.Employee.Id).ToListAsync();
+            var retedEmployee = await _context.Rating.Where(x => x.User.Id == loggedInUser.Id && x.Employee != null).Select(x => x.Employee.Id).ToListAsync();
             employee.RemoveAll(x => retedEmployee.Contains(x));
 
             ViewData["EmployeeList"] = await _context.AppUsers.Where(x => employee.Contains(x.Id)).ToListAsync();
@@ -125,7 +125,7 @@ namespace Pharmacy.Controllers
             List<long> allPharmacy = pharmacyOrders;
 
             //remove alredy rated pharmacy
-            List<long> ratedPharmacise = await _context.Rating.Where(x => x.User.Id == loggedInUser.Id).Select(x => x.Pharmacy.Id).ToListAsync();
+            List<long> ratedPharmacise = await _context.Rating.Where(x => x.User.Id == loggedInUser.Id && x.Pharmacy != null).Select(x => x.Pharmacy.Id).ToListAsync();
             allPharmacy.RemoveAll(x => ratedPharmacise.Contains(x));
 
             ViewData["PharmacyList"] = await _context.tbPharmacys.Where(x => allPharmacy.Contains(x.Id)).ToListAsync();
@@ -163,6 +163,61 @@ namespace Pharmacy.Controllers
             }
         }
 
+        [Authorize]
+        // GET: Ratings/CreateEmployee
+        public async Task<IActionResult> CreateDrugs()
+        {
+            var loggedInUser = await _userManager.GetUserAsync(User);
+
+            List<long> drugOrders = await _context.tbOrders
+                .Include(x => x.DrugAndQuantities)
+                .Where(x => x.TransactionComplete && x.UserId == loggedInUser.Id)
+                .Select(x => x.DrugAndQuantities.Drug.Id)
+                .ToListAsync();
+
+            //remove alredy rated pharmacy
+            var ratedDrugs = await _context.Rating
+                .Include(x => x.Drug)
+                .Where(x => x.User.Id == loggedInUser.Id && x.Drug != null)
+                .Select(x => x.Drug.Id).ToListAsync();
+
+            drugOrders.RemoveAll(x => ratedDrugs.Contains(x));
+
+
+            ViewData["DrugList"] = await _context.tbDrugs.Where(x => drugOrders.Contains(x.Id)).ToListAsync();
+
+            return View();
+        }
+
+        // POST: Ratings/CreatePharmacy
+        // To protect from overposting attacks, enable the specific properties you want to bind to.
+        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> CreateDrugs(long? drugId, int? score)
+        {
+            if (drugId != null && score != null)
+            {
+                //new rating
+                Rating rating = new Rating();
+                rating.Drug = await _context.tbDrugs.FindAsync(drugId);
+                rating.Score = (int)score;
+                rating.User = await _userManager.GetUserAsync(User);
+                _context.Add(rating);
+                await _context.SaveChangesAsync();
+
+                //modify drug
+                rating.Drug.AverageScore = _context.Rating.Where(m => m.Drug.Id == rating.Drug.Id).Select(m => (float)m.Score).Average();
+                _context.Update(rating);
+                await _context.SaveChangesAsync();
+
+                return RedirectToAction(nameof(Index));
+            }
+            else
+            {
+                return RedirectToAction(nameof(CreatePharmacy));
+            }
+        }
 
         // GET: Ratings/Edit/5
         public async Task<IActionResult> Edit(long? id)
@@ -211,11 +266,11 @@ namespace Pharmacy.Controllers
                 }
                 else if(ratingFromDB.Employee != null)
                 {
-                    ratingFromDB.Employee.AverageScore = _context.Rating.Where(m => m.Pharmacy.Id == ratingFromDB.Pharmacy.Id).Select(m => (float)m.Score).Average();
+                    ratingFromDB.Employee.AverageScore = _context.Rating.Where(m => m.Employee.Id == ratingFromDB.Employee.Id).Select(m => (float)m.Score).Average();
                 }
                 else if(ratingFromDB.Drug != null)
                 {
-                    ratingFromDB.Drug.AverageScore = _context.Rating.Where(m => m.Pharmacy.Id == ratingFromDB.Pharmacy.Id).Select(m => (float)m.Score).Average();
+                    ratingFromDB.Drug.AverageScore = _context.Rating.Where(m => m.Drug.Id == ratingFromDB.Drug.Id).Select(m => (float)m.Score).Average();
                 }
 
                 _context.Update(ratingFromDB);

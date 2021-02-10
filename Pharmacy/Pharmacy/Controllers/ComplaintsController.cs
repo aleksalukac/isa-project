@@ -48,7 +48,7 @@ namespace Pharmacy.Controllers
 
             return View(complaint);
         }
-
+        [Authorize]
         // GET: Complaints/Create
         public async Task<IActionResult> CreateStaff()
         {
@@ -59,7 +59,7 @@ namespace Pharmacy.Controllers
             ViewData["EmployeeList"] = await _context.AppUsers.Where(x => employee.Contains(x.Id)).ToListAsync();
             return View();
         }
-
+        [Authorize]
         // POST: Complaints/CreateStaff
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
@@ -81,12 +81,12 @@ namespace Pharmacy.Controllers
 
             return View(complaint);
         }
-
+        [Authorize]
         public IActionResult ConfirmComplaint()
         {
             return View();
         }
-
+        [Authorize]
         // Get: Complaints/CreatePharmacy
         public async Task<IActionResult> CreatePharmacy()
         {
@@ -107,7 +107,7 @@ namespace Pharmacy.Controllers
             ViewData["PharmacyList"] = await _context.tbPharmacys.Where(x => pharmacyOrders.Contains(x.Id)).ToListAsync();
             return View();
         }
-
+        [Authorize]
         // POST: Complaints/CreatePharmacy
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
@@ -130,7 +130,7 @@ namespace Pharmacy.Controllers
 
             return View(complaint);
         }
-
+        [Authorize]
         // GET: Complaints/Edit/5
         public async Task<IActionResult> Edit(long? id)
         {
@@ -146,7 +146,7 @@ namespace Pharmacy.Controllers
             }
             return View(complaint);
         }
-
+        [Authorize]
         // POST: Complaints/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
