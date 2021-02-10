@@ -1,4 +1,5 @@
-﻿using Pharmacy.Models.Entities.Users;
+﻿using Newtonsoft.Json;
+using Pharmacy.Models.Entities.Users;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -25,8 +26,20 @@ namespace Pharmacy.Models.Entities
         public TimeSpan Duration { get; set; }
         public AppointmentType Type { get; set; }
         public List<Drug> PrescribedDrugs { get; set; }
+        public string PrescriptionDuration { get; set; }
+
         [ForeignKey("Pharmacy")]
         public long PhrmacyId { get; set; }
+
+        public void SetPrescriptionDuration(List<int> durations)
+        {
+            PrescriptionDuration = JsonConvert.SerializeObject(durations);
+        }
+
+        public List<int> GetPrescriptionDuration()
+        {
+            return (List<int>)JsonConvert.DeserializeObject(PrescriptionDuration);
+        }
     }
     public enum AppointmentType
     {
