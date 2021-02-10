@@ -48,6 +48,8 @@ namespace Pharmacy.Data
 
         public DbSet<UserSubscribed> UserSubscribed { get; set; }
 
+        public DbSet<SupplyItem> SupplyItems { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
 
@@ -82,6 +84,8 @@ namespace Pharmacy.Data
             modelBuilder.Entity<AbsenceRequest>().ToTable("AbsenceRequests");
 
             modelBuilder.Entity<UserSubscribed>().ToTable("UserSubscribed");
+
+            modelBuilder.Entity<SupplyItem>().ToTable("SupplyItems");
         }
     }
 }

@@ -1,0 +1,48 @@
+﻿@model Pharmacy.Models.Entities.SupplyItem
+
+@{
+    ViewData["Title"] = "Create";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>Create</h1>
+
+<h4>SupplyItem</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+            <div class="form-group">
+                <select name="drugId" id="drug" class="form-control">
+                    @foreach (Pharmacy.Models.Entities.Drug item in (List<Pharmacy.Models.Entities.Drug>)@ViewData["DrugList"])
+                    {
+                        <option value=@item.Id class="option">@item.Name</option>
+                    }
+                </select>
+            </div>
+            <div class="form-group">
+                <label asp-for="SupplyOrderId" class="control-label"></label>
+                <input asp-for="SupplyOrderId" class="form-control" />
+                <span asp-validation-for="SupplyOrderId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="ExtraQuantity" class="control-label"></label>
+                <input asp-for="ExtraQuantity" class="form-control" />
+                <span asp-validation-for="ExtraQuantity" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a href="##" onClick="history.go(-1); return false;">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

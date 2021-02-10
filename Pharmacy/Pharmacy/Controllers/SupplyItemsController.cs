@@ -7,29 +7,25 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Pharmacy.Data;
 using Pharmacy.Models.Entities;
-using Pharmacy.Models.DTO;
 
 namespace Pharmacy.Controllers
 {
-    public class SupplyOrdersController : Controller
+    public class SupplyItemsController : Controller
     {
         private readonly ApplicationDbContext _context;
 
-        public SupplyOrdersController(ApplicationDbContext context)
+        public SupplyItemsController(ApplicationDbContext context)
         {
             _context = context;
         }
 
-        [BindProperty]
-        public SupplyOrderModelDTO SupplyOrders { get; set; }
-
-        // GET: SupplyOrders
+        // GET: SupplyItems
         public async Task<IActionResult> Index()
         {
-            return View(await _context.tbSupplyOrders.ToListAsync());
+            return View(await _context.SupplyItems.ToListAsync());
         }
 
-        // GET: SupplyOrders/Details/5
+        // GET: SupplyItems/Details/5
         public async Task<IActionResult> Details(long? id)
         {
             if (id == null)
@@ -37,50 +33,40 @@ namespace Pharmacy.Controllers
                 return NotFound();
             }
 
-            var supplyOrder = await _context.tbSupplyOrders
+            var supplyItem = await _context.SupplyItems
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (supplyOrder == null)
+            if (supplyItem == null)
             {
                 return NotFound();
             }
 
-            return View(supplyOrder);
+            return View(supplyItem);
         }
 
-        // GET: SupplyOrders/Create
+        // GET: SupplyItems/Create
         public async Task<IActionResult> CreateAsync()
         {
-            //ViewData["DrugList"] = await _context.tbDrugs.ToListAsync();
-            SupplyOrders = new SupplyOrderModelDTO();
-            var drugs = await _context.tbDrugs.ToListAsync();
-            SupplyOrders.SupplyItems = new List<SupplyItemDTO>();
-            for (int i = 0; i < drugs.Count; i++)
-            {
-                SupplyItemDTO SupplyItemView = new SupplyItemDTO();
-                SupplyItemView.Drug = new DrugDTO(drugs[i].Id, drugs[i].Name);
-                SupplyItemView.Drug.Name = drugs[i].Name;
-                SupplyOrders.SupplyItems.Add(SupplyItemView);
-            }
-            return View(SupplyOrders);
+            ViewData["DrugList"] = await _context.tbDrugs.ToListAsync();
+            return View();
         }
 
-        // POST: SupplyOrders/Create
+        // POST: SupplyItems/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("SupplyItems, DateExpired, SupplyOrders, Drugs")] SupplyOrderModelDTO supplyOrderModel)
+        public async Task<IActionResult> Create([Bind("Id,DrugId,SupplyOrderId,ExtraQuantity")] SupplyItem supplyItem)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(supplyOrderModel.SupplyOrder);
+                _context.Add(supplyItem);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            return View(supplyOrderModel.SupplyOrder);
+            return View(supplyItem);
         }
 
-        // GET: SupplyOrders/Edit/5
+        // GET: SupplyItems/Edit/5
         public async Task<IActionResult> Edit(long? id)
         {
             if (id == null)
@@ -88,22 +74,22 @@ namespace Pharmacy.Controllers
                 return NotFound();
             }
 
-            var supplyOrder = await _context.tbSupplyOrders.FindAsync(id);
-            if (supplyOrder == null)
+            var supplyItem = await _context.SupplyItems.FindAsync(id);
+            if (supplyItem == null)
             {
                 return NotFound();
             }
-            return View(supplyOrder);
+            return View(supplyItem);
         }
 
-        // POST: SupplyOrders/Edit/5
+        // POST: SupplyItems/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(long id, [Bind("Id,PharmacyId,DeleveryDate")] SupplyOrder supplyOrder)
+        public async Task<IActionResult> Edit(long id, [Bind("Id,DrugId,SupplyOrderId,ExtraQuantity")] SupplyItem supplyItem)
         {
-            if (id != supplyOrder.Id)
+            if (id != supplyItem.Id)
             {
                 return NotFound();
             }
@@ -112,12 +98,12 @@ namespace Pharmacy.Controllers
             {
                 try
                 {
-                    _context.Update(supplyOrder);
+                    _context.Update(supplyItem);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!SupplyOrderExists(supplyOrder.Id))
+                    if (!SupplyItemExists(supplyItem.Id))
                     {
                         return NotFound();
                     }
@@ -128,10 +114,10 @@ namespace Pharmacy.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(supplyOrder);
+            return View(supplyItem);
         }
 
-        // GET: SupplyOrders/Delete/5
+        // GET: SupplyItems/Delete/5
         public async Task<IActionResult> Delete(long? id)
         {
             if (id == null)
@@ -139,30 +125,30 @@ namespace Pharmacy.Controllers
                 return NotFound();
             }
 
-            var supplyOrder = await _context.tbSupplyOrders
+            var supplyItem = await _context.SupplyItems
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (supplyOrder == null)
+            if (supplyItem == null)
             {
                 return NotFound();
             }
 
-            return View(supplyOrder);
+            return View(supplyItem);
         }
 
-        // POST: SupplyOrders/Delete/5
+        // POST: SupplyItems/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(long id)
         {
-            var supplyOrder = await _context.tbSupplyOrders.FindAsync(id);
-            _context.tbSupplyOrders.Remove(supplyOrder);
+            var supplyItem = await _context.SupplyItems.FindAsync(id);
+            _context.SupplyItems.Remove(supplyItem);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        private bool SupplyOrderExists(long id)
+        private bool SupplyItemExists(long id)
         {
-            return _context.tbSupplyOrders.Any(e => e.Id == id);
+            return _context.SupplyItems.Any(e => e.Id == id);
         }
     }
 }
