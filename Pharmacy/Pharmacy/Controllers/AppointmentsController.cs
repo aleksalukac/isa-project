@@ -20,15 +20,17 @@ namespace Pharmacy.Controllers
         private readonly ApplicationDbContext _context;
         private readonly IAppointmentService _appointmentService;
         private readonly IUserService _userService;
+        private readonly IDrugService _drugService;
         private readonly UserManager<AppUser> _userManager;
 
         public AppointmentsController(ApplicationDbContext context, UserManager<AppUser> userManager, 
-            IAppointmentService appointmentService, IUserService userService)
+            IAppointmentService appointmentService, IUserService userService, IDrugService drugService)
         {
             _context = context;
             _appointmentService = appointmentService;
             _userManager = userManager;
             _userService = userService;
+            _drugService = drugService;
         }
 
         [Authorize(Roles = "PharmacyAdmin")]
@@ -162,9 +164,25 @@ namespace Pharmacy.Controllers
                 return View("MyAppointments");
             }
 
-            AppointmentDTO appointmentDTO = new AppointmentDTO(appointment, medicalExpert, patient);
+            var drugs = await _drugService.GetByPatientNoAllergies(patient.Id);
+
+            AppointmentExamDTO appointmentDTO = new AppointmentExamDTO(appointment, 
+                medicalExpert, patient);
+
+            ViewData["DrugList"] = drugs;
 
             return View(appointmentDTO);
+        }
+        public string MedicalExpertNameAndSurname { get; set; }
+        public string PatientNameAndSurname { get; set; }
+        public long AppointmentId { get; set; }
+        public bool PatientCame { get; set; }
+
+        [Authorize(Roles = "Pharmacist,Dermatologist")]
+        public async Task<IActionResult> EndAppointment([Bind("AppointmentId,Report,PrescribedDrug,PrescriptionLength")] 
+                                                        AppointmentExamDTO appointmentExamDTO)
+        {
+            return View();
         }
 
         [Authorize(Roles = "Pharmacist,Dermatologist")]

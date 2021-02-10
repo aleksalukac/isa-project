@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace Pharmacy.Services
 {
-    public class PharmacyService
+    public class PharmacyService : IPharmacyService
     {
     }
 }
