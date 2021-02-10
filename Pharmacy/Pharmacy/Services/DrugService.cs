@@ -68,6 +68,8 @@ namespace Pharmacy.Services
             drugAndQuantity.Quantity--;
 
             _context.Update(drugAndQuantity);
+
+            _context.SaveChanges();
         }
 
         public async Task<List<DrugAndQuantities>> GetAllByPharmacy(long pharmacyId)

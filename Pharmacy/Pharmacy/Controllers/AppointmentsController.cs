@@ -201,6 +201,7 @@ namespace Pharmacy.Controllers
                 List<Drug> prescribedDrugs = new List<Drug>();
                 prescribedDrugs.Add(await _drugService.GetById(appointmentExamDTO.PrescribedDrug));
                 appointment.PrescribedDrugs = prescribedDrugs;
+                ViewData["DrugCheckout"] = "Drug successfuly given to the patient";
             }
             else
             {
@@ -221,7 +222,7 @@ namespace Pharmacy.Controllers
                         allergies.Select(x => x.Id).Contains(similarDrugs[i].Id))
                     {
                         _drugService.CheckoutDrug(appointmentExamDTO.PrescribedDrug, appointment.PhrmacyId);
-                        ViewBag["DrugCheckout"] = "The drug you prescribed was not available (Pharmacy has been informed), but a suitable alternative " +
+                        ViewData["DrugCheckout"] = "The drug you prescribed was not available (Pharmacy has been informed), but a suitable alternative " +
                             similarDrugs[i].Name + " was given to the patient. Patient is not allergic to this drug";
 
                         List<Drug> prescribedDrugs = new List<Drug>();
@@ -234,11 +235,14 @@ namespace Pharmacy.Controllers
                 }
                 if(!givenDrug)
                 {
-                    ViewBag["DrugCheckout"] = "Unfortunately, the drug you prescribed and its alternatives were not available.";
+                    ViewData["DrugCheckout"] = "Unfortunately, the drug you prescribed and its alternatives were not available.";
                 }
             }
             appointment.PrescriptionDuration = appointmentExamDTO.PrescriptionLength;
+            appointment.Duration = DateTime.Now - appointment.StartDateTime;
+            _appointmentService.Update(appointment);
 
+            @ViewData["PatientId"] = appointment.PatientID;
             return View();
         }
 
