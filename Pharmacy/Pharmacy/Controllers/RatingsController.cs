@@ -63,6 +63,10 @@ namespace Pharmacy.Controllers
 
             var employee = await _context.tbAppointments.Where(x => x.PatientID == loggedInUser.Id).Select(x => x.MedicalExpertID).ToListAsync();
 
+            //remove already rated
+            var retedEmployee = await _context.Rating.Where(x => x.User.Id == loggedInUser.Id).Select(x => x.Employee.Id).ToListAsync();
+            employee.RemoveAll(x => retedEmployee.Contains(x));
+
             ViewData["EmployeeList"] = await _context.AppUsers.Where(x => employee.Contains(x.Id)).ToListAsync();
 
             return View();
@@ -106,7 +110,6 @@ namespace Pharmacy.Controllers
             var loggedInUser = await _userManager.GetUserAsync(User);
 
             List<long> pharmacyOrders = await _context.tbOrders
-                .Include(x => x.UserId)
                 .Include(x => x.DrugAndQuantities)
                 .Where(x => x.TransactionComplete && x.UserId == loggedInUser.Id)
                 .Select(x => x.DrugAndQuantities.PharmacyId)
@@ -117,8 +120,13 @@ namespace Pharmacy.Controllers
                 .Select(x => x.PhrmacyId)
                 .ToListAsync();
 
+            //get all pharmacies
             pharmacyOrders.AddRange(pharmacyAppoitments);
-            List<long> allPharmacy = (List<long>) pharmacyOrders;
+            List<long> allPharmacy = pharmacyOrders;
+
+            //remove alredy rated pharmacy
+            List<long> ratedPharmacise = await _context.Rating.Where(x => x.User.Id == loggedInUser.Id).Select(x => x.Pharmacy.Id).ToListAsync();
+            allPharmacy.RemoveAll(x => ratedPharmacise.Contains(x));
 
             ViewData["PharmacyList"] = await _context.tbPharmacys.Where(x => allPharmacy.Contains(x.Id)).ToListAsync();
 

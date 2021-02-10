@@ -2,23 +2,29 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Pharmacy.Data;
 using Pharmacy.Models.Entities;
+using Pharmacy.Models.Entities.Users;
+using Pharmacy.Services;
 
 namespace Pharmacy.Controllers
 {
     public class ComplaintsController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly UserManager<AppUser> _userManager;
 
-        public ComplaintsController(ApplicationDbContext context)
+        public ComplaintsController(UserManager<AppUser> userManager, ApplicationDbContext context)
         {
+            _userManager = userManager;
             _context = context;
         }
-
+        [Authorize(Roles = "Admin")]
         // GET: Complaints
         public async Task<IActionResult> Index()
         {
@@ -44,24 +50,84 @@ namespace Pharmacy.Controllers
         }
 
         // GET: Complaints/Create
-        public IActionResult Create()
+        public async Task<IActionResult> CreateStaff()
         {
+            var loggedInUser = await _userManager.GetUserAsync(User);
+
+            var employee = await _context.tbAppointments.Where(x => x.PatientID == loggedInUser.Id).Select(x => x.MedicalExpertID).ToListAsync();
+
+            ViewData["EmployeeList"] = await _context.AppUsers.Where(x => employee.Contains(x.Id)).ToListAsync();
             return View();
         }
 
-        // POST: Complaints/Create
+        // POST: Complaints/CreateStaff
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,ReportText")] Complaint complaint)
+        public async Task<IActionResult> CreateStaff(string employeeId, string reportText)
         {
-            if (ModelState.IsValid)
+            var complaint = new Complaint();
+            if (employeeId != null && reportText != null)
             {
+                complaint.ReportText = reportText;
+                complaint.Employee = await _context.AppUsers.FirstOrDefaultAsync(x => x.Id == employeeId);
+                complaint.User = await _userManager.GetUserAsync(User);
+
                 _context.Add(complaint);
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(ConfirmComplaint));
             }
+
+            return View(complaint);
+        }
+
+        public IActionResult ConfirmComplaint()
+        {
+            return View();
+        }
+
+        // Get: Complaints/CreatePharmacy
+        public async Task<IActionResult> CreatePharmacy()
+        {
+            var loggedInUser = await _userManager.GetUserAsync(User);
+
+            List<long> pharmacyOrders = await _context.tbOrders
+                .Include(x => x.DrugAndQuantities)
+                .Where(x => x.TransactionComplete && x.UserId == loggedInUser.Id)
+                .Select(x => x.DrugAndQuantities.PharmacyId)
+                .ToListAsync();
+
+            List<long> pharmacyAppoitments = await _context.tbAppointments
+                .Where(x => x.PatientID == loggedInUser.Id)
+                .Select(x => x.PhrmacyId)
+                .ToListAsync();
+            pharmacyOrders.AddRange(pharmacyAppoitments);
+            
+            ViewData["PharmacyList"] = await _context.tbPharmacys.Where(x => pharmacyOrders.Contains(x.Id)).ToListAsync();
+            return View();
+        }
+
+        // POST: Complaints/CreatePharmacy
+        // To protect from overposting attacks, enable the specific properties you want to bind to.
+        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> CreatePharmacy(long? pharmacyId, string reportText)
+        {
+
+            var complaint = new Complaint();
+            if (pharmacyId != null && reportText != null)
+            {
+                complaint.ReportText = reportText;
+                complaint.Pharmacy = await _context.tbPharmacys.FirstOrDefaultAsync(x => x.Id == pharmacyId);
+                complaint.User = await _userManager.GetUserAsync(User);
+
+                _context.Add(complaint);
+                await _context.SaveChangesAsync();
+                return RedirectToAction(nameof(ConfirmComplaint));
+            }
+
             return View(complaint);
         }
 
