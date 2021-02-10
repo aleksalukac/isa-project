@@ -1,18 +1,14 @@
 ﻿@model IEnumerable<Pharmacy.Models.DTO.AppointmentDTO>
 
 @{
-    ViewData["Title"] = "My Appointments";
+    ViewData["Title"] = "Current appointments";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
 <h1>Index</h1>
 
 <p>
-    <a asp-action="Create">Create New</a>
-    <br />
     <a asp-action="Calendar"><img src="https://cdn4.iconfinder.com/data/icons/small-n-flat/24/calendar-512.png" width="50"/></a>
-    <br />
-    <a asp-action="CurrentAppointments"><button>Start appointment</button></a>
 </p>
 <table class="table">
     <thead>
@@ -65,9 +61,7 @@
                     @Html.DisplayFor(modelItem => item.Duration)
                 </td>
                 <td>
-                    <a asp-action="Edit" asp-route-id="@item.AppointmentId">Edit</a> |
-                    <a asp-action="Details" asp-route-id="@item.AppointmentId">Details</a> |
-                    <a asp-action="Delete" asp-route-id="@item.AppointmentId">Delete</a>
+                    <a asp-action="Start" asp-route-id="@item.AppointmentId">Start appointment</a>
                 </td>
             </tr>
         }

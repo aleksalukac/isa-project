@@ -39,9 +39,9 @@ namespace Pharmacy.Services
 
         public async Task<List<Appointment>> GetByMedicalExpert(string id)
         {
-            var appointments = await(from appointment in _context.tbAppointments
-                                       where appointment.MedicalExpertID == id
-                                       select appointment).ToListAsync();
+            var appointments = await (from appointment in _context.tbAppointments
+                                      where appointment.MedicalExpertID == id
+                                      select appointment).ToListAsync();
 
             return appointments;
         }
@@ -55,5 +55,20 @@ namespace Pharmacy.Services
             return appointments;
         }
 
+        public async Task<List<Appointment>> GetCurrentByMedicalExpert(string id)
+        {
+            List<Appointment> appointments = await GetByMedicalExpert(id);
+
+            for (int i = appointments.Count - 1; i >= 0; i--)
+            {
+                if(!(appointments[i].StartDateTime <= DateTime.Now &&
+                    (appointments[i].StartDateTime + appointments[i].Duration) >= DateTime.Now))
+                {
+                    appointments.RemoveAt(i);
+                }
+            }
+
+            return appointments;
+        }
     }
 }

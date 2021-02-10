@@ -13,5 +13,6 @@ namespace Pharmacy.Services
         public Task<List<Appointment>> GetByMedicalExpert(string id);
         public Task<List<Appointment>> GetAllForPharmacy(long id);
         public Task<List<Appointment>> GetByPatient(string id);
+        public Task<List<Appointment>> GetCurrentByMedicalExpert(string id);
     }
 }

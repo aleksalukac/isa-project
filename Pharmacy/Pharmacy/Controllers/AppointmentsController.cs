@@ -19,13 +19,16 @@ namespace Pharmacy.Controllers
     {
         private readonly ApplicationDbContext _context;
         private readonly IAppointmentService _appointmentService;
+        private readonly IUserService _userService;
         private readonly UserManager<AppUser> _userManager;
 
-        public AppointmentsController(ApplicationDbContext context, UserManager<AppUser> userManager, IAppointmentService appointmentService)
+        public AppointmentsController(ApplicationDbContext context, UserManager<AppUser> userManager, 
+            IAppointmentService appointmentService, IUserService userService)
         {
             _context = context;
             _appointmentService = appointmentService;
             _userManager = userManager;
+            _userService = userService;
         }
 
         [Authorize(Roles = "PharmacyAdmin")]
@@ -52,6 +55,7 @@ namespace Pharmacy.Controllers
             return View(appointmentDTOList);
         }
 
+        // GET: Calendar
         [Authorize(Roles = "Pharmacist,Dermatologist")]
         public async Task<IActionResult> Calendar()
         {
@@ -87,7 +91,7 @@ namespace Pharmacy.Controllers
         }
 
         [Authorize(Roles = "Pharmacist,Dermatologist")]
-        // GET: MyAppointments
+        // GET: PatientAppointments/id
         public async Task<IActionResult> PatientAppointments(string id = "")
         {
             if(id.Length == 0)
@@ -120,7 +124,55 @@ namespace Pharmacy.Controllers
         public async Task<IActionResult> MyAppointments()
         {
             var user = await _userManager.GetUserAsync(User);
-            var appointmentList = _appointmentService.GetByMedicalExpert(user.Id).Result;
+            var appointmentList = await _appointmentService.GetByMedicalExpert(user.Id);
+
+            var appointmentDTOList = new List<AppointmentDTO>();
+
+            foreach (var appointment in appointmentList)
+            {
+                AppUser medicalExpert = _context.tbAppUsers.Find(appointment.MedicalExpertID);
+                AppUser patient = _context.tbAppUsers.Find(appointment.PatientID);
+
+                string patientFullName = patient == null ? "" : patient.FirstName + " " + patient.LastName;
+                string medicalExpertFullname = medicalExpert == null ? "" : medicalExpert.FirstName + " " + medicalExpert.LastName;
+
+                appointmentDTOList.Add(new AppointmentDTO(appointment,
+                    medicalExpertFullname, patientFullName));
+            }
+
+            return View(appointmentDTOList);
+        }
+
+        [Authorize(Roles = "Pharmacist,Dermatologist")]
+        // GET: CurrentAppointments
+        public async Task<IActionResult> Start(long? id)
+        {
+            if(!id.HasValue)
+            {
+                return View("MyAppointments");
+            }
+
+            Appointment appointment = await _appointmentService.GetById(id.Value);
+            var medicalExpert = await _userManager.GetUserAsync(User);
+            var patient = await _userService.GetById(appointment.PatientID);
+
+            if (appointment.MedicalExpertID != medicalExpert.Id || appointment.StartDateTime > DateTime.Now ||
+                (appointment.StartDateTime + appointment.Duration) < DateTime.Now)
+            {
+                return View("MyAppointments");
+            }
+
+            AppointmentDTO appointmentDTO = new AppointmentDTO(appointment, medicalExpert, patient);
+
+            return View(appointmentDTO);
+        }
+
+        [Authorize(Roles = "Pharmacist,Dermatologist")]
+        // GET: CurrentAppointments
+        public async Task<IActionResult> CurrentAppointments()
+        {
+            var user = await _userManager.GetUserAsync(User);
+            var appointmentList = await _appointmentService.GetCurrentByMedicalExpert(user.Id);
 
             var appointmentDTOList = new List<AppointmentDTO>();
 
