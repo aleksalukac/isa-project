@@ -1,12 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
+using Pharmacy.Areas.Identity;
 using Pharmacy.Data;
 using Pharmacy.Models.DTO;
 using Pharmacy.Models.Entities;
@@ -20,15 +24,26 @@ namespace Pharmacy.Controllers
         private readonly ApplicationDbContext _context;
         private readonly IAppointmentService _appointmentService;
         private readonly IUserService _userService;
+        private readonly IDrugService _drugService;
+        private readonly IPharmacyService _pharmacyService;
+        private readonly EmailSender _emailSender;
         private readonly UserManager<AppUser> _userManager;
 
         public AppointmentsController(ApplicationDbContext context, UserManager<AppUser> userManager, 
-            IAppointmentService appointmentService, IUserService userService)
+            IAppointmentService appointmentService, IUserService userService, IDrugService drugService,
+            IEmailSender emailSender, IPharmacyService pharmacyService)
         {
             _context = context;
             _appointmentService = appointmentService;
             _userManager = userManager;
             _userService = userService;
+            _drugService = drugService;
+            _pharmacyService = pharmacyService;
+            using (StreamReader r = new StreamReader("./Areas/Identity/emailCredentials.json"))
+            {
+                string json = r.ReadToEnd();
+                _emailSender = JsonConvert.DeserializeObject<EmailSender>(json);
+            }
         }
 
         [Authorize(Roles = "PharmacyAdmin")]
@@ -162,9 +177,81 @@ namespace Pharmacy.Controllers
                 return View("MyAppointments");
             }
 
-            AppointmentDTO appointmentDTO = new AppointmentDTO(appointment, medicalExpert, patient);
+            var drugs = await _drugService.GetByPatientNoAllergies(patient.Id);
+
+            AppointmentExamDTO appointmentDTO = new AppointmentExamDTO(appointment, 
+                medicalExpert, patient);
+
+            ViewData["DrugList"] = drugs;
 
             return View(appointmentDTO);
+        }
+        /*
+        [Authorize(Roles = "Pharmacist,Dermatologist")]
+        public async Task<IActionResult> ScheduleNewForPatient(long? patientId)
+        {
+            if(patient)
+            return View();
+
+        }*/
+
+        [Authorize(Roles = "Pharmacist,Dermatologist")]
+        public async Task<IActionResult> EndAppointment(long appointmentId, [Bind("AppointmentId,Report,PrescribedDrug,PrescriptionLength")] 
+                                                        AppointmentExamDTO appointmentExamDTO)
+        {
+            Appointment appointment = await _appointmentService.GetById(appointmentId);
+
+            appointment.Report = appointmentExamDTO.Report;
+
+            if (_drugService.GetDrugQuantity(appointmentExamDTO.PrescribedDrug, appointment.PhrmacyId) > 0)
+            {
+                _drugService.CheckoutDrug(appointmentExamDTO.PrescribedDrug, appointment.PhrmacyId);
+                List<Drug> prescribedDrugs = new List<Drug>();
+                prescribedDrugs.Add(await _drugService.GetById(appointmentExamDTO.PrescribedDrug));
+                appointment.PrescribedDrugs = prescribedDrugs;
+                ViewData["DrugCheckout"] = "Drug successfuly given to the patient";
+            }
+            else
+            {
+                var drug = await _drugService.GetById(appointmentExamDTO.PrescribedDrug);
+                List<Drug> allergies = await _drugService.GetByPatientNoAllergies(appointment.PatientID);
+                List<Drug> similarDrugs = await _drugService.GetSimilarDrugs(drug.Id);
+
+                var pharmacyAdmin = await _userService.GetById(await _pharmacyService.GetAdmin(appointment.PhrmacyId));
+
+                await _emailSender.SendEmailAsync(pharmacyAdmin.Email, "Drug not available",
+                    $"Drug {drug.Id} not available in the pharmacy {appointment.PhrmacyId} ");
+
+                bool givenDrug = false;
+
+                for(int i = 0; i < similarDrugs.Count; i++)
+                {
+                    if (_drugService.GetDrugQuantity(similarDrugs[i].Id, appointment.PhrmacyId) > 0 &&
+                        allergies.Select(x => x.Id).Contains(similarDrugs[i].Id))
+                    {
+                        _drugService.CheckoutDrug(appointmentExamDTO.PrescribedDrug, appointment.PhrmacyId);
+                        ViewData["DrugCheckout"] = "The drug you prescribed was not available (Pharmacy has been informed), but a suitable alternative " +
+                            similarDrugs[i].Name + " was given to the patient. Patient is not allergic to this drug";
+
+                        List<Drug> prescribedDrugs = new List<Drug>();
+                        prescribedDrugs.Add(similarDrugs[i]);
+                        appointment.PrescribedDrugs = prescribedDrugs;
+
+                        givenDrug = true;
+                        break;
+                   }
+                }
+                if(!givenDrug)
+                {
+                    ViewData["DrugCheckout"] = "Unfortunately, the drug you prescribed and its alternatives were not available.";
+                }
+            }
+            appointment.PrescriptionDuration = appointmentExamDTO.PrescriptionLength;
+            appointment.Duration = DateTime.Now - appointment.StartDateTime;
+            _appointmentService.Update(appointment);
+
+            @ViewData["PatientId"] = appointment.PatientID;
+            return View();
         }
 
         [Authorize(Roles = "Pharmacist,Dermatologist")]

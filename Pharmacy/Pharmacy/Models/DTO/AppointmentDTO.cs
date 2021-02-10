@@ -13,8 +13,11 @@ namespace Pharmacy.Models.DTO
         public string PatientNameAndSurname { get; set; }
         public long AppointmentId { get; set; }
         public bool PatientCame { get; set; }
-        public List<Drug> PrescribedDrugs { get; set; }
-        public List<Drug> Allergies { get; set; }
+
+        public AppointmentDTO()
+        {
+
+        }
 
         public AppointmentDTO(Appointment appointment, AppUser medicalExpert, AppUser patient)
             : this(appointment, medicalExpert.FirstName + " " + medicalExpert.LastName,

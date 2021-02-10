@@ -70,5 +70,12 @@ namespace Pharmacy.Services
 
             return appointments;
         }
+
+        public void Update(Appointment appointment)
+        {
+            _context.Update(appointment);
+
+            _context.SaveChanges();
+        }
     }
 }

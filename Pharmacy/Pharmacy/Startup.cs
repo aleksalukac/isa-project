@@ -42,7 +42,9 @@ namespace Pharmacy
 
             services.AddScoped<IAppointmentService, AppointmentService>();
             services.AddScoped<IOrderService, OrderService>();
+            services.AddScoped<IDrugService, DrugService>();
             services.AddScoped<IUserService, UserService>();
+            services.AddScoped<IPharmacyService, PharmacyService>();
             services.AddScoped<IAbsenceRequestService, AbsenceRequestService>();
 
             services.AddAuthorization(options =>

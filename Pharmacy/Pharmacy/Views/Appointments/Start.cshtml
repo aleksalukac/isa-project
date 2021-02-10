@@ -1,4 +1,4 @@
-﻿@model Pharmacy.Models.DTO.AppointmentDTO
+﻿@model Pharmacy.Models.DTO.AppointmentExamDTO
 
 @using Microsoft.AspNetCore.Authorization
 @inject IAuthorizationService AuthorizationService
@@ -14,15 +14,19 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h1>Edit</h1>
+<h1>Start Appointment</h1>
 
-<h4>Appointment</h4>
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="Edit">
+        <form asp-action="EndAppointment">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="AppointmentId" />
+            <div class="form-group">
+                <label asp-for="AppointmentId" class="control-label"></label>
+                <input asp-for="AppointmentId" class="form-control" readonly />
+                <span asp-validation-for="AppointmentId" class="text-danger"></span>
+            </div>
             <div class="form-group">
                 <label asp-for="Price" class="control-label"></label>
                 <input asp-for="Price" class="form-control" readonly />
@@ -43,18 +47,26 @@
                 <input asp-for="Duration" class="form-control" readonly />
                 <span asp-validation-for="Duration" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
+
+            Prescribe drug:
+            <div class="form-group mx-sm-3 mb-2">
+                <select name="prescribedDrug" id="prescribedDrug" class="form-control">
+                    @foreach (Pharmacy.Models.Entities.Drug item in (List<Pharmacy.Models.Entities.Drug>)@ViewData["DrugList"])
+                    {
+                        <option value=@item.Id class="option">@item.Name</option>
+                    }
+                </select>
+                <div class="form-group">
+                    <label asp-for="PrescriptionLength" class="control-label"></label>
+                    <input asp-for="PrescriptionLength" class="form-control" />
+                    <span asp-validation-for="PrescriptionLength" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <input type="submit" value="End appointment" class="btn btn-primary" />
+                </div>
             </div>
         </form>
     </div>
-</div>
-
-<div>
-    @if ((await AuthorizationService.AuthorizeAsync(User, null, "PharmacyAdminPolicy")).Succeeded)
-    {
-        <a asp-action="Index">Back to List</a>
-    }
 </div>
 
 @section Scripts {
