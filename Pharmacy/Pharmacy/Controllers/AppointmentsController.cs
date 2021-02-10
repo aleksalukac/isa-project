@@ -186,6 +186,14 @@ namespace Pharmacy.Controllers
 
             return View(appointmentDTO);
         }
+        /*
+        [Authorize(Roles = "Pharmacist,Dermatologist")]
+        public async Task<IActionResult> ScheduleNewForPatient(long? patientId)
+        {
+            if(patient)
+            return View();
+
+        }*/
 
         [Authorize(Roles = "Pharmacist,Dermatologist")]
         public async Task<IActionResult> EndAppointment(long appointmentId, [Bind("AppointmentId,Report,PrescribedDrug,PrescriptionLength")] 
