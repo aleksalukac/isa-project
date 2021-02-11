@@ -12,6 +12,7 @@ using Newtonsoft.Json;
 using Pharmacy.Data;
 using Pharmacy.Models.Entities;
 using Pharmacy.Models.Entities.Users;
+using Pharmacy.Services;
 
 namespace Pharmacy.Controllers
 {
@@ -19,79 +20,28 @@ namespace Pharmacy.Controllers
     {
         private readonly ApplicationDbContext _context;
         private readonly UserManager<AppUser> _userManager;
+        private readonly IPharmacyService _pharmacyService;
 
-        public PharmaciesController(UserManager<AppUser> userManager, ApplicationDbContext context)
+        public PharmaciesController(UserManager<AppUser> userManager,
+            ApplicationDbContext context,
+            IPharmacyService pharmacyService)
         {
+            _pharmacyService = pharmacyService;
             _userManager = userManager;
             _context = context;
         }
 
-        // GET: Pharmacies
+        // GET: Pharmacies LoggedInIndex
         public async Task<IActionResult> Index(string searchString = "", string filter = "", string sort = "")
         {
-            List<Models.Entities.Pharmacy> pharmacies = new List<Models.Entities.Pharmacy>();
-
-            if (sort != null)
-            {
-                pharmacies = await _context.tbPharmacys.ToListAsync();
-                if (sort == "Score")
-                {
-                    pharmacies = await _context.tbPharmacys.OrderBy(x => x.AverageScore).ToListAsync();
-                } else if (sort == "Name")
-                {
-                    pharmacies = await _context.tbPharmacys.OrderBy(x => x.Name).ToListAsync();
-                } else if (sort == "Adress")
-                {
-                    pharmacies = await _context.tbPharmacys.OrderBy(x => x.Address).ToListAsync();
-                }
-            }
-
-            ViewData["PharmacyId"] = (await _userManager.GetUserAsync(User)).Id;
-            List<Pharmacy.Models.Entities.Pharmacy> filteredPharmacies = new List<Pharmacy.Models.Entities.Pharmacy>();
-
-            if (searchString == null || searchString.Length == 0)
-            {
-                filteredPharmacies = pharmacies;
-            }
-            else
-            {
-                foreach (var pharmacy in pharmacies)
-                {
-                    var json = JsonConvert.SerializeObject(pharmacy);
-                    var dictionary = JsonConvert.DeserializeObject<Dictionary<string, string>>(json);
-
-                    if (dictionary[filter] != null && dictionary[filter].ToUpper().Contains(searchString.ToUpper()))
-                    {
-                        filteredPharmacies.Add(pharmacy);
-                    }
-                }
-            }
-
-            return View(FilterPharmacies(filteredPharmacies, searchString, filter));
+            return View(await _pharmacyService.GetAllFiltered(searchString,filter,sort));
         }
 
-        private static List<Pharmacy.Models.Entities.Pharmacy> FilterPharmacies(List<Pharmacy.Models.Entities.Pharmacy> pharmacies, string searchString, string filter)
+        [Authorize]
+        public async Task<IActionResult> LoggedInIndex(string searchString = "", string filter = "", string sort = "")
         {
-            List<Pharmacy.Models.Entities.Pharmacy> filteredUsers = new List<Pharmacy.Models.Entities.Pharmacy>();
-            if (string.IsNullOrEmpty(searchString))
-            {
-                filteredUsers = pharmacies;
-            }
-            else
-            {
-                foreach (var user in pharmacies)
-                {
-                    var json = JsonConvert.SerializeObject(user);
-                    var dictionary = JsonConvert.DeserializeObject<Dictionary<string, string>>(json);
-
-                    if (dictionary[filter] != null && dictionary[filter].ToUpper().Contains(searchString.ToUpper()))
-                    {
-                        filteredUsers.Add(user);
-                    }
-                }
-            }
-
-            return filteredUsers;
+            ViewData["PharmacyId"] = (await _userManager.GetUserAsync(User)).Id;
+            return View(await _pharmacyService.GetAllFiltered(searchString, filter, sort));
         }
 
         // GET: Pharmacies/Details/5
@@ -230,6 +180,7 @@ namespace Pharmacy.Controllers
             return _context.tbPharmacys.Any(e => e.Id == id);
         }
 
+        [Authorize(Roles ="User")]
         public async Task<IActionResult> Subscribe(long? id)
         {
             var user = await _userManager.GetUserAsync(User);
@@ -242,6 +193,7 @@ namespace Pharmacy.Controllers
             return View();
         }
 
+        [Authorize(Roles = "User")]
         public async Task<IActionResult> UnSubscribe(long? id)
         {
             var user = await _userManager.GetUserAsync(User);
@@ -252,6 +204,7 @@ namespace Pharmacy.Controllers
             return View();
         }
 
+        [Authorize(Roles = "User")]
         public async Task<IActionResult> SubscribedPharmacy()
         {
             var user = await _userManager.GetUserAsync(User);

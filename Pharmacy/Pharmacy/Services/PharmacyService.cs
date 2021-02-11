@@ -5,6 +5,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 
 namespace Pharmacy.Services
 {
@@ -37,8 +39,58 @@ namespace Pharmacy.Services
 
         public async Task<Pharmacy.Models.Entities.Pharmacy> GetById(long id)
         {
-            return await _context.tbAbsenceRequests
-                .FirstOrDefaultAsync(m => m.Id == id);
+            return await _context.tbPharmacys.FirstOrDefaultAsync(m => m.Id == id);
+        }
+
+        public async Task<List<Models.Entities.Pharmacy>> GetAllFiltered(string searchString, string filter, string sort)
+        {
+
+            var pharmacies = new List<Models.Entities.Pharmacy>();
+            if (sort != null)
+            {
+                if (sort == "Score")
+                {
+                    pharmacies = await _context.tbPharmacys.OrderBy(x => x.AverageScore).ToListAsync();
+                }
+                else if (sort == "Name")
+                {
+                    pharmacies = await _context.tbPharmacys.OrderBy(x => x.Name).ToListAsync();
+                }
+                else if (sort == "Adress")
+                {
+                    pharmacies = await _context.tbPharmacys.OrderBy(x => x.Address).ToListAsync();
+                }
+                else
+                {
+                    pharmacies = await _context.tbPharmacys.ToListAsync();
+                }
+            }
+            else
+            {
+                pharmacies = await _context.tbPharmacys.ToListAsync();
+            }
+
+            List<Models.Entities.Pharmacy> filteredPharmacies = new List<Models.Entities.Pharmacy>();
+
+            if (string.IsNullOrEmpty(searchString))
+            {
+                filteredPharmacies = pharmacies;
+            }
+            else
+            {
+                foreach (var user in pharmacies)
+                {
+                    var json = JsonConvert.SerializeObject(user);
+                    var dictionary = JsonConvert.DeserializeObject<Dictionary<string, string>>(json);
+
+                    if (dictionary[filter] != null && dictionary[filter].ToUpper().Contains(searchString.ToUpper()))
+                    {
+                        filteredPharmacies.Add(user);
+                    }
+                }
+            }
+
+            return filteredPharmacies;
         }
     }
 }

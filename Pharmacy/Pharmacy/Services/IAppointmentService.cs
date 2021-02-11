@@ -15,6 +15,7 @@ namespace Pharmacy.Services
         public Task<List<Appointment>> GetByPatient(string id);
         public Task<List<Appointment>> GetCurrentByMedicalExpert(string id);
         public Task<List<Appointment>> GetFreeDermatologistApp();
+        public Task<List<Appointment>> GetByPatientScheduled(string id);
         public Task<int> Update(Appointment appointment);
         public bool Exists(long id);
         public void Remove(Appointment appointment);

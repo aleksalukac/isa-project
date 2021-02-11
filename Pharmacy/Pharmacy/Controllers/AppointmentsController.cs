@@ -568,7 +568,7 @@ namespace Pharmacy.Controllers
         public async Task<IActionResult> MyAppointmentsUser()
         {
             var user = await _userManager.GetUserAsync(User);
-            var appointmentList = await _appointmentService.GetByPatient(user.Id);
+            var appointmentList = await _appointmentService.GetByPatientScheduled(user.Id);
 
             var appointmentDTOList = new List<AppointmentDTO>();
 
@@ -632,6 +632,55 @@ namespace Pharmacy.Controllers
                 else
                 {
                     return View("ConcurrencyError", "Home");
+                }
+            }
+
+            return View();
+        }
+        public async Task<IActionResult> Unchedule(long? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var appointment = await _appointmentService.GetById((long)id);
+
+            if (appointment.Type == AppointmentType.Exam)
+            {
+                appointment.PatientID = null;
+                try
+                {
+                    await _appointmentService.Update(appointment);
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!_appointmentService.Exists(appointment.Id))
+                    {
+                        return NotFound();
+                    }
+                    else
+                    {
+                        return View("ConcurrencyError", "Home");
+                    }
+                }
+            }
+            else
+            {
+                try
+                {
+                    _appointmentService.Remove(appointment);
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!_appointmentService.Exists(appointment.Id))
+                    {
+                        return NotFound();
+                    }
+                    else
+                    {
+                        return View("ConcurrencyError", "Home");
+                    }
                 }
             }
 

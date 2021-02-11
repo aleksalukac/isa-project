@@ -6,11 +6,47 @@
 @model IEnumerable<Pharmacy.Models.Entities.Pharmacy>
 
 @{
-    ViewData["Title"] = "Subscribed";
+    ViewData["Title"] = "Index";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h1>Subscribed</h1>
+<h1>Index</h1>
+
+@if ((await AuthorizationService.AuthorizeAsync(User, null, "AdminPolicy")).Succeeded)
+{
+    <p>
+        <a asp-action="Create">Create New</a>
+    </p>
+
+}
+
+<form asp-controller="Pharmacies" asp-action="LoggedInIndex" class="form-inline">
+
+    <div class="form-group mb-2">
+        <label for="searchString" class="sr-only">Search:</label>
+        <input type="text" id="searchString" name="searchString" class="form-control" />
+    </div>
+    <div class="form-group mb-2">
+        <label for="filter" class="sr-only">Filter</label>
+        <select name="filter" id="filter" style="background-color: transparent;">
+            <option value="Name" class="option">Name</option>
+            <option value="AverageScore" class="option">Rating</option>
+            <option value="Address" class="option">Address</option>
+        </select>
+    </div>
+    <div class="form-group mb-2">
+        <label for="sort">Sort:</label>
+        <select name="sort" id="sort" style="background-color: transparent;">
+            <option value="Name" class="option">Name</option>
+            <option value="AverageScore" class="option">Rating</option>
+            <option value="Address" class="option">Address</option>
+        </select>
+    </div>
+    <div class="form-group mx-sm-3 mb-2">
+        <button type="submit" class="btn btn-primary">Filter</button>
+    </div>
+</form>
+
 <table class="table">
     <thead>
         <tr>
@@ -52,7 +88,7 @@
                     }
                     @if ((await AuthorizationService.AuthorizeAsync(User, null, "UserPolicy")).Succeeded)
                     {
-                        <a asp-action="UnSubscribe" asp-route-id="@item.Id">UnSubscribe</a>
+                        <a asp-action="Subscribe" asp-route-id="@item.Id">Subscribe</a>
                     }
                 </td>
             </tr>
