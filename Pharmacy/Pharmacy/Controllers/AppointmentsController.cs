@@ -349,6 +349,11 @@ namespace Pharmacy.Controllers
                 appointment.PatientID = appointmentExamDTO.PatientID;
             }
 
+            if(PatientId != null)
+            {
+                appointment.PatientID = PatientId;
+            }
+
             try
             {
                 if(_appointmentService.Exists(appointment.Id))
