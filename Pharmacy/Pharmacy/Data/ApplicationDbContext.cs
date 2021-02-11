@@ -50,6 +50,8 @@ namespace Pharmacy.Data
 
         public DbSet<SupplyItem> SupplyItems { get; set; }
 
+        public DbSet<DermatologistPharmacy> DermatologistPharmacy { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
 
