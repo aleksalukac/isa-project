@@ -108,12 +108,18 @@ namespace Pharmacy.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,Name,Form,Ingredients,Drugmaker,IsPrescribable,Notes")] Drug drug)
         {
+            if(drug.Id < 0)
+            {
+                return BadRequest(ModelState);
+            }
+
             if (ModelState.IsValid)
             {
                 _context.Add(drug);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
+
             return View(drug);
         }
 

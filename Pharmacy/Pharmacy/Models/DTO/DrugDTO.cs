@@ -27,6 +27,22 @@ namespace Pharmacy.Models.DTO
             Cost = cost;
         }
 
+        public DrugDTO(long id, string name)
+        {
+            Id = id;
+            Name = name;
+        }
+
+        public DrugDTO( string name)
+        {
+            Name = name;
+        }
+
+        public DrugDTO(long id)
+        {
+            Id = id;
+        }
+
         public long Id { get; set; }
         public long DrugAndQuantitiesId { get; set; }
         public string Name { get; set; }

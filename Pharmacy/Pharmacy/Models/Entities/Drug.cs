@@ -13,6 +13,17 @@ namespace Pharmacy.Models.Entities
     [Table("tbDrugs")]
     public class Drug
     {
+        public Drug(long id, string name, DrugForm form, string ingredients, string drugmaker, bool isPrescribable, string notes)
+        {
+            Id = id;
+            Name = name;
+            Form = form;
+            Ingredients = ingredients;
+            Drugmaker = drugmaker;
+            IsPrescribable = isPrescribable;
+            Notes = notes;
+        }
+
         public long Id { get; set; }
         public string Name { get; set; }
         public DrugType Type { get; set; }
