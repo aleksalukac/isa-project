@@ -1,4 +1,11 @@
 ﻿@model Pharmacy.Models.DTO.AppointmentDTO
+@using Microsoft.AspNetCore.Authorization
+@inject IAuthorizationService AuthorizationService
+
+@using Microsoft.AspNetCore.Identity
+@using Pharmacy.Models.Entities.Users
+@inject SignInManager<Pharmacy.Models.Entities.Users.AppUser> SignInManager
+@inject UserManager<AppUser> UserManager
 
 @{
     ViewData["Title"] = "Schedule appointment";
@@ -23,6 +30,18 @@
                     <option value=@item.Id class="option">@item.Name</option>
                 }
             </select>
+            @if ((await AuthorizationService.AuthorizeAsync(User, null, "DermatologistPolicy")).Succeeded)
+            {
+                <br />
+        <select name="SelectedAppointmentId" onchange="lockButton()" id="SelectedAppointmentId" class="form-control">
+
+            <option value=0 class="option">Choose from existing appointments</option>
+            @foreach (Pharmacy.Models.Entities.Appointment item in (List<Pharmacy.Models.Entities.Appointment>)@ViewData["freeDateTimes"])
+            {
+                <option value=@item.Id class="option">@item.StartDateTime, @item.Duration</option>
+            }
+        </select>
+            }
             <div class="form-group">
                 <label asp-for="StartDateTime" class="control-label"></label>
                 <input id="datetime" onchange="lockButton()" asp-for="StartDateTime" class="form-control" min="@ViewData["CurrentDate"] " />
@@ -49,6 +68,13 @@
     }
 
     function checkAppointments() {
+
+        if (document.getElementById("SelectedAppointmentId").value != "0") {
+            document.getElementById("submitButton").disabled = false;
+            return;
+        }
+
+
         var startWorkingHours = "@ViewData["startWorkingHours"]";
         var endWorkingHours = "@ViewData["endWorkingHours"]";
         var appointments = JSON.parse('@Html.Raw(ViewData["appointmentsTime"])');
@@ -59,8 +85,6 @@
         var minutes = document.getElementById("duration").value.split(':')[1];
         var seconds = document.getElementById("duration").value.split(':')[2];
 
-        alert(start.toString());
-
         var end = start + hours * 60 * 60 * 1000;
         end += minutes * 60 * 1000;
         end += seconds * 1000;
@@ -69,8 +93,6 @@
 		end.setHours(end.getHours() + parseInt(hours));
 		end.setMinutes(end.getMinutes() + parseInt(minutes));
 		end.setSeconds(end.getSeconds() + parseInt(seconds));
-
-        alert(end.toString());
 
         if (start.toTimeString().split(' ')[0] < startWorkingHours) {
             alert("Appointment starts too early.");

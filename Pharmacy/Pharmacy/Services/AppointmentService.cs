@@ -98,8 +98,21 @@ namespace Pharmacy.Services
 
         public async void Create(Appointment appointment)
         {
+
+            if(appointment.PatientID != null)
+            {
+
+            }
+
             _context.Add(appointment);
             await _context.SaveChangesAsync();
+        }
+
+        public async Task<List<Appointment>> GetByMedicalExpertFree(string id)
+        {
+            var appointments = await GetByMedicalExpert(id);
+            appointments = appointments.Where(x => x.PatientID == null).ToList();
+            return (appointments);
         }
     }
 }

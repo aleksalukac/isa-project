@@ -12,7 +12,7 @@ namespace Pharmacy.Models.DTO
         public string MedicalExpertNameAndSurname { get; set; }
         public string PatientNameAndSurname { get; set; }
         public long AppointmentId { get; set; }
-        public bool PatientCame { get; set; }
+        public long SelectedAppointmentId { get; set; }
         public long PharmacyId { get; set; }
 
         public AppointmentDTO()
@@ -36,8 +36,6 @@ namespace Pharmacy.Models.DTO
             this.StartDateTime = appointment.StartDateTime;
             this.Duration = appointment.Duration;
             this.PharmacyId = appointment.PhrmacyId;
-
-            this.PatientCame = false;
 
             MedicalExpertNameAndSurname = _medicalExpertNameAndSurname;
             PatientNameAndSurname = _patientNameAndSurname;

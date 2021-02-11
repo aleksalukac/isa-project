@@ -19,5 +19,6 @@ namespace Pharmacy.Services
         public bool Exists(long id);
         public void Remove(Appointment appointment);
         public void Create(Appointment appointment);
+        public Task<List<Appointment>> GetByMedicalExpertFree(string id);
     }
 }

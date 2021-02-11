@@ -41,5 +41,10 @@ namespace Pharmacy.Services
             return await _context.tbPharmacys
                 .FirstOrDefaultAsync(m => m.Id == id);
         }
+
+        public async Task<List<Pharmacy.Models.Entities.Pharmacy>> GetAll()
+        {
+            return await _context.tbPharmacys.ToListAsync();
+        }
     }
 }
