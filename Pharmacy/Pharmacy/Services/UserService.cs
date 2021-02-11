@@ -7,7 +7,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
-using Pharmacy.Models.Entities;
 
 namespace Pharmacy.Services
 {
@@ -67,9 +66,9 @@ namespace Pharmacy.Services
              select user).ToListAsync();
         }
 
-        public async void Create(Appointment appointment)
+        public async void Create(AppUser user)
         {
-            _context.Add(appointment);
+            _context.Add(user);
             await _context.SaveChangesAsync();
         }
     }

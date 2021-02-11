@@ -19,5 +19,6 @@ namespace Pharmacy.Services
         public Task<int> Update(Appointment appointment);
         public bool Exists(long id);
         public void Remove(Appointment appointment);
+        public void Create(Appointment appointment);
     }
 }

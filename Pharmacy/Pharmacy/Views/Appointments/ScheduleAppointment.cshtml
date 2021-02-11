@@ -17,8 +17,12 @@
         <form asp-action="ScheduleAppointment">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="PatientID" />
-            <div class="form-group">
-            </div>
+            <select name="PharmacyId" id="PharmacyId" class="form-control" @ViewData["changePharmacy"]>
+                @foreach (Pharmacy.Models.Entities.Pharmacy item in (List<Pharmacy.Models.Entities.Pharmacy>)@ViewData["PharmacyList"])
+                {
+                    <option value=@item.Id class="option">@item.Name</option>
+                }
+            </select>
             <div class="form-group">
                 <label asp-for="StartDateTime" class="control-label"></label>
                 <input id="datetime" onchange="lockButton()" asp-for="StartDateTime" class="form-control" min="@ViewData["CurrentDate"] " />

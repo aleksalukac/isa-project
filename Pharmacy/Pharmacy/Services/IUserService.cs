@@ -13,6 +13,6 @@ namespace Pharmacy.Services
         public Task<int> Update(AppUser user);
         bool Exists(string id);
         public Task<List<AppUser>> GetAllByRole(string roleName);
-        public void Create(Appointment appointment);
+        public void Create(AppUser user);
     }
 }

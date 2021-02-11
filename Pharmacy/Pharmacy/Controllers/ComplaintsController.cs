@@ -18,20 +18,23 @@ namespace Pharmacy.Controllers
     {
         private readonly ApplicationDbContext _context;
         private readonly UserManager<AppUser> _userManager;
+        private readonly IComplaintService _complaintService;
 
         public ComplaintsController(UserManager<AppUser> userManager, ApplicationDbContext context)
         {
             _userManager = userManager;
             _context = context;
         }
-        [Authorize(Roles = "Admin")]
+
         // GET: Complaints
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Index()
         {
             return View(await _context.Complaint.ToListAsync());
         }
 
         // GET: Complaints/Details/5
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Details(long? id)
         {
             if (id == null)
@@ -48,6 +51,7 @@ namespace Pharmacy.Controllers
 
             return View(complaint);
         }
+
         [Authorize]
         // GET: Complaints/Create
         public async Task<IActionResult> CreateStaff()
@@ -174,7 +178,7 @@ namespace Pharmacy.Controllers
                     }
                     else
                     {
-                        throw;
+                        return View("ConcurrencyError", "Home");
                     }
                 }
                 return RedirectToAction(nameof(Index));

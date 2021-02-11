@@ -217,7 +217,7 @@ namespace Pharmacy.Controllers
                 }
             }
 
-            return View("MyAppointments;");
+            return View("MyAppointments");
         }
 
         [Authorize(Roles = "Pharmacist,Dermatologist")]
@@ -279,6 +279,8 @@ namespace Pharmacy.Controllers
             ViewData["appointmentsTime"] = JsonConvert.SerializeObject(allAppointmentsTime);
             ViewData["startWorkingHours"] = user.WorkHoursStart.ToString() == "00:00:00" ? "08:00:00" : user.WorkHoursStart.ToString();
             ViewData["endWorkingHours"] = user.WorkHoursEnd.ToString() == "00:00:00" ? "16:00:00" : user.WorkHoursEnd.ToString();
+            //ViewData["pharmacyList"] = 
+            ViewData["changePharmacy"] = "";
 
             appointmentDTO.StartDateTime = DateTime.Now;
             return View("ScheduleAppointment", appointmentDTO);
@@ -286,26 +288,31 @@ namespace Pharmacy.Controllers
 
         [HttpPost("Appointments/ScheduleAppointment/{id}")]
         [Authorize(Roles = "Pharmacist,Dermatologist")]
-        public async Task<IActionResult> ScheduleAppointment(string patientId, [Bind("StartDateTime,Duration")]
+        public async Task<IActionResult> ScheduleAppointment(string patientId, [Bind("StartDateTime,Duration,PharmacyId")]
                                                         AppointmentExamDTO appointmentExamDTO)
         {
             var user = await _userManager.GetUserAsync(User);
 
             appointmentExamDTO.PatientID = patientId;
             appointmentExamDTO.MedicalExpertID = user.Id;
+            ViewData["ChangePharmacy"] = "disabled";
 
             return View();
         }
 
         [Authorize(Roles = "Pharmacist,Dermatologist")]
-        public async Task<IActionResult> EndAppointment(long appointmentId, [Bind("AppointmentId,Report,PrescribedDrug,PrescriptionLength")] 
+        public async Task<IActionResult> EndAppointment(long appointmentId, [Bind("AppointmentId,Report,PrescribedDrug,PrescriptionLength,PharmacyId")] 
                                                         AppointmentExamDTO appointmentExamDTO)
         {
             Appointment appointment = await _appointmentService.GetById(appointmentId);
 
             appointment.Report = appointmentExamDTO.Report;
 
-            if (_drugService.GetDrugQuantity(appointmentExamDTO.PrescribedDrug, appointment.PhrmacyId) > 0)
+            if(appointmentExamDTO.PrescribedDrug == 0)
+            {
+                ViewData["DrugCheckout"] = "No drug was prescribed";
+            }
+            else if (_drugService.GetDrugQuantity(appointmentExamDTO.PrescribedDrug, appointment.PhrmacyId) > 0)
             {
                 _drugService.CheckoutDrug(appointmentExamDTO.PrescribedDrug, appointment.PhrmacyId);
                 List<Drug> prescribedDrugs = new List<Drug>();
@@ -348,6 +355,7 @@ namespace Pharmacy.Controllers
                     ViewData["DrugCheckout"] = "Unfortunately, the drug you prescribed and its alternatives were not available.";
                 }
             }
+            appointment.PhrmacyId = appointmentExamDTO.PharmacyId;
             appointment.PrescriptionDuration = appointmentExamDTO.PrescriptionLength;
             appointment.Duration = DateTime.Now - appointment.StartDateTime;
 
@@ -434,7 +442,7 @@ namespace Pharmacy.Controllers
 
                 if (!isOverlapping)
                 {
-                    _userService.Create(appointment);
+                    _appointmentService.Create(appointment);
                     return RedirectToAction(nameof(Index));
                 }
                 else
@@ -446,7 +454,7 @@ namespace Pharmacy.Controllers
         }
 
         // GET: Appointments/Edit/5
-        [Authorize(Roles = "Pharmacist,Dermatologist,PharmacyAdmin")]
+        [Authorize(Roles = "PharmacyAdmin")]
         public async Task<IActionResult> Edit(long? id)
         {
             if (id == null)
@@ -470,7 +478,7 @@ namespace Pharmacy.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Authorize(Roles = "Pharmacist,Dermatologist,PharmacyAdmin")]
+        [Authorize(Roles = "PharmacyAdmin")]
         public async Task<IActionResult> Edit(long id, [Bind("Id,MedicalExpertID,PatientID,Price,Report,StartDateTime,Duration,RowVersion")] Appointment appointment)
         {
             if (id != appointment.Id)
