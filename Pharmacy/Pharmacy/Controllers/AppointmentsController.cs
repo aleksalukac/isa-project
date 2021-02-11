@@ -574,8 +574,8 @@ namespace Pharmacy.Controllers
 
             foreach (var appointment in appointmentList)
             {
-                AppUser medicalExpert = _context.tbAppUsers.Find(appointment.MedicalExpertID);
-                AppUser patient = _context.tbAppUsers.Find(appointment.PatientID);
+                AppUser medicalExpert = await _userService.GetById(appointment.MedicalExpertID);
+                AppUser patient = await _userService.GetById(appointment.PatientID);
 
                 string patientFullName = patient == null ? "" : patient.FirstName + " " + patient.LastName;
                 string medicalExpertFullname = medicalExpert == null ? "" : medicalExpert.FirstName + " " + medicalExpert.LastName;
@@ -596,8 +596,8 @@ namespace Pharmacy.Controllers
 
             foreach (var appointment in appointmentList)
             {
-                AppUser medicalExpert = _context.tbAppUsers.Find(appointment.MedicalExpertID);
-                AppUser patient = _context.tbAppUsers.Find(appointment.PatientID);
+                AppUser medicalExpert = await _userService.GetById(appointment.MedicalExpertID);
+                AppUser patient = await _userService.GetById(appointment.PatientID);
 
                 string patientFullName = patient == null ? "" : patient.FirstName + " " + patient.LastName;
                 string medicalExpertFullname = medicalExpert == null ? "" : medicalExpert.FirstName + " " + medicalExpert.LastName;
