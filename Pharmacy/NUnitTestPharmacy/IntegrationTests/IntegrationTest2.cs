@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Hosting;
 using NUnit.Framework;
 using Pharmacy;
@@ -20,11 +20,11 @@ using OpenQA.Selenium.Chrome;
 using System.IO;
 using System.Reflection;
 
-namespace NUnitTestPharmacy
-{
-    public class Tests
-    {
 
+namespace NUnitTestPharmacy.IntegrationTests
+{
+    class IntegrationTest2
+    {
         public SupplyOrdersController supplyOrdersController;
         public DrugsController drugsController;
         private readonly UserManager<AppUser> _userManager;
@@ -34,7 +34,8 @@ namespace NUnitTestPharmacy
         private IWebDriver _webDriver;
         private WebDriverWait _wait;
         private int _timeoutInSeconds = 30;
-        private static string _driverPath = "C:\\Users\\Panonit\\Desktop\\Isa\\isa-projeka_LastVersion\\isa-project\\Pharmacy\\NUnitTestPharmacy\\WebDriverGoogleChome\\";
+        private static string _driverPath = Environment.CurrentDirectory + "\\..\\..\\..\\WebDriverGoogleChome\\";
+
 
         [SetUp]
         public void SetUp()
@@ -42,17 +43,6 @@ namespace NUnitTestPharmacy
             _webDriver = new ChromeDriver(_driverPath);
             _wait = new WebDriverWait(_webDriver, TimeSpan.FromSeconds(_timeoutInSeconds));
         }
-
-        #region Unit Test
-        [Test]
-        public async Task InvalideDrugFormatValide()
-        {
-            Drug drug = new Drug(-1, "Neso", DrugForm.BuccalFilm, "Nes", "Nes", true, "Nes");
-            drugsController = new DrugsController(_context, _userManager);
-            var actionResult = await drugsController.Create(drug);
-            Assert.IsInstanceOf<BadRequestObjectResult>(actionResult, typeof(BadRequestObjectResult).ToString());
-        }
-        #endregion
 
         #region Integration  Test
 
@@ -97,18 +87,18 @@ namespace NUnitTestPharmacy
             }
             finally
             {
-                
+
             }
             return result;
 
         }
 
         [Test]
-        public async Task LoginTest()
+        public async Task LoginTest_Valid()
         {
-            LoginDTO loginDTO = new LoginDTO("hafik45066@hrandod.com", "Admin.123");
+            LoginDTO loginDTO = new LoginDTO("neregistrovan@akaunt.com", "Admin.1233");
             var results = LogInEmployee(_webDriver, _wait, loginDTO);
-            Assert.IsTrue(results);
+            Assert.IsFalse(results);
         }
         #endregion
     }
