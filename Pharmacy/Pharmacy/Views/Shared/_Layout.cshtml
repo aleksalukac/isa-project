@@ -90,7 +90,7 @@
                                     <a class="nav-link text-dark" asp-area="" asp-controller="Orders" asp-action="SearchOrder">Checkout orders</a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link text-dark" asp-area="" asp-controller="AbsenceRequest" asp-action="Index">AbsenceRequest</a>
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="AbsenceRequests" asp-action="Index">AbsenceRequest</a>
                                 </li>
                             }
                             @if ((await AuthorizationService.AuthorizeAsync(User, null, "PharmacyAdminPolicy")).Succeeded)

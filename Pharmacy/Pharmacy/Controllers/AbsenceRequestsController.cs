@@ -96,8 +96,8 @@ namespace Pharmacy.Controllers
 
             absenceRequest.EmployeeId = userName.Id;
 
-            Pharmacy.Models.Entities.Pharmacy pharmacy = _context.tbPharmacys.Find(userName.PharmacyId);
-            AppUser pharmacyAdmin = _context.tbAppUsers.Find(pharmacy.AdminUserID);
+            Pharmacy.Models.Entities.Pharmacy pharmacy = await _context.tbPharmacys.FindAsync(userName.PharmacyId);
+            AppUser pharmacyAdmin = await _context.tbAppUsers.FindAsync(pharmacy.AdminUserID);
             absenceRequest.PharmacyAdministratorId = pharmacyAdmin.Id;
 
             if (ModelState.IsValid)
@@ -207,7 +207,7 @@ namespace Pharmacy.Controllers
         public async Task<IActionResult> Approve(long id)
         {
 
-            var absenceRequest = _context.tbAbsenceRequests.Find(id);
+            var absenceRequest = await _context.tbAbsenceRequests.FindAsync(id);
             absenceRequest.Approved = true;
 
                 try
