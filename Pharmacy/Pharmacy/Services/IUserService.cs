@@ -11,7 +11,7 @@ namespace Pharmacy.Services
         public Task<List<AppUser>> GetByList(List<string> idList);
         public Task<AppUser> GetById(string id);
         public Task<int> Update(AppUser user);
-        bool UserExists(string id);
+        bool Exists(string id);
         public Task<List<AppUser>> GetAllByRole(string roleName);
         public void Create(Appointment appointment);
     }

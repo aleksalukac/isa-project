@@ -35,5 +35,16 @@ namespace Pharmacy.Services
         {
             return _context.tbAbsenceRequests.Any(e => e.Id == id);
         }
+
+        public async Task<List<AbsenceRequest>> GetAll()
+        {
+            return await _context.tbAbsenceRequests.ToListAsync();
+        }
+
+        public async Task<AbsenceRequest> GetById(long id)
+        {
+            return await _context.tbAbsenceRequests
+                .FirstOrDefaultAsync(m => m.Id == id);
+        }
     }
 }

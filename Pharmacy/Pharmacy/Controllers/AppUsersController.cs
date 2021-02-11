@@ -53,14 +53,7 @@ namespace Pharmacy.Controllers
                                              select role.Name).ToListAsync();
             ViewData["roleName"] = userRole.Count == 0 ? "" : userRole[0];
             ViewData["pharmacyId"] = appUser.PharmacyId;
-            /*
-            if(ViewData["roleName"].Equals("Patient"))
-            {
-                ViewData["allergies"] = await (from drug in _context.tbDrugs
-                                               join allergicDrugs in _context.Dru
-                                               )
-            }
-            */
+            
             return View(appUser);
         }
 
@@ -193,27 +186,26 @@ namespace Pharmacy.Controllers
 
             if (ModelState.IsValid)
             {
-                try
+                 try
                 {
-                    var repositoryUser = _context.Users.FirstOrDefault(u => u.Id == id);
+                    var repositoryUser = await _userService.GetById(id);
 
                     repositoryUser.FirstName = appUser.FirstName;
                     repositoryUser.LastName = appUser.LastName;
                     repositoryUser.Address = appUser.Address;
                     repositoryUser.City = appUser.City;
 
-                    _context.Users.Update(repositoryUser);
-                    await _context.SaveChangesAsync();
+                    await _userService.Update(repositoryUser);
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!AppUserExists(id))
+                    if (!_userService.Exists(id))
                     {
                         return NotFound();
                     }
                     else
                     {
-                        throw;
+                        return View("ConcurrencyError", "Home");
                     }
                 }
                 return RedirectToAction("UserList");

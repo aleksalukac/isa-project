@@ -207,7 +207,7 @@ namespace Pharmacy.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!_userService.UserExists(patient.Id))
+                if (!_userService.Exists(patient.Id))
                 {
                     return NotFound();
                 }

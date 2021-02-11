@@ -25,16 +25,18 @@ namespace Pharmacy.Controllers
         private readonly ApplicationDbContext _context;
         private readonly EmailSender _emailSender;
         private readonly IUserService _userService;
+        private readonly IPharmacyService _pharmacyService;
         private readonly IAbsenceRequestService _absenceRequestService;
 
         public AbsenceRequestsController(ApplicationDbContext context, UserManager<AppUser> userManager,
                 SignInManager<AppUser> signInManager, IUserService userService, IAbsenceRequestService absenceRequestService,
-                IEmailSender emailSender)
+                IEmailSender emailSender, IPharmacyService pharmacyService)
         {
             _context = context; 
             _userManager = userManager;
             _signInManager = signInManager;
             _userService = userService;
+            _pharmacyService = pharmacyService;
             _absenceRequestService = absenceRequestService;
 
             using (StreamReader r = new StreamReader("./Areas/Identity/emailCredentials.json"))
@@ -55,7 +57,7 @@ namespace Pharmacy.Controllers
                 return View(_absenceRequestService.GetByUser(user.Id));
             }
 
-            return View(await _context.tbAbsenceRequests.ToListAsync());
+            return View(await _absenceRequestService.GetAll());
         }
 
         // GET: AbsenceRequests/Details/5
@@ -67,8 +69,8 @@ namespace Pharmacy.Controllers
                 return NotFound();
             }
 
-            var absenceRequest = await _context.tbAbsenceRequests
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var absenceRequest = await _absenceRequestService.GetById(id.Value);
+
             if (absenceRequest == null)
             {
                 return NotFound();
@@ -96,8 +98,9 @@ namespace Pharmacy.Controllers
 
             absenceRequest.EmployeeId = userName.Id;
 
-            Pharmacy.Models.Entities.Pharmacy pharmacy = _context.tbPharmacys.Find(userName.PharmacyId);
-            AppUser pharmacyAdmin = _context.tbAppUsers.Find(pharmacy.AdminUserID);
+            Pharmacy.Models.Entities.Pharmacy pharmacy = await _pharmacyService.GetById(userName.PharmacyId);
+            AppUser pharmacyAdmin = await _userService.GetById(pharmacy.AdminUserID);
+
             absenceRequest.PharmacyAdministratorId = pharmacyAdmin.Id;
 
             if (ModelState.IsValid)

@@ -52,7 +52,7 @@ namespace Pharmacy.Services
             return await _context.SaveChangesAsync();
         }
 
-        public bool UserExists(string id)
+        public bool Exists(string id)
         {
             return _context.AppUsers.Any(e => e.Id == id);
         }

@@ -11,5 +11,7 @@ namespace Pharmacy.Services
         public Task<int> Update(AbsenceRequest absenceRequest);
 
         public bool Exists(long id);
+        public Task<List<AbsenceRequest>> GetAll();
+        public Task<AbsenceRequest> GetById(long id);
     }
 }
