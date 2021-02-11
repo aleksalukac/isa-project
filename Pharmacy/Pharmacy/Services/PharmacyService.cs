@@ -34,5 +34,11 @@ namespace Pharmacy.Services
         {
             return _context.tbPharmacys.Any(e => e.Id == id);
         }
+
+        public async Task<Pharmacy.Models.Entities.Pharmacy> GetById(long id)
+        {
+            return await _context.tbAbsenceRequests
+                .FirstOrDefaultAsync(m => m.Id == id);
+        }
     }
 }

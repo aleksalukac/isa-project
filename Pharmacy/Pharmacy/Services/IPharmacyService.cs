@@ -5,6 +5,7 @@ namespace Pharmacy.Services
 {
     public interface IPharmacyService
     {
+        public Task<Pharmacy.Models.Entities.Pharmacy> GetById(long id);
         public Task<string> GetAdmin(long pharmacyId);
         public Task<int> Update(Pharmacy.Models.Entities.Pharmacy pharmacy);
         public bool Exists(long id);

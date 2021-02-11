@@ -17,5 +17,6 @@ namespace Pharmacy.Services
         public Task<List<Appointment>> GetFreeDermatologistApp();
         public Task<int> Update(Appointment appointment);
         public bool Exists(long id);
+        public void Remove(Appointment appointment);
     }
 }

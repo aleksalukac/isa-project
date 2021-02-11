@@ -90,5 +90,10 @@ namespace Pharmacy.Services
         {
             return _context.tbAppointments.Any(e => e.Id == id);
         }
+
+        public void Remove(Appointment appointment)
+        {
+            _context.Remove(appointment);
+        }
     }
 }
