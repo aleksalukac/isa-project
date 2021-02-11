@@ -51,6 +51,8 @@
             Prescribe drug:
             <div class="form-group mx-sm-3 mb-2">
                 <select name="prescribedDrug" id="prescribedDrug" class="form-control">
+
+                    <option value=0 class="option">No drug</option>
                     @foreach (Pharmacy.Models.Entities.Drug item in (List<Pharmacy.Models.Entities.Drug>)@ViewData["DrugList"])
                     {
                         <option value=@item.Id class="option">@item.Name</option>

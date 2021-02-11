@@ -66,9 +66,9 @@ namespace Pharmacy.Services
              select user).ToListAsync();
         }
 
-        public async void Create(AppointmentService appointment)
+        public async void Create(AppUser user)
         {
-            _context.Add(appointment);
+            _context.Add(user);
             await _context.SaveChangesAsync();
         }
     }

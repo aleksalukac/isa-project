@@ -217,7 +217,7 @@ namespace Pharmacy.Controllers
                 }
             }
 
-            return View("MyAppointments;");
+            return View("MyAppointments");
         }
 
         [Authorize(Roles = "Pharmacist,Dermatologist")]
@@ -305,7 +305,11 @@ namespace Pharmacy.Controllers
 
             appointment.Report = appointmentExamDTO.Report;
 
-            if (_drugService.GetDrugQuantity(appointmentExamDTO.PrescribedDrug, appointment.PhrmacyId) > 0)
+            if(appointmentExamDTO.PrescribedDrug == 0)
+            {
+                ViewData["DrugCheckout"] = "No drug was prescribed";
+            }
+            else if (_drugService.GetDrugQuantity(appointmentExamDTO.PrescribedDrug, appointment.PhrmacyId) > 0)
             {
                 _drugService.CheckoutDrug(appointmentExamDTO.PrescribedDrug, appointment.PhrmacyId);
                 List<Drug> prescribedDrugs = new List<Drug>();
@@ -434,7 +438,7 @@ namespace Pharmacy.Controllers
 
                 if (!isOverlapping)
                 {
-                    _userService.Create(appointment);
+                    _appointmentService.Create(appointment);
                     return RedirectToAction(nameof(Index));
                 }
                 else
@@ -446,7 +450,7 @@ namespace Pharmacy.Controllers
         }
 
         // GET: Appointments/Edit/5
-        [Authorize(Roles = "Pharmacist,Dermatologist,PharmacyAdmin")]
+        [Authorize(Roles = "PharmacyAdmin")]
         public async Task<IActionResult> Edit(long? id)
         {
             if (id == null)
@@ -470,7 +474,7 @@ namespace Pharmacy.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Authorize(Roles = "Pharmacist,Dermatologist,PharmacyAdmin")]
+        [Authorize(Roles = "PharmacyAdmin")]
         public async Task<IActionResult> Edit(long id, [Bind("Id,MedicalExpertID,PatientID,Price,Report,StartDateTime,Duration,RowVersion")] Appointment appointment)
         {
             if (id != appointment.Id)

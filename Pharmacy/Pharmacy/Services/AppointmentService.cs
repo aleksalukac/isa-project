@@ -87,5 +87,11 @@ namespace Pharmacy.Services
         {
             _context.Remove(appointment);
         }
+
+        public async void Create(Appointment appointment)
+        {
+            _context.Add(appointment);
+            await _context.SaveChangesAsync();
+        }
     }
 }

@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 
 namespace Pharmacy.Services
 {
@@ -37,7 +38,7 @@ namespace Pharmacy.Services
 
         public async Task<Pharmacy.Models.Entities.Pharmacy> GetById(long id)
         {
-            return await _context.tbAbsenceRequests
+            return await _context.tbPharmacys
                 .FirstOrDefaultAsync(m => m.Id == id);
         }
     }
