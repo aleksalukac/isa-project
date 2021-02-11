@@ -1,5 +1,8 @@
-﻿@model IEnumerable<Pharmacy.Models.Entities.AbsenceRequest>
-
+﻿@using Microsoft.AspNetCore.Identity
+@using Pharmacy.Models.Entities.Users
+@model IEnumerable<Pharmacy.Models.Entities.AbsenceRequest>
+@inject SignInManager<Pharmacy.Models.Entities.Users.AppUser> SignInManager
+@inject UserManager<AppUser> UserManager
 @{
     ViewData["Title"] = "Index";
     Layout = "~/Views/Shared/_Layout.cshtml";
@@ -22,33 +25,37 @@
             <th>
                 @Html.DisplayNameFor(model => model.EndDateTime)
             </th>
-            <th>
-                @Html.DisplayNameFor(model => model.PharmacyAdministratorId)
-            </th>
             <th></th>
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.EmployeeId)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.StartDateTime)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.EndDateTime)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.PharmacyAdministratorId)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-            </td>
-        </tr>
-}
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+
+                    @for (int i = 0; i < ((List<Pharmacy.Models.Entities.Users.AppUser>)ViewData["EmployeeList"]).Count(); i++)
+                    {
+
+                        @if ((@Model.ToList())[i].Id == item.Id)
+                        {
+                            @Html.DisplayFor(modelItem => item.EmployeeId)
+                            break;
+                        }
+                    }
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.StartDateTime)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.EndDateTime)
+                </td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                    <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                    <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                </td>
+            </tr>
+        }
     </tbody>
 </table>

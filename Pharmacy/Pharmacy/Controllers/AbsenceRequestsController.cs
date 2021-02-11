@@ -49,6 +49,7 @@ namespace Pharmacy.Controllers
         public async Task<IActionResult> Index()
         {
             var user = await _userManager.GetUserAsync(User);
+            ViewData["EmployeeList"] = await _context.Users.ToListAsync();
 
             if (_userService.GetUserRole(user.Id).Equals("Pharmacist") || _userService.GetUserRole(user.Id).Equals("Dermatologist"))
             {
