@@ -22,6 +22,7 @@
         <form asp-action="EndAppointment">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="AppointmentId" />
+            <input type="hidden" asp-for="PharmacyId" />
             <div class="form-group">
                 <label asp-for="AppointmentId" class="control-label"></label>
                 <input asp-for="AppointmentId" class="form-control" readonly />
