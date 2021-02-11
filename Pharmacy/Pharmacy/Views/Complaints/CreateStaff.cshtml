@@ -1,0 +1,33 @@
+﻿@{
+    ViewData["Title"] = "Create";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>Create</h1>
+
+<h4>Complaint</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="CreateStaff">
+            <div class="form-group">
+                <label for="ReportText" class="control-label">Complaint Text:</label>
+                <input name="reportText" class="form-control" />
+            </div>
+            <label for="employee">Staff:</label>
+            <select name="employeeId" id="employeeId" class="form-control">
+                @foreach (Pharmacy.Models.Entities.Users.AppUser item in (List<Pharmacy.Models.Entities.Users.AppUser>)@ViewData["EmployeeList"])
+                {
+                    <option value=@item.Id class="option">@item.FirstName @item.LastName</option>
+                }
+            </select>
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

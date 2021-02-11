@@ -102,6 +102,7 @@ namespace Pharmacy.Controllers
 
         //[HttpGet("Orders/UserList")]
         // GET: Orders/ScheduledOrders
+        [Authorize(Roles = "User")]
         public async Task<IActionResult> ScheduledOrders()
         {
             var user = await _userManager.GetUserAsync(User);

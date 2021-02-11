@@ -1,0 +1,45 @@
+﻿@model Pharmacy.Models.Entities.Rating
+
+@{
+    ViewData["Title"] = "CreateDrugs";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>Create</h1>
+
+<h4>Rating</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="CreateDrugs">
+            <label for="drug">Employee:</label>
+            <select name="drugId" id="drugId" class="form-control">
+                @foreach (Pharmacy.Models.Entities.Drug item in (List<Pharmacy.Models.Entities.Drug>)@ViewData["DrugList"])
+                {
+                    <option value=@item.Id class="option">@item.Name</option>
+                }
+            </select>
+            <div class="form-group">
+                <label for="Score" class="control-label">Score</label>
+                <select name="Score" class="form-control">
+                    <option>1</option>
+                    <option>2</option>
+                    <option>3</option>
+                    <option>4</option>
+                    <option>5</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
