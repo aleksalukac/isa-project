@@ -123,7 +123,11 @@
                                     <a class="nav-link text-dark" asp-area="" asp-controller="SaleItems" asp-action="Index" id="discort_elementMeni">Discount</a>
                                 </li>
                                 <li class="nav-item">
+                                    
                                     <a class="nav-link text-dark" asp-area="" asp-controller="SupplyOrders" asp-action="Index">Supply Orders</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="DrugAndQuantities" asp-action="Index">Storage Drugs</a>
                                 </li>
                             }
                             else if ((await AuthorizationService.AuthorizeAsync(User, null, "UserPolicy")).Succeeded)
