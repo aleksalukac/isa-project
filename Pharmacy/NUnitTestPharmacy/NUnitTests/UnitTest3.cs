@@ -9,14 +9,15 @@ using Microsoft.EntityFrameworkCore;
 
 namespace NUnitTestPharmacy.NUnitTests
 {
-    public class UnitTest2
+    public class UnitTest3
     {
 
         public SupplyOrdersController supplyOrdersController;
         public DrugsController drugsController;
         private readonly UserManager<AppUser> _userManager;
         private readonly SignInManager<AppUser> _signInManager;
-        private ApplicationDbContext _context;
+        private  ApplicationDbContext _context;
+        public Drug drug;
 
         [SetUp]
         public async Task SetUpAsync()
@@ -24,24 +25,22 @@ namespace NUnitTestPharmacy.NUnitTests
             var dbOption = new DbContextOptionsBuilder<ApplicationDbContext>().UseSqlServer("Server=.\\SQLEXPRESS;data source=mssql11.orion.rs;initial catalog=isa;Password = UrosFic@Luk@c;Persist Security Info=True;User ID=aleksalukac;MultipleActiveResultSets=True;App=EntityFramework&quot;").Options;
             _context = new ApplicationDbContext(dbOption);
             drugsController = new DrugsController(_context, _userManager);
-        }
-
-        public Drug ValidateDrugEnter(long drugId)
-        {
-            return _context.tbDrugs.Find(drugId);
+            drug = new Drug("Neso", DrugForm.BuccalFilm, "Nes", "Nes", true, "Nes");
+            drug.Id = await _context.tbDrugs.CountAsync() + 1;
+            var actionResult = drugsController.Create(drug);
         }
 
         #region Unit Test
         [Test]
         public async Task InvalideDrugFormatValide()
-        {
-            Drug drug = new Drug("Neso", DrugForm.BuccalFilm, "Nes", "Nes", true, "Nes");
-            var actionResult = await drugsController.Edit(drug.Id, drug);
-            var drugInDb = ValidateDrugEnter(drug.Id);
-            Assert.AreEqual(drug, drugInDb);
+        {   
+            drugsController = new DrugsController(_context, _userManager);
+            drugsController.DeleteConfirmed(drug.Id);
+            var NullDrug = _context.tbDrugs.Find(drug.Id);
+            Assert.IsNull(NullDrug);
         }
         #endregion
 
-        
+
     }
 }

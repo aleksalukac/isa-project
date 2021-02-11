@@ -1,24 +1,11 @@
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Hosting;
 using NUnit.Framework;
-using Pharmacy;
 using Pharmacy.Controllers;
-using Pharmacy.Models.DTO;
 using Pharmacy.Models.Entities;
-using Pharmacy.Areas.Identity.Pages.Account;
-using Microsoft.Extensions.Logging;
 using Microsoft.AspNetCore.Identity;
 using Pharmacy.Models.Entities.Users;
-using System.Web.Http.Results;
 using Pharmacy.Data;
 using System.Threading.Tasks;
-using OpenQA.Selenium;
-using OpenQA.Selenium.Support.UI;
-using System;
-using System.Threading;
-using OpenQA.Selenium.Chrome;
-using System.IO;
-using System.Reflection;
 
 namespace NUnitTestPharmacy.NUnitTests
 {

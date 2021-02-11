@@ -72,8 +72,8 @@ namespace NUnitTestPharmacy.IntegrationTests
                 webDriver.FindElement(By.Id("submit_login")).Click();
                 Thread.Sleep(5000);
 
-                wait.Until(ExpectedConditions.ElementToBeClickable(By.Id("discort_element")));
-                var element = webDriver.FindElement(By.Id("discort_element")).Displayed;
+                wait.Until(ExpectedConditions.ElementToBeClickable(By.Id("discort_elementMeni")));
+                var element = webDriver.FindElement(By.Id("discort_elementMeni")).Displayed;
                 if (element)
                 {
                     result = true;
