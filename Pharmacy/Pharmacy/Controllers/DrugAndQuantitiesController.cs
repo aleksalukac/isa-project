@@ -2,28 +2,34 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Pharmacy.Data;
 using Pharmacy.Models.Entities;
+using Pharmacy.Models.Entities.Users;
 
 namespace Pharmacy.Controllers
 {
     public class DrugAndQuantitiesController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly UserManager<AppUser> _userManager;
 
-        public DrugAndQuantitiesController(ApplicationDbContext context)
+        public DrugAndQuantitiesController(ApplicationDbContext context, UserManager<AppUser> userManager)
         {
             _context = context;
+            _userManager = userManager;
         }
 
         // GET: DrugAndQuantities
         public async Task<IActionResult> Index()
         {
             ViewData["PharmacyList"] = await _context.tbPharmacys.ToListAsync();
-            return View(await _context.DrugAndQuantity.Include(x => x.Drug).ToListAsync());
+            AppUser currentUser = await _userManager.GetUserAsync(User);
+
+            return View(await _context.DrugAndQuantity.Include(x => x.Drug).Where(x => x.PharmacyId == currentUser.PharmacyId).ToListAsync());
         }
 
         // GET: DrugAndQuantities/Details/5
@@ -95,7 +101,7 @@ namespace Pharmacy.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(long id, [Bind("Id,PharmacyId,Quantity")] DrugAndQuantities drugAndQuantities)
+        public async Task<IActionResult> Edit(long id, [Bind("Id,PharmacyId,Quantity, Price")] DrugAndQuantities drugAndQuantities)
         {
             if (id != drugAndQuantities.Id)
             {

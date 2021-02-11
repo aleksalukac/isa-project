@@ -49,14 +49,15 @@ namespace Pharmacy.Controllers
         public async Task<IActionResult> Index()
         {
             var user = await _userManager.GetUserAsync(User);
-            ViewData["EmployeeList"] = await _context.Users.ToListAsync();
-
-            if (_userService.GetUserRole(user.Id).Equals("Pharmacist") || _userService.GetUserRole(user.Id).Equals("Dermatologist"))
+            List<AppUser> appUsers = await _context.AppUsers.ToListAsync();
+            ViewData["EmployeeList"] = appUsers;
+            var userAll = await _userService.GetUserRole(user.Id);
+            if (userAll.Equals("Pharmacist") || userAll.Equals("Dermatologist"))
             {
-                return View(_absenceRequestService.GetByUser(user.Id));
+                return View(await _absenceRequestService.GetByUser(user.Id));
             }
-
-            return View(await _context.tbAbsenceRequests.ToListAsync());
+            var threadAbsence = await _context.tbAbsenceRequests.ToListAsync();
+            return View(threadAbsence);
         }
 
         // GET: AbsenceRequests/Details/5
@@ -103,7 +104,7 @@ namespace Pharmacy.Controllers
 
             if (ModelState.IsValid)
             {
-                _context.Add(absenceRequest);
+                _ = await _context.AddAsync(absenceRequest);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
@@ -200,6 +201,8 @@ namespace Pharmacy.Controllers
 
         public async Task<IActionResult> CheckingForApproveal()
         {
+            List<AppUser> appUsers = await _context.AppUsers.ToListAsync();
+            ViewData["EmployeeList"] = appUsers;
             var userName = await _userManager.GetUserAsync(User);
             var listOfUnApproved = await _context.tbAbsenceRequests.Where(x => x.Approved == false && x.PharmacyAdministratorId == userName.Id).ToListAsync();
             return View(listOfUnApproved);
@@ -268,7 +271,7 @@ namespace Pharmacy.Controllers
             
             try
             {
-                _context.Update(absenceRequest);
+                _context.tbAbsenceRequests.Remove(absenceRequest);
                 await _context.SaveChangesAsync();
             }
             catch (DbUpdateConcurrencyException)

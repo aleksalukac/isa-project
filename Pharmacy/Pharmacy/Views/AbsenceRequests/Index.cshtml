@@ -33,15 +33,12 @@
         {
             <tr>
                 <td>
-
-                    @for (int i = 0; i < ((List<Pharmacy.Models.Entities.Users.AppUser>)ViewData["EmployeeList"]).Count(); i++)
+                    @foreach (Pharmacy.Models.Entities.Users.AppUser itemEmp in ((List<Pharmacy.Models.Entities.Users.AppUser>)@ViewData["EmployeeList"]))
                     {
-
-                        @if ((@Model.ToList())[i].Id == item.Id)
+                        @if (item.EmployeeId == itemEmp.Id) 
                         {
-                            @Html.DisplayFor(modelItem => item.EmployeeId)
-                            break;
-                        }
+                            <label value=@itemEmp.Id class="option">@itemEmp.FirstName</label>
+                        } 
                     }
                 </td>
                 <td>
