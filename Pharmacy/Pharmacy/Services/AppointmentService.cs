@@ -55,6 +55,14 @@ namespace Pharmacy.Services
             return appointments;
         }
 
+        public async Task<List<Appointment>> GetFreeDermatologistApp()
+        {
+            AppointmentType type = AppointmentType.Exam;
+            var appointments = await _context.tbAppointments.Where(x => x.Type == type && x.PatientID == null).ToListAsync();
+
+            return appointments;
+        }
+
         public async Task<List<Appointment>> GetCurrentByMedicalExpert(string id)
         {
             List<Appointment> appointments = await GetByMedicalExpert(id);

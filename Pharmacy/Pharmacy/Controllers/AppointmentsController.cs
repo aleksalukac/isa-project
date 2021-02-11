@@ -568,5 +568,78 @@ namespace Pharmacy.Controllers
         {
             return View();
         }
+        [Authorize(Roles = "User")]
+        public async Task<IActionResult> MyAppointmentsUser()
+        {
+            var user = await _userManager.GetUserAsync(User);
+            var appointmentList = await _appointmentService.GetByPatient(user.Id);
+
+            var appointmentDTOList = new List<AppointmentDTO>();
+
+            foreach (var appointment in appointmentList)
+            {
+                AppUser medicalExpert = await _userService.GetById(appointment.MedicalExpertID);
+                AppUser patient = await _userService.GetById(appointment.PatientID);
+
+                string patientFullName = patient == null ? "" : patient.FirstName + " " + patient.LastName;
+                string medicalExpertFullname = medicalExpert == null ? "" : medicalExpert.FirstName + " " + medicalExpert.LastName;
+
+                appointmentDTOList.Add(new AppointmentDTO(appointment,
+                    medicalExpertFullname, patientFullName));
+            }
+
+            return View(appointmentDTOList);
+        }
+
+        public async Task<IActionResult> AvailableDermatologistAppoitments()
+        {
+            var user = await _userManager.GetUserAsync(User);
+            var appointmentList = await _appointmentService.GetFreeDermatologistApp();
+
+            var appointmentDTOList = new List<AppointmentDTO>();
+
+            foreach (var appointment in appointmentList)
+            {
+                AppUser medicalExpert = await _userService.GetById(appointment.MedicalExpertID);
+                AppUser patient = await _userService.GetById(appointment.PatientID);
+
+                string patientFullName = patient == null ? "" : patient.FirstName + " " + patient.LastName;
+                string medicalExpertFullname = medicalExpert == null ? "" : medicalExpert.FirstName + " " + medicalExpert.LastName;
+
+                appointmentDTOList.Add(new AppointmentDTO(appointment,
+                    medicalExpertFullname, patientFullName));
+            }
+
+            return View(appointmentDTOList);
+        }
+
+        public async Task<IActionResult> TakeAppointment(long? id)
+        {
+            if(id == null)
+            {
+                return NotFound();
+            }
+
+            var user = await _userManager.GetUserAsync(User);
+            var appointment = await _context.tbAppointments.FindAsync(id);
+            appointment.PatientID = user.Id;
+            try
+            {
+                await _appointmentService.Update(appointment);
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!_appointmentService.Exists(appointment.Id))
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    return View("ConcurrencyError", "Home");
+                }
+            }
+
+            return View();
+        }
     }
 }
