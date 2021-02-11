@@ -1,4 +1,4 @@
-﻿@model IEnumerable<Pharmacy.Models.Entities.SupplyOrder>
+﻿@model IEnumerable<Pharmacy.Models.Entities.SupplyItem>
 
 @{
     ViewData["Title"] = "Index";
@@ -14,7 +14,13 @@
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.DeleveryDate)
+                @Html.DisplayNameFor(model => model.DrugId)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.SupplyOrderId)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ExtraQuantity)
             </th>
             <th></th>
         </tr>
@@ -23,7 +29,13 @@
 @foreach (var item in Model) {
         <tr>
             <td>
-                @Html.DisplayFor(modelItem => item.DeleveryDate)
+                @Html.DisplayFor(modelItem => item.DrugId)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.SupplyOrderId)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ExtraQuantity)
             </td>
             <td>
                 <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |

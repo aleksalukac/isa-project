@@ -19,10 +19,6 @@ namespace Pharmacy.Models.Entities
 
         public DateTime DeleveryDate { get; set; }
 
-        [ForeignKey("tbDrugAndQuantities")]
-        public long DrugId { get; set; }
-
-        public int ExtraQuantity { get; set; }
 
         //public List<DrugAndQuantity> Order { get; set; }
     }
