@@ -1,30 +1,25 @@
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Hosting;
 using NUnit.Framework;
-using Pharmacy;
 using Pharmacy.Controllers;
-using Pharmacy.Models.DTO;
 using Pharmacy.Models.Entities;
-using Pharmacy.Areas.Identity.Pages.Account;
-using Microsoft.Extensions.Logging;
 using Microsoft.AspNetCore.Identity;
 using Pharmacy.Models.Entities.Users;
-using System.Web.Http.Results;
 using Pharmacy.Data;
 using System.Threading.Tasks;
 
-namespace NUnitTestPharmacy
+namespace NUnitTestPharmacy.NUnitTests
 {
-    public class Tests
+    public class UnitTest1
     {
 
         public SupplyOrdersController supplyOrdersController;
         public DrugsController drugsController;
         private readonly UserManager<AppUser> _userManager;
         private readonly SignInManager<AppUser> _signInManager;
-        private readonly ILogger<LoginModel> _logger;
         private readonly ApplicationDbContext _context;
 
+
+        #region Unit Test
         [Test]
         public async Task InvalideDrugFormatValide()
         {
@@ -33,5 +28,8 @@ namespace NUnitTestPharmacy
             var actionResult = await drugsController.Create(drug);
             Assert.IsInstanceOf<BadRequestObjectResult>(actionResult, typeof(BadRequestObjectResult).ToString());
         }
+        #endregion
+
+        
     }
 }
