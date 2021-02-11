@@ -8,7 +8,7 @@ namespace Pharmacy.Models.DTO
 {
     public class SupplyOrderModelDTO
     {
-        public SupplyOrder SupplyOrder { get; set; }
+        public SupplyOrderDTO SupplyOrder { get; set; }
         public List<SupplyItemDTO> SupplyItems { get; set; }
         public DateTime DateExpired { get; set; }
 

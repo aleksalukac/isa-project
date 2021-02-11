@@ -8,16 +8,20 @@ using Microsoft.EntityFrameworkCore;
 using Pharmacy.Data;
 using Pharmacy.Models.Entities;
 using Pharmacy.Models.DTO;
+using Microsoft.AspNetCore.Identity;
+using Pharmacy.Models.Entities.Users;
 
 namespace Pharmacy.Controllers
 {
     public class SupplyOrdersController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly UserManager<AppUser> _userManager;
 
-        public SupplyOrdersController(ApplicationDbContext context)
+        public SupplyOrdersController(UserManager<AppUser> userManager, ApplicationDbContext context)
         {
             _context = context;
+            _userManager = userManager;
         }
 
         [BindProperty]
@@ -59,6 +63,8 @@ namespace Pharmacy.Controllers
                 SupplyItemDTO SupplyItemView = new SupplyItemDTO();
                 SupplyItemView.Drug = new DrugDTO(drugs[i].Id, drugs[i].Name);
                 SupplyItemView.Drug.Name = drugs[i].Name;
+                SupplyItemView.DrugName = SupplyItemView.Drug.Name;
+                SupplyItemView.DrugId = SupplyItemView.Drug.Id;
                 SupplyOrders.SupplyItems.Add(SupplyItemView);
             }
             return View(SupplyOrders);
@@ -69,11 +75,27 @@ namespace Pharmacy.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("SupplyItems, DateExpired, SupplyOrders, Drugs")] SupplyOrderModelDTO supplyOrderModel)
+        public async Task<IActionResult> Create([Bind("SupplyItems, DateExpired, SupplyOrders")] SupplyOrderModelDTO supplyOrderModel)
         {
+            SupplyOrder supplyOrder = new SupplyOrder();
+            supplyOrder.DeleveryDate = supplyOrderModel.DateExpired;
+            var user = await _userManager.GetUserAsync(User);
+            supplyOrder.PharmacyId = user.PharmacyId;
             if (ModelState.IsValid)
             {
-                _context.Add(supplyOrderModel.SupplyOrder);
+                await _context.AddAsync(supplyOrder);
+                await _context.SaveChangesAsync();
+                for (int i = 0; i < supplyOrderModel.SupplyItems.Count(); i++)
+                {
+                    if (supplyOrderModel.SupplyItems[i].ExtraQuantity > 0)
+                    {
+                        SupplyItem supplyItem = new SupplyItem();
+                        supplyItem.ExtraQuantity = supplyOrderModel.SupplyItems[i].ExtraQuantity;
+                        supplyItem.DrugId = supplyOrderModel.SupplyItems[i].DrugId;
+                        supplyItem.SupplyOrderId = supplyOrder.Id;
+                        await _context.AddAsync(supplyItem);
+                    }
+                }
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }

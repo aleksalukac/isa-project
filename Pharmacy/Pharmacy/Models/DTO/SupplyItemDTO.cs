@@ -9,5 +9,18 @@ namespace Pharmacy.Models.DTO
     {
         public DrugDTO Drug { get; set; }
         public int ExtraQuantity { get; set; }
+        public string DrugName { get; set; }
+        public long DrugId { get; set; }
+
+        public SupplyItemDTO()
+        {
+
+        }
+
+        public SupplyItemDTO(long DrugId, int ExtraQuantity)
+        {
+            this.DrugId = DrugId;
+            this.ExtraQuantity = ExtraQuantity;
+        }
     }
 }
