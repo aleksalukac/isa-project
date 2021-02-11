@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -179,7 +180,40 @@ namespace Pharmacy.Controllers
 
             appointment.Duration = DateTime.Now - appointment.StartDateTime;
             appointment.Report = "Didn't show up";
-            _appointmentService.Update(appointment);
+
+            //Update appointment
+            try
+            {
+                await _appointmentService.Update(appointment);
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!_appointmentService.Exists(appointment.Id))
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    //throw;
+                    return View("ConcurrencyError", "Home");
+                }
+            }
+
+            try
+            {
+                await _userService.Update(patient);
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!_userService.UserExists(patient.Id))
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    return View("ConcurrencyError", "Home");
+                }
+            }
 
             patient.Penalty++;
             await _userService.Update(patient);
@@ -419,6 +453,7 @@ namespace Pharmacy.Controllers
         }
 
         // GET: Appointments/Edit/5
+        [Authorize(Roles = "Pharmacist,Dermatologist,PharmacyAdmin")]
         public async Task<IActionResult> Edit(long? id)
         {
             if (id == null)
@@ -447,7 +482,8 @@ namespace Pharmacy.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(long id, [Bind("Id,MedicalExpertID,PatientID,Price,Report,StartDateTime,Duration")] Appointment appointment)
+        [Authorize(Roles = "Pharmacist,Dermatologist,PharmacyAdmin")]
+        public async Task<IActionResult> Edit(long id, [Bind("Id,MedicalExpertID,PatientID,Price,Report,StartDateTime,Duration,RowVersion")] Appointment appointment)
         {
             if (id != appointment.Id)
             {
@@ -458,18 +494,17 @@ namespace Pharmacy.Controllers
             {
                 try
                 {
-                    _context.Update(appointment);
-                    await _context.SaveChangesAsync();
+                    await _appointmentService.Update(appointment);
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!AppointmentExists(appointment.Id))
+                    if (!_appointmentService.Exists(appointment.Id))
                     {
                         return NotFound();
                     }
                     else
                     {
-                        throw;
+                        return View("ConcurrencyError", "Home");
                     }
                 }
                 return RedirectToAction(nameof(Index));
@@ -504,11 +539,6 @@ namespace Pharmacy.Controllers
             _context.tbAppointments.Remove(appointment);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
-        }
-
-        private bool AppointmentExists(long id)
-        {
-            return _context.tbAppointments.Any(e => e.Id == id);
         }
 
         private async Task<bool> AppoitmenOverlapsAsync(Appointment appointment)

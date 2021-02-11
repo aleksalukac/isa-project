@@ -78,5 +78,17 @@ namespace Pharmacy.Services
                           where drugAndQuantities.PharmacyId == pharmacyId
                           select drugAndQuantities).ToListAsync();
         }
+
+        public async Task<int> Update(Drug drug)
+        {
+            _context.Update(drug);
+
+            return await _context.SaveChangesAsync();
+        }
+
+        public bool Exists(long id)
+        {
+            return _context.tbDrugs.Any(e => e.Id == id);
+        }
     }
 }

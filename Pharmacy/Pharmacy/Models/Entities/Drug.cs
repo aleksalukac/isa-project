@@ -3,6 +3,7 @@ using Newtonsoft.Json.Converters;
 using Pharmacy.Models.Entities.Users;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Text;
 using System.Text.Json.Serialization;
@@ -24,6 +25,9 @@ namespace Pharmacy.Models.Entities
         public string Notes { get; set; }
         public double AverageScore { get; set; }
         public List<AppUser> AllergicUsers { get; set; }
+
+        [Timestamp]
+        public byte[] RowVersion { get; set; }
     }
 
     public class DrugType

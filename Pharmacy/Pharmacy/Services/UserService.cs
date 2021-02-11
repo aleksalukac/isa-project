@@ -45,11 +45,16 @@ namespace Pharmacy.Services
             return users;
         }
 
-        public async Task<bool> Update(AppUser user)
+        public async Task<int> Update(AppUser user)
         {
             _context.Update(user);
 
-            return true;
+            return await _context.SaveChangesAsync();
+        }
+
+        public bool UserExists(string id)
+        {
+            return _context.AppUsers.Any(e => e.Id == id);
         }
     }
 }

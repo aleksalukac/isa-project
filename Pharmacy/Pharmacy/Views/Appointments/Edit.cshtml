@@ -22,6 +22,7 @@
         <form asp-action="Edit">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="Id" />
+            <input type="hidden" asp-for="RowVersion" />
             <div class="form-group">
                 <select asp-for="MedicalExpertID" class="form-control">
                     @foreach (Pharmacy.Models.Entities.Users.AppUser item in (List<Pharmacy.Models.Entities.Users.AppUser>)@ViewData["DermatologistList"])

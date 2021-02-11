@@ -71,11 +71,16 @@ namespace Pharmacy.Services
             return appointments;
         }
 
-        public void Update(Appointment appointment)
+        public async Task<int> Update(Appointment appointment)
         {
             _context.Update(appointment);
 
-            _context.SaveChanges();
+            return await _context.SaveChangesAsync();
+        }
+
+        public bool Exists(long id)
+        {
+            return _context.tbAppointments.Any(e => e.Id == id);
         }
     }
 }

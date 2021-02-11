@@ -30,6 +30,9 @@ namespace Pharmacy.Models.Entities
 
         [ForeignKey("Pharmacy")]
         public long PhrmacyId { get; set; }
+
+        [Timestamp]
+        public byte[] RowVersion { get; set; }
     }
     public enum AppointmentType
     {

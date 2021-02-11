@@ -1,6 +1,7 @@
 ﻿using Pharmacy.Models.Entities.Users;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Text;
 
@@ -13,6 +14,9 @@ namespace Pharmacy.Models.Entities
         public AppUser Supplier { get; set; }
         public SupplyOrder SupplyOrder { get; set; }
         public float Offer { get; private set; }
+
+        [Timestamp]
+        public byte[] RowVersion { get; set; }
 
         public void SetOffer(float offer)
         {

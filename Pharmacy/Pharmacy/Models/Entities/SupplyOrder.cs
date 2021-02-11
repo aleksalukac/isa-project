@@ -13,18 +13,15 @@ namespace Pharmacy.Models.Entities
     {
         public long Id { get; set; }
         public List<SupplyOffer> SupplyOffers { get; set; }
-        
         [ForeignKey("Pharmacy")]
         public long PharmacyId { get; set; }
-
         public DateTime DeleveryDate { get; set; }
-
         [ForeignKey("tbDrugAndQuantities")]
         public long DrugId { get; set; }
-
         public int ExtraQuantity { get; set; }
 
-        //public List<DrugAndQuantity> Order { get; set; }
+        [Timestamp]
+        public byte[] RowVersion { get; set; }
     }
 
 }

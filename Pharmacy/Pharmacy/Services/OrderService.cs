@@ -39,13 +39,16 @@ namespace Pharmacy.Services
             return isCompleted;
         }
 
-        public async Task Update(Order order)
+        public async Task<int> Update(Order order)
         {
-            if(order != null)
-            {
-                _context.Update(order);
-                await _context.SaveChangesAsync();
-            }
+            _context.Update(order);
+
+            return await _context.SaveChangesAsync();
+        }
+
+        public bool Exists(long id)
+        {
+            return _context.tbOrders.Any(e => e.Id == id);
         }
     }
 }

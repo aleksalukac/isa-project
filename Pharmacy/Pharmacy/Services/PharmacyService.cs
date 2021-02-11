@@ -22,5 +22,17 @@ namespace Pharmacy.Services
             Pharmacy.Models.Entities.Pharmacy pharmacy = await _context.tbPharmacys.FindAsync(pharmacyId);
             return pharmacy.AdminUserID;
         }
+
+        public async Task<int> Update(Pharmacy.Models.Entities.Pharmacy pharmacy)
+        {
+            _context.Update(pharmacy);
+
+            return await _context.SaveChangesAsync();
+        }
+
+        public bool Exists(long id)
+        {
+            return _context.tbPharmacys.Any(e => e.Id == id);
+        }
     }
 }

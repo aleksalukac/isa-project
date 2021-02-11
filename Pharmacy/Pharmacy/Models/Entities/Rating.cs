@@ -18,5 +18,8 @@ namespace Pharmacy.Models.Entities
         public Drug Drug { get; set; }
         public Pharmacy Pharmacy { get; set; }
         public int Score { get; set; }
+
+        [Timestamp]
+        public byte[] RowVersion { get; set; }
     }
 }

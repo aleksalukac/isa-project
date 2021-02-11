@@ -28,6 +28,11 @@ namespace Pharmacy.Controllers
             return View();
         }
 
+        public IActionResult ConcurrencyError()
+        {
+            return View();
+        }
+
         [Authorize(Roles = "User")]
         public IActionResult Privacy()
         {

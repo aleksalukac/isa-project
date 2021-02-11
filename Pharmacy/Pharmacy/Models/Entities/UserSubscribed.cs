@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.ComponentModel.DataAnnotations;
 
 namespace Pharmacy.Models.Entities
 {
@@ -16,5 +17,8 @@ namespace Pharmacy.Models.Entities
 
         [ForeignKey("Pharmacy")]
         public long PharmacyId { get; set; }
+
+        [Timestamp]
+        public byte[] RowVersion { get; set; }
     }
 }

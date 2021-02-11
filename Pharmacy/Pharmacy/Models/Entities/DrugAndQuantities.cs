@@ -18,5 +18,7 @@ namespace Pharmacy.Models.Entities
         public uint Quantity { get; set; }
         public double Price { get; set; }
 
+        [Timestamp]
+        public byte[] RowVersion { get; set; }
     }
 }

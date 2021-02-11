@@ -18,5 +18,7 @@ namespace Pharmacy.Models.Entities
         public double BeforePrice { get; set; }
         public DateTime EndTime { get; set; }
 
+        [Timestamp]
+        public byte[] RowVersion { get; set; }
     }
 }

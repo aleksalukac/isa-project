@@ -9,8 +9,9 @@ namespace Pharmacy.Services
     public interface IOrderService
     {
         public Task<List<Order>> GetByPharmacyAndId(long pharmacyId, long id);
-        public Task Update(Order order);
         public Task<bool> IsOrderCompleted(long id);
         public Task<Order> GetById(long id);
+        public Task<int> Update(Order order);
+        public bool Exists(long id);
     }
 }

@@ -17,5 +17,7 @@ namespace Pharmacy.Models.Entities
         public Pharmacy Pharmacy { get; set; }  
         public string ReportText { get; set; }
 
+        [Timestamp]
+        public byte[] RowVersion { get; set; }
     }
 }

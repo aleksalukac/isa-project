@@ -1,6 +1,7 @@
 ﻿using Pharmacy.Models.Entities.Users;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Text;
 
@@ -14,5 +15,8 @@ namespace Pharmacy.Models.Entities
         public Drug Drug {get; set;}
         public double Cost { get; set; }
         public DateTime TimeOfTransaction { get; set; }
+
+        [Timestamp]
+        public byte[] RowVersion { get; set; }
     }
 }

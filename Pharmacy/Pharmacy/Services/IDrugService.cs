@@ -13,5 +13,7 @@ namespace Pharmacy.Services
         public void CheckoutDrug(long drugId, long pharmacyId);
         public Task<Drug> GetById(long id);
         public Task<List<Drug>> GetSimilarDrugs(long drugId);
+        public Task<int> Update(Drug drug);
+        public bool Exists(long id);
     }
 }

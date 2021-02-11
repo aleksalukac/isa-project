@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
@@ -29,5 +30,8 @@ namespace Pharmacy.Models.Entities.Users
         public List<Drug> AllergicDrugs { get; set; }
         public TimeSpan WorkHoursStart { get; set; }
         public TimeSpan WorkHoursEnd { get; set; }
+
+        [Timestamp]
+        public byte[] RowVersion { get; set; }
     }
 }
