@@ -103,7 +103,11 @@ namespace Pharmacy.Areas.Identity.Pages.Account
                     return Page();
                 }
             }
-
+            else
+            {
+                return BadRequest(ModelState);
+            }
+        
             // If we got this far, something failed, redisplay form
             return Page();
         }

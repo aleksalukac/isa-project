@@ -62,6 +62,10 @@ namespace Pharmacy.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
+            else
+            {
+                return BadRequest(ModelState);
+            }
             return View(supplyOrder);
         }
 
