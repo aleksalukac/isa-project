@@ -145,8 +145,14 @@
                                         <a class="nav-link text-dark" asp-area="" asp-controller="Ratings" asp-action="CreateDrugs">Rate Drugs</a>
                                     </div>
                                 </li>
-                                <li class="nav-item">
-                                    <a class="nav-link text-dark" asp-area="" asp-controller="Appointments" asp-action="MyAppointmentsUser">Appointments</a>
+                                <li class="dropdown">
+                                    <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                        Appointments
+                                    </button>
+                                    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                        <a class="nav-link text-dark" asp-area="" asp-controller="Appointments" asp-action="MyAppointmentsUser">My Appointments</a>
+                                        <a class="nav-link text-dark" asp-area="" asp-controller="Appointments" asp-action="AvailableDermatologistAppoitments">Schedule Dermatologist</a>
+                                    </div>
                                 </li>
                                 <li class="dropdown">
                                     <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
