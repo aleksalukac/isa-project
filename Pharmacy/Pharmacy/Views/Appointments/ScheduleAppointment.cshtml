@@ -1,0 +1,104 @@
+﻿@model Pharmacy.Models.DTO.AppointmentDTO
+
+@{
+    ViewData["Title"] = "Schedule appointment";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>Schedule new Appointment</h1>
+
+@if (ViewData["PatientId"] != "")
+{
+    <h3>@ViewData["PatientId"]</h3>
+}
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="ScheduleAppointment">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="PatientID" />
+            <div class="form-group">
+            </div>
+            <div class="form-group">
+                <label asp-for="StartDateTime" class="control-label"></label>
+                <input id="datetime" asp-for="StartDateTime" class="form-control" min="@ViewData["CurrentDate"] " />
+                <span asp-validation-for="StartDateTime" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Duration" class="control-label"></label>
+                <input id="duration" asp-for="Duration" class="form-control" />
+                <span asp-validation-for="Duration" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input id="submitButton" type="submit" value="Save" class="btn btn-primary" disabled />
+            </div>
+        </form>
+        <button onclick="checkAppointments()">
+            Check if free apointment time
+        </button>
+    </div>
+</div>
+
+<script>
+    function checkAppointments() {
+        var startWorkingHours = "@ViewData["startWorkingHours"]";
+        var endWorkingHours = "@ViewData["endWorkingHours"]";
+        var appointments = JSON.parse('@Html.Raw(ViewData["appointmentsTime"])');
+
+        var start = new Date(document.getElementById("datetime").value);
+
+        var hours = document.getElementById("duration").value.split(':')[0];
+        var minutes = document.getElementById("duration").value.split(':')[1];
+        var seconds = document.getElementById("duration").value.split(':')[2];
+
+        alert(start.toString());
+
+        var end = start + hours * 60 * 60 * 1000;
+        end += minutes * 60 * 1000;
+        end += seconds * 1000;
+
+		end = new Date(document.getElementById("datetime").value);
+		end.setHours(end.getHours() + parseInt(hours));
+		end.setMinutes(end.getMinutes() + parseInt(minutes));
+		end.setSeconds(end.getSeconds() + parseInt(seconds));
+
+        alert(end.toString());
+
+        if (start.toTimeString().split(' ')[0] < startWorkingHours) {
+            alert("Appointment starts too early.");
+            return;
+        }
+
+        if (end.toTimeString().split(' ')[0] > endWorkingHours) {
+            alert("Appointment ends too late.");
+            return;
+        }
+
+		start.setHours(start.getHours() + 1);
+        start = start.toISOString();
+		end.setHours(end.getHours() + 1);
+        end = end.toISOString();
+
+        for (var i = 0; i < appointments.length; i++) {
+            if (!(appointments[i].Start > start && appointments[i].End > end &&
+                appointments[i].Start > end && appointments[i].End > start)) {
+
+                if (!(appointments[i].Start < start && appointments[i].End < end &&
+                    appointments[i].Start < end && appointments[i].End < start)) {
+                    alert("Already an appointment in this time.");
+                    return;
+                }
+            }
+        }
+
+        document.getElementById("submitButton").disabled = false;
+    }
+
+    function getSecondPart(str) {
+        return str.split('T')[1];
+    }
+</script>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

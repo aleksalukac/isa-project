@@ -160,6 +160,35 @@ namespace Pharmacy.Controllers
 
         [Authorize(Roles = "Pharmacist,Dermatologist")]
         // GET: CurrentAppointments
+        public async Task<IActionResult> NotShowUp(long? id)
+        {
+            if (!id.HasValue)
+            {
+                return View("MyAppointments");
+            }
+
+            Appointment appointment = await _appointmentService.GetById(id.Value);
+            var medicalExpert = await _userManager.GetUserAsync(User);
+            var patient = await _userService.GetById(appointment.PatientID);
+
+            if (appointment.MedicalExpertID != medicalExpert.Id || appointment.StartDateTime > DateTime.Now ||
+                (appointment.StartDateTime + appointment.Duration) < DateTime.Now)
+            {
+                return View("MyAppointments");
+            }
+
+            appointment.Duration = DateTime.Now - appointment.StartDateTime;
+            appointment.Report = "Didn't show up";
+            _appointmentService.Update(appointment);
+
+            patient.Penalty++;
+            await _userService.Update(patient);
+
+            return View("MyAppointments;");
+        }
+
+        [Authorize(Roles = "Pharmacist,Dermatologist")]
+        // GET: CurrentAppointments
         public async Task<IActionResult> Start(long? id)
         {
             if(!id.HasValue)
@@ -186,14 +215,54 @@ namespace Pharmacy.Controllers
 
             return View(appointmentDTO);
         }
-        /*
-        [Authorize(Roles = "Pharmacist,Dermatologist")]
-        public async Task<IActionResult> ScheduleNewForPatient(long? patientId)
-        {
-            if(patient)
-            return View();
 
-        }*/
+        [HttpGet("Appointments/ScheduleAppointment/{patientId}")]
+        [Authorize(Roles = "Pharmacist,Dermatologist")]
+        public async Task<IActionResult> ScheduleAppointment(string patientId = "")
+        {
+            var user = await _userManager.GetUserAsync(User);
+
+            AppointmentDTO appointmentDTO = new AppointmentDTO();
+            if (patientId == "")
+                appointmentDTO.PatientID = "NoPatient";
+            else
+                appointmentDTO.PatientID = patientId;
+            appointmentDTO.MedicalExpertID = user.Id;
+
+            ViewData["PatientId"] = patientId;
+            ViewData["CurrentDate"] = DateTime.Now.ToString("yyyy-MM-dd");
+
+            List<Appointment> allAppointments = await _appointmentService.GetByMedicalExpert(user.Id);
+            if(patientId != "")
+                allAppointments.AddRange(await _appointmentService.GetByPatient(patientId));
+
+            List<AppointmentTimeDTO> allAppointmentsTime = new List<AppointmentTimeDTO>();
+
+            foreach(var appointment in allAppointments)
+            {
+                allAppointmentsTime.Add(new AppointmentTimeDTO(appointment.StartDateTime, appointment.Duration));
+            }
+
+            ViewData["appointmentsTime"] = JsonConvert.SerializeObject(allAppointmentsTime);
+            ViewData["startWorkingHours"] = user.WorkHoursStart.ToString() == "00:00:00" ? "08:00:00" : user.WorkHoursStart.ToString();
+            ViewData["endWorkingHours"] = user.WorkHoursEnd.ToString() == "00:00:00" ? "16:00:00" : user.WorkHoursEnd.ToString();
+
+            appointmentDTO.StartDateTime = DateTime.Now;
+            return View("ScheduleAppointment", appointmentDTO);
+        }
+
+        [HttpPost("Appointments/ScheduleAppointment/{id}")]
+        [Authorize(Roles = "Pharmacist,Dermatologist")]
+        public async Task<IActionResult> ScheduleAppointment(string patientId, [Bind("StartDateTime,Duration")]
+                                                        AppointmentExamDTO appointmentExamDTO)
+        {
+            var user = await _userManager.GetUserAsync(User);
+
+            appointmentExamDTO.PatientID = patientId;
+            appointmentExamDTO.MedicalExpertID = user.Id;
+
+            return View();
+        }
 
         [Authorize(Roles = "Pharmacist,Dermatologist")]
         public async Task<IActionResult> EndAppointment(long appointmentId, [Bind("AppointmentId,Report,PrescribedDrug,PrescriptionLength")] 

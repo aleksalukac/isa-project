@@ -37,33 +37,36 @@
     <tbody>
         @foreach (var item in Model)
         {
-            <tr>
-                <td>
-                    <a asp-controller="AppUsers" asp-action="Details" asp-route-id="@item.MedicalExpertID">
-                        @Html.DisplayFor(modelItem => item.MedicalExpertNameAndSurname)
-                    </a>
-                </td>
-                <td>
-                    <a asp-controller="AppUsers" asp-action="Details" asp-route-id="@item.PatientID">
-                        @Html.DisplayFor(modelItem => item.PatientNameAndSurname)
-                    </a>
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Price)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Report)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.StartDateTime)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Duration)
-                </td>
-                <td>
-                    <a asp-action="Start" asp-route-id="@item.AppointmentId">Start appointment</a>
-                </td>
-            </tr>
+        <tr>
+            <td>
+                <a asp-controller="AppUsers" asp-action="Details" asp-route-id="@item.MedicalExpertID">
+                    @Html.DisplayFor(modelItem => item.MedicalExpertNameAndSurname)
+                </a>
+            </td>
+            <td>
+                <a asp-controller="AppUsers" asp-action="Details" asp-route-id="@item.PatientID">
+                    @Html.DisplayFor(modelItem => item.PatientNameAndSurname)
+                </a>
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Price)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Report)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.StartDateTime)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Duration)
+            </td>
+            <td>
+                <a asp-action="Start" asp-route-id="@item.AppointmentId">Start appointment</a>
+            </td>
+            <td>
+                <a asp-action="NotShowUp" asp-route-id="@item.AppointmentId">Didn't show up</a>
+            </td>
+        </tr>
         }
     </tbody>
 </table>
