@@ -58,8 +58,8 @@ namespace Pharmacy.Controllers
 
             foreach(var appointment in appointmentList)
             {
-                AppUser medicalExpert = _context.tbAppUsers.Find(appointment.MedicalExpertID);
-                AppUser patient = _context.tbAppUsers.Find(appointment.PatientID);
+                AppUser medicalExpert = await _userService.GetById(appointment.MedicalExpertID);
+                AppUser patient = await _userService.GetById(appointment.PatientID);
 
                 string patientFullName = patient == null ? "" : patient.FirstName + " " + patient.LastName;
                 string medicalExpertFullname = medicalExpert == null ? "" : medicalExpert.FirstName + " " + medicalExpert.LastName;
@@ -87,8 +87,8 @@ namespace Pharmacy.Controllers
                 {
                     codeForFront += ",";
                 }
-                AppUser medicalExpert = _context.tbAppUsers.Find(appointment.MedicalExpertID);
-                AppUser patient = _context.tbAppUsers.Find(appointment.PatientID);
+                AppUser medicalExpert = await _userService.GetById(appointment.MedicalExpertID);
+                AppUser patient = await _userService.GetById(appointment.PatientID);
 
                 string patientFullName = patient == null ? "" : patient.FirstName + " " + patient.LastName;
 
@@ -122,8 +122,8 @@ namespace Pharmacy.Controllers
 
             foreach (var appointment in appointmentList)
             {
-                AppUser medicalExpert = _context.tbAppUsers.Find(appointment.MedicalExpertID);
-                AppUser patient = _context.tbAppUsers.Find(appointment.PatientID);
+                AppUser medicalExpert = await _userService.GetById(appointment.MedicalExpertID);
+                AppUser patient = await _userService.GetById(appointment.PatientID);
 
                 string patientFullName = patient == null ? "" : patient.FirstName + " " + patient.LastName;
                 string medicalExpertFullname = medicalExpert == null ? "" : medicalExpert.FirstName + " " + medicalExpert.LastName;
@@ -146,8 +146,8 @@ namespace Pharmacy.Controllers
 
             foreach (var appointment in appointmentList)
             {
-                AppUser medicalExpert = _context.tbAppUsers.Find(appointment.MedicalExpertID);
-                AppUser patient = _context.tbAppUsers.Find(appointment.PatientID);
+                AppUser medicalExpert = await _userService.GetById(appointment.MedicalExpertID);
+                AppUser patient = await _userService.GetById(appointment.PatientID);
 
                 string patientFullName = patient == null ? "" : patient.FirstName + " " + patient.LastName;
                 string medicalExpertFullname = medicalExpert == null ? "" : medicalExpert.FirstName + " " + medicalExpert.LastName;
@@ -194,11 +194,13 @@ namespace Pharmacy.Controllers
                 }
                 else
                 {
-                    //throw;
                     return View("ConcurrencyError", "Home");
                 }
             }
 
+            patient.Penalty++;
+
+            //Update patient - add penalty
             try
             {
                 await _userService.Update(patient);
@@ -214,9 +216,6 @@ namespace Pharmacy.Controllers
                     return View("ConcurrencyError", "Home");
                 }
             }
-
-            patient.Penalty++;
-            await _userService.Update(patient);
 
             return View("MyAppointments;");
         }
@@ -351,7 +350,22 @@ namespace Pharmacy.Controllers
             }
             appointment.PrescriptionDuration = appointmentExamDTO.PrescriptionLength;
             appointment.Duration = DateTime.Now - appointment.StartDateTime;
-            _appointmentService.Update(appointment);
+
+            try
+            {
+                await _appointmentService.Update(appointment);
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!_appointmentService.Exists(appointment.Id))
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    return View("ConcurrencyError", "Home");
+                }
+            }
 
             @ViewData["PatientId"] = appointment.PatientID;
             return View();
@@ -368,8 +382,8 @@ namespace Pharmacy.Controllers
 
             foreach (var appointment in appointmentList)
             {
-                AppUser medicalExpert = _context.tbAppUsers.Find(appointment.MedicalExpertID);
-                AppUser patient = _context.tbAppUsers.Find(appointment.PatientID);
+                AppUser medicalExpert = await _userService.GetById(appointment.MedicalExpertID);
+                AppUser patient = await _userService.GetById(appointment.PatientID);
 
                 string patientFullName = patient == null ? "" : patient.FirstName + " " + patient.LastName;
                 string medicalExpertFullname = medicalExpert == null ? "" : medicalExpert.FirstName + " " + medicalExpert.LastName;
@@ -389,8 +403,7 @@ namespace Pharmacy.Controllers
                 return NotFound();
             }
 
-            var appointment = await _context.tbAppointments
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var appointment = await _appointmentService.GetById(id.Value);
             if (appointment == null)
             {
                 return NotFound();
@@ -399,31 +412,11 @@ namespace Pharmacy.Controllers
             return View(appointment);
         }
 
-        [Authorize(Roles = "Pharmacist,Dermatologist")]
-        // GET: Appointments/CreateForMyself
-        public IActionResult CreateForMyself()
-        {
-            List<AppUser> entryPoint = (from user in _context.tbAppUsers
-                                        join userrole in _context.UserRoles on user.Id equals userrole.UserId
-                                        join role in _context.Roles on userrole.RoleId equals role.Id
-                                        where role.Name == "Dermatologist"
-                                        select user).ToList();
-
-            ViewData["DermatologistList"] = entryPoint;
-            return View();
-        }
-
         // GET: Appointments/Create
         [Authorize(Roles = "PharmacyAdmin")]
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
-            List<AppUser> entryPoint = (from user in _context.tbAppUsers
-                                             join userrole in _context.UserRoles on user.Id equals userrole.UserId
-                                             join role in _context.Roles on userrole.RoleId equals role.Id
-                                             where role.Name == "Dermatologist"
-                                             select user).ToList();
-
-            ViewData["DermatologistList"] = entryPoint;
+            ViewData["DermatologistList"] = await _userService.GetAllByRole("Dermatologist");
             return View();
         }
 
@@ -437,11 +430,11 @@ namespace Pharmacy.Controllers
         {
             if (ModelState.IsValid)
             {
-                var b = await AppoitmenOverlapsAsync(appointment);
-                if (!b)
+                var isOverlapping = await AppoitmenOverlapsAsync(appointment);
+
+                if (!isOverlapping)
                 {
-                    _context.Add(appointment);
-                    await _context.SaveChangesAsync();
+                    _userService.Create(appointment);
                     return RedirectToAction(nameof(Index));
                 }
                 else
@@ -461,19 +454,14 @@ namespace Pharmacy.Controllers
                 return NotFound();
             }
 
-            var appointment = await _context.tbAppointments.FindAsync(id);
+            var appointment = await _appointmentService.GetById(id.Value);
+
             if (appointment == null)
             {
                 return NotFound();
             }
 
-            List<AppUser> entryPoint = await (from user in _context.tbAppUsers
-                                             join userrole in _context.UserRoles on user.Id equals userrole.UserId
-                                             join role in _context.Roles on userrole.RoleId equals role.Id
-                                             where role.Name == "Dermatologist"
-                                             select user).ToListAsync();
-
-            ViewData["DermatologistList"] = entryPoint;
+            ViewData["DermatologistList"] = await _userService.GetAllByRole("Dermatologist");
             return View(appointment);
         }
 
@@ -520,8 +508,8 @@ namespace Pharmacy.Controllers
                 return NotFound();
             }
 
-            var appointment = await _context.tbAppointments
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var appointment = await _appointmentService.GetById(id.Value);
+
             if (appointment == null)
             {
                 return NotFound();
@@ -535,17 +523,32 @@ namespace Pharmacy.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(long id)
         {
-            var appointment = await _context.tbAppointments.FindAsync(id);
-            _context.tbAppointments.Remove(appointment);
-            await _context.SaveChangesAsync();
+            var appointment = await _appointmentService.GetById(id);
+
+            try
+            {
+                _appointmentService.Remove(appointment);
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!_appointmentService.Exists(appointment.Id))
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    return View("ConcurrencyError", "Home");
+                }
+            }
+
             return RedirectToAction(nameof(Index));
         }
 
         private async Task<bool> AppoitmenOverlapsAsync(Appointment appointment)
         {
             // 1] [2   2] [1
-            var appotiments = await _context.tbAppointments.ToListAsync();
-            foreach(Appointment appointmentInList in  appotiments)
+            var appointments = await _appointmentService.GetAll();
+            foreach(Appointment appointmentInList in appointments)
             {
                 if(!((appointmentInList.StartDateTime >= appointment.StartDateTime.Add(appointment.Duration) || (appointmentInList.StartDateTime.Add(appointmentInList.Duration) <= appointment.StartDateTime))
                     && (appointmentInList.StartDateTime >= appointment.StartDateTime && (appointmentInList.StartDateTime.Add(appointmentInList.Duration) <= appointment.StartDateTime.Add(appointmentInList.Duration)))))
@@ -557,7 +560,7 @@ namespace Pharmacy.Controllers
 
         }
 
-        public async Task<IActionResult> Overlapping()
+        public IActionResult Overlapping()
         {
             return View();
         }

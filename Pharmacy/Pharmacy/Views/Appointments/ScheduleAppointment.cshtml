@@ -21,12 +21,12 @@
             </div>
             <div class="form-group">
                 <label asp-for="StartDateTime" class="control-label"></label>
-                <input id="datetime" asp-for="StartDateTime" class="form-control" min="@ViewData["CurrentDate"] " />
+                <input id="datetime" onchange="lockButton()" asp-for="StartDateTime" class="form-control" min="@ViewData["CurrentDate"] " />
                 <span asp-validation-for="StartDateTime" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="Duration" class="control-label"></label>
-                <input id="duration" asp-for="Duration" class="form-control" />
+                <input id="duration" onchange="lockButton()" asp-for="Duration" class="form-control" />
                 <span asp-validation-for="Duration" class="text-danger"></span>
             </div>
             <div class="form-group">
@@ -40,6 +40,10 @@
 </div>
 
 <script>
+    function lockButton() {
+        document.getElementById("submitButton").disabled = true;
+    }
+
     function checkAppointments() {
         var startWorkingHours = "@ViewData["startWorkingHours"]";
         var endWorkingHours = "@ViewData["endWorkingHours"]";

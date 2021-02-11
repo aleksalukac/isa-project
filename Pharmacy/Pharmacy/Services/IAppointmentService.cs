@@ -16,5 +16,6 @@ namespace Pharmacy.Services
         public Task<List<Appointment>> GetCurrentByMedicalExpert(string id);
         public Task<int> Update(Appointment appointment);
         public bool Exists(long id);
+        public void Remove(Appointment appointment);
     }
 }

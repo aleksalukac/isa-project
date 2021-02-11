@@ -24,9 +24,9 @@ namespace Pharmacy.Services
         public async Task<string> GetUserRole(string id)
         {
             List<string> userRole = await (from userrole in _context.UserRoles
-                                            join role in _context.Roles on userrole.RoleId equals role.Id
-                                            where userrole.UserId == id
-                                            select role.Name).ToListAsync();
+                                           join role in _context.Roles on userrole.RoleId equals role.Id
+                                           where userrole.UserId == id
+                                           select role.Name).ToListAsync();
 
             return userRole.FirstOrDefault();
         }
@@ -55,6 +55,21 @@ namespace Pharmacy.Services
         public bool UserExists(string id)
         {
             return _context.AppUsers.Any(e => e.Id == id);
+        }
+
+        public async Task<List<AppUser>> GetAllByRole(string roleName)
+        {
+            return await (from user in _context.tbAppUsers
+             join userrole in _context.UserRoles on user.Id equals userrole.UserId
+             join role in _context.Roles on userrole.RoleId equals role.Id
+             where role.Name == roleName
+             select user).ToListAsync();
+        }
+
+        public async void Create(AppointmentService appointment)
+        {
+            _context.Add(appointment);
+            await _context.SaveChangesAsync();
         }
     }
 }
