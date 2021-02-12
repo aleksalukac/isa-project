@@ -17,3 +17,25 @@ Technologies used:
 *Resharper for code analysis
 
 We love Microsoft :)
+
+# Users
+
+Password: Admin.123
+
+[Admin]			jatij31112@hrandod.com
+
+[Pharmacy Admin]		hafik45066@hrandod.com
+
+[Pharmaciest]			
+xosac84660@wirese.com
+hawafo2433@wirese.com
+
+[User]				kolate6286@wirese.com
+yewoco6226@wirese.com
+
+
+[Dermalotogiest]		wovawa2899@wirese.com
+lirisix439@wirese.com
+
+
+
