@@ -10,9 +10,11 @@ using Pharmacy.Models.Entities;
 using Pharmacy.Models.DTO;
 using Microsoft.AspNetCore.Identity;
 using Pharmacy.Models.Entities.Users;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Pharmacy.Controllers
 {
+    [Authorize(Roles = "PharmacyAdmin")]
     public class SupplyOrdersController : Controller
     {
         private readonly ApplicationDbContext _context;
