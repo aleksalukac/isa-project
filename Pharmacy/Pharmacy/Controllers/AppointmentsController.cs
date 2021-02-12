@@ -685,6 +685,28 @@ namespace Pharmacy.Controllers
 
             return View(appointmentDTOList);
         }
+        [Authorize(Roles = "User")]
+        public async Task<IActionResult> PastAppointmentsUser()
+        {
+            var user = await _userManager.GetUserAsync(User);
+            var appointmentList = await _appointmentService.GetByPatientPast(user.Id);
+
+            var appointmentDTOList = new List<AppointmentDTO>();
+
+            foreach (var appointment in appointmentList)
+            {
+                AppUser medicalExpert = await _userService.GetById(appointment.MedicalExpertID);
+                AppUser patient = await _userService.GetById(appointment.PatientID);
+
+                string patientFullName = patient == null ? "" : patient.FirstName + " " + patient.LastName;
+                string medicalExpertFullname = medicalExpert == null ? "" : medicalExpert.FirstName + " " + medicalExpert.LastName;
+
+                appointmentDTOList.Add(new AppointmentDTO(appointment,
+                    medicalExpertFullname, patientFullName));
+            }
+
+            return View(appointmentDTOList);
+        }
 
         public async Task<IActionResult> AvailableDermatologistAppoitments()
         {

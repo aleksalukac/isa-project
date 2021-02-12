@@ -13,6 +13,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - Pharmacy</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/bootstrap-sortable.css" />
 
     <link href='https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.1.0/fullcalendar.print.min.css' rel='stylesheet' media='print' />
 
@@ -138,6 +139,9 @@
                                 <li class="nav-item">
                                     <a class="nav-link text-dark" asp-area="" asp-controller="Orders" asp-action="ScheduledOrders">Scheduled Orders</a>
                                 </li>
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="Orders" asp-action="PastOrders">Past Orders</a>
+                                </li>
                                 <li class="dropdown">
                                     <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                         Ratings
@@ -155,6 +159,7 @@
                                     </button>
                                     <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                                         <a class="nav-link text-dark" asp-area="" asp-controller="Appointments" asp-action="MyAppointmentsUser">My Appointments</a>
+                                        <a class="nav-link text-dark" asp-area="" asp-controller="Appointments" asp-action="PastAppointmentsUser">Past Appointments</a>
                                         <a class="nav-link text-dark" asp-area="" asp-controller="Appointments" asp-action="AvailableDermatologistAppoitments">Schedule Dermatologist</a>
                                         <a class="nav-link text-dark" asp-area="" asp-controller="Pharmacies" asp-action="GetAvailablePharmacies">Schedule Pharmacist</a>
 
@@ -237,6 +242,7 @@
     <a class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Logout" id="logout_testMeni" hidden>Logout</a>
 
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/bootstrap-sortable.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>

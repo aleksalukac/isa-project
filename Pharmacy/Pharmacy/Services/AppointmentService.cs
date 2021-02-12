@@ -69,6 +69,11 @@ namespace Pharmacy.Services
             var date = DateTime.Now;
             return await _context.tbAppointments.Where(x => x.PatientID == id && x.StartDateTime > date).ToListAsync();
         }
+        public async Task<List<Appointment>> GetByPatientPast(string id)
+        {
+            var date = DateTime.Now;
+            return await _context.tbAppointments.Where(x => x.PatientID == id && x.StartDateTime < date).ToListAsync();
+        }
 
         public async Task<List<Appointment>> GetCurrentByMedicalExpert(string id)
         {

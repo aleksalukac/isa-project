@@ -1,11 +1,11 @@
 ﻿@model IEnumerable<Pharmacy.Models.DTO.AppointmentDTO>
 
 @{
-    ViewData["Title"] = "My Appointments";
+    ViewData["Title"] = "Past Appointments";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h1>My Appointments</h1>
+<h1>Past Appointments</h1>
 <table class="sortable table">
     <thead>
         <tr>
@@ -58,7 +58,6 @@
                 </td>
                 <td>
                     <a asp-action="Details" asp-route-id="@item.AppointmentId">Details</a>
-                    <a asp-action="Unchedule" asp-route-id="@item.AppointmentId">Unchedule</a>
                 </td>
             </tr>
         }
