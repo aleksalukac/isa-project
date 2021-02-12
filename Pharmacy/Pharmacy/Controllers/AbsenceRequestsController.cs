@@ -220,12 +220,11 @@ namespace Pharmacy.Controllers
                 try
                 {
                     _context.Update(absenceRequest);
-                    await _context.SaveChangesAsync();
 
                     var user = await _userManager.GetUserAsync(User);
                     await _emailSender.SendEmailAsync(user.Email, "Absence Requiest Respons of Admin",
                         $"Your absence Requiest has been approved");
-            }
+                }
                 catch (DbUpdateConcurrencyException)
                 {
                     if (!AbsenceRequestExists(absenceRequest.Id))
