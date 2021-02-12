@@ -677,7 +677,7 @@ namespace Pharmacy.Controllers
             {
                 try
                 {
-                    _appointmentService.Remove(appointment);
+                    await _appointmentService.Remove(appointment);
                 }
                 catch (DbUpdateConcurrencyException)
                 {

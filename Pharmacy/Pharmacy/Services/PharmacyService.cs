@@ -92,5 +92,76 @@ namespace Pharmacy.Services
 
             return filteredPharmacies;
         }
+        public async Task<List<Models.Entities.Pharmacy>> GetAvailablePharmacies(DateTime dateTime)
+        {
+            List<Models.Entities.Pharmacy> pharmacies = await _context.tbPharmacys.ToListAsync();
+
+            List<Models.Entities.Pharmacy> filterdPharmacies = new List<Models.Entities.Pharmacy>();
+
+            foreach (var pharma in pharmacies)
+            {
+                var entryPoint = await (from userrole in _context.UserRoles
+                                        join role in _context.Roles on userrole.RoleId equals role.Id
+                                        where role.Name == "Pharmacist"
+                                        select userrole.UserId).ToListAsync();
+                var users = await _context.AppUsers.Where(e => entryPoint.Contains(e.Id) && e.PharmacyId == pharma.Id).ToListAsync();
+
+                foreach (var user in users)
+                {
+                    var appoitnments = await _context.tbAppointments.Where(x => x.MedicalExpertID == user.Id).ToListAsync();
+
+                    var appoitnmentsFilterd = new List<Appointment>();
+
+                    foreach (var app in appoitnments)
+                    {
+                        if (DateTime.Compare(app.StartDateTime, dateTime) < 0 && DateTime.Compare(app.StartDateTime + app.Duration, dateTime) > 0)
+                        {
+                            appoitnmentsFilterd.Add(app);
+                            break;
+                        }
+                    }
+
+                    if (appoitnmentsFilterd.Count == 0)
+                    {
+                        filterdPharmacies.Add(pharma);
+                        break;
+                    }
+                }
+            }
+            return filterdPharmacies;
+        }
+
+        public async Task<List<AppUser>> GetAllPharmacists(long pharmacyId, DateTime dateTime)
+        {
+            var entryPoint = await (from userrole in _context.UserRoles
+                                join role in _context.Roles on userrole.RoleId equals role.Id
+                                where role.Name == "Pharmacist"
+                                select userrole.UserId).ToListAsync();
+            var users = await _context.AppUsers.Where(e => entryPoint.Contains(e.Id) && e.PharmacyId == pharmacyId).ToListAsync();
+
+
+            var listUser = new List<AppUser>();
+            foreach (var user in users)
+            {
+                var appoitnments = await _context.tbAppointments.Where(x => x.MedicalExpertID == user.Id).ToListAsync();
+
+                var appoitnmentsFilterd = new List<Appointment>();
+
+                foreach (var app in appoitnments)
+                {
+                    if (DateTime.Compare(app.StartDateTime, dateTime) < 0 && DateTime.Compare(app.StartDateTime + app.Duration, dateTime) > 0)
+                    {
+                        appoitnmentsFilterd.Add(app);
+                        break;
+                    }
+                }
+
+                if (appoitnmentsFilterd.Count == 0)
+                {
+                    listUser.Add(user);
+                }
+            }
+            return listUser;
+        }
     }
 }
