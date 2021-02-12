@@ -57,6 +57,11 @@ namespace Pharmacy.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,DrugId,SupplyOrderId,ExtraQuantity")] SupplyItem supplyItem)
         {
+            if(supplyItem.ExtraQuantity < 0 || supplyItem.Id <0)
+            {
+                return BadRequest(ModelState);
+            }
+
             if (ModelState.IsValid)
             {
                 _context.Add(supplyItem);

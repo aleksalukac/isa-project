@@ -9,16 +9,14 @@ using Microsoft.EntityFrameworkCore;
 
 namespace NUnitTestPharmacy.NUnitTests
 {
-    public class UnitTest2
+    public class UnitTest5
     {
 
-        public SupplyOrdersController supplyOrdersController;
+        public SupplyItemsController supplyItemsController;
         public DrugsController drugsController;
         private readonly UserManager<AppUser> _userManager;
         private readonly SignInManager<AppUser> _signInManager;
         private ApplicationDbContext _context;
-        public Drug drug;
-        public long numberOfDrugs;
 
         [SetUp]
         public async Task SetUpAsync()
@@ -26,10 +24,6 @@ namespace NUnitTestPharmacy.NUnitTests
             var dbOption = new DbContextOptionsBuilder<ApplicationDbContext>().UseSqlServer("Server=.\\SQLEXPRESS;data source=mssql11.orion.rs;initial catalog=isa;Password = UrosFic@Luk@c;Persist Security Info=True;User ID=aleksalukac;MultipleActiveResultSets=True;App=EntityFramework&quot;").Options;
             _context = new ApplicationDbContext(dbOption);
             drugsController = new DrugsController(_context, _userManager);
-
-            drug = new Drug("Bromazepan2", DrugForm.BuccalFilm, "Nes", "Nes", true, "Nes");
-            var actionResult = await drugsController.Create(drug);
-            numberOfDrugs = drug.Id;
         }
 
         public Drug ValidateDrugEnter(long drugId)
@@ -41,10 +35,10 @@ namespace NUnitTestPharmacy.NUnitTests
         [Test]
         public async Task InvalideDrugFormatValide()
         {
-            Drug drug2 = new Drug("Bromazepan", DrugForm.BuccalFilm, "Nes", "Nes", true, "Nes");
-            var actionResult = await drugsController.Edit(-1, drug2);
-            var drugInDb = ValidateDrugEnter(numberOfDrugs);
-            Assert.AreNotEqual(drug.Name, drug2.Name);
+            Drug drug = new Drug("Neso", DrugForm.BuccalFilm, "Nes", "Nes", true, "Nes");
+            var actionResult = await drugsController.Edit(drug.Id, drug);
+            var drugInDb = ValidateDrugEnter(drug.Id);
+            Assert.AreEqual(drug, drugInDb);
         }
         #endregion
 

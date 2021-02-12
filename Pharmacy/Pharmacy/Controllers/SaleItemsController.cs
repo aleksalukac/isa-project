@@ -73,6 +73,7 @@ namespace Pharmacy.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,BeforePrice,EndTime, DrugAndQuantitiesId")] SaleItems saleItems, long DrugAndQuantitiesId)
         {
+
             if (ModelState.IsValid)
             {
                 saleItems.DrugAndQuantitiesId = DrugAndQuantitiesId;
