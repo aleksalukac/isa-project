@@ -23,7 +23,7 @@ using System.Reflection;
 
 namespace NUnitTestPharmacy.IntegrationTests
 {
-    class IntegrationTest15
+    class IntegrationTest13
     {
         public SupplyOrdersController supplyOrdersController;
         public DrugsController drugsController;
@@ -68,30 +68,19 @@ namespace NUnitTestPharmacy.IntegrationTests
 
                 webDriver.FindElement(By.Id("submit_login")).Click();
 
-                wait.Until(ExpectedConditions.ElementExists(By.Id("discort_elementMeni")));
-                webElement = webDriver.FindElement(By.Id("discort_elementMeni"));
+                wait.Until(ExpectedConditions.ElementExists(By.Id("pharmId")));
+                webElement = webDriver.FindElement(By.Id("pharmId"));
                 webElement.Click();
 
-                wait.Until(ExpectedConditions.ElementExists(By.Id("Edit0")));
-                webElement = webDriver.FindElement(By.Id("Edit0"));
+                wait.Until(ExpectedConditions.ElementExists(By.Id("pharmdet0")));
+                webElement = webDriver.FindElement(By.Id("pharmdet0"));
                 webElement.Click();
 
-                wait.Until(ExpectedConditions.ElementToBeClickable(By.Id("BeforePrice")));
-                webElement = webDriver.FindElement(By.Id("BeforePrice"));
-                webElement.Clear();
-                webDriver.FindElement(By.Id("BeforePrice")).SendKeys("666");
+                wait.Until(ExpectedConditions.ElementExists(By.Name("GoogleMap")));
+                webElement = webDriver.FindElement(By.Name("GoogleMap"));
 
-                webDriver.FindElement(By.Id("Submit")).Click();
+                return true;
 
-                wait.Until(ExpectedConditions.ElementToBeClickable(By.Id("Edit0")));
-                var element = webDriver.FindElement(By.Id("Edit0")).Displayed;
-
-                if (element)
-                {
-                    result = true;
-                }
-
-                return result;
             }
             catch (Exception ex)
             {

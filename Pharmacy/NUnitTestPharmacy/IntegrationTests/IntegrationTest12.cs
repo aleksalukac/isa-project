@@ -23,7 +23,7 @@ using System.Reflection;
 
 namespace NUnitTestPharmacy.IntegrationTests
 {
-    class IntegrationTest15
+    class IntegrationTest12
     {
         public SupplyOrdersController supplyOrdersController;
         public DrugsController drugsController;
@@ -68,30 +68,26 @@ namespace NUnitTestPharmacy.IntegrationTests
 
                 webDriver.FindElement(By.Id("submit_login")).Click();
 
-                wait.Until(ExpectedConditions.ElementExists(By.Id("discort_elementMeni")));
-                webElement = webDriver.FindElement(By.Id("discort_elementMeni"));
+                wait.Until(ExpectedConditions.ElementExists(By.Id("chartId")));
+                webElement = webDriver.FindElement(By.Id("chartId"));
                 webElement.Click();
 
-                wait.Until(ExpectedConditions.ElementExists(By.Id("Edit0")));
-                webElement = webDriver.FindElement(By.Id("Edit0"));
-                webElement.Click();
+                wait.Until(ExpectedConditions.ElementExists(By.Id("chart_divY")));
 
-                wait.Until(ExpectedConditions.ElementToBeClickable(By.Id("BeforePrice")));
-                webElement = webDriver.FindElement(By.Id("BeforePrice"));
-                webElement.Clear();
-                webDriver.FindElement(By.Id("BeforePrice")).SendKeys("666");
+                wait.Until(ExpectedConditions.ElementExists(By.Id("chart_divQ")));
 
-                webDriver.FindElement(By.Id("Submit")).Click();
+                wait.Until(ExpectedConditions.ElementExists(By.Id("chart_divC")));
 
-                wait.Until(ExpectedConditions.ElementToBeClickable(By.Id("Edit0")));
-                var element = webDriver.FindElement(By.Id("Edit0")).Displayed;
+                wait.Until(ExpectedConditions.ElementExists(By.Id("chart_appY")));
 
-                if (element)
-                {
-                    result = true;
-                }
+                wait.Until(ExpectedConditions.ElementExists(By.Id("chart_appQ")));
 
-                return result;
+                wait.Until(ExpectedConditions.ElementExists(By.Id("chart_appC")));
+
+                wait.Until(ExpectedConditions.ElementExists(By.Id("chart_appS")));
+
+                return true;
+
             }
             catch (Exception ex)
             {

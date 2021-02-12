@@ -23,7 +23,7 @@ using System.Reflection;
 
 namespace NUnitTestPharmacy.IntegrationTests
 {
-    class IntegrationTest15
+    class IntegrationTest9
     {
         public SupplyOrdersController supplyOrdersController;
         public DrugsController drugsController;
@@ -55,7 +55,7 @@ namespace NUnitTestPharmacy.IntegrationTests
                 IWebElement webElement;
 
                 // Username
-                wait.Until(ExpectedConditions.ElementIsVisible (By.Id("username_input")));
+                wait.Until(ExpectedConditions.ElementIsVisible(By.Id("username_input")));
                 webElement = webDriver.FindElement(By.Id("username_input"));
                 webElement.Clear();
                 webDriver.FindElement(By.Id("username_input")).SendKeys(loginDTO.username);
@@ -68,23 +68,17 @@ namespace NUnitTestPharmacy.IntegrationTests
 
                 webDriver.FindElement(By.Id("submit_login")).Click();
 
-                wait.Until(ExpectedConditions.ElementExists(By.Id("discort_elementMeni")));
-                webElement = webDriver.FindElement(By.Id("discort_elementMeni"));
+                wait.Until(ExpectedConditions.ElementExists(By.Id("deof")));
+                webElement = webDriver.FindElement(By.Id("deof"));
                 webElement.Click();
 
-                wait.Until(ExpectedConditions.ElementExists(By.Id("Edit0")));
-                webElement = webDriver.FindElement(By.Id("Edit0"));
+                wait.Until(ExpectedConditions.ElementExists(By.Id("detailoffer0")));
+                webElement = webDriver.FindElement(By.Id("detailoffer0"));
                 webElement.Click();
 
-                wait.Until(ExpectedConditions.ElementToBeClickable(By.Id("BeforePrice")));
-                webElement = webDriver.FindElement(By.Id("BeforePrice"));
-                webElement.Clear();
-                webDriver.FindElement(By.Id("BeforePrice")).SendKeys("666");
 
-                webDriver.FindElement(By.Id("Submit")).Click();
-
-                wait.Until(ExpectedConditions.ElementToBeClickable(By.Id("Edit0")));
-                var element = webDriver.FindElement(By.Id("Edit0")).Displayed;
+                wait.Until(ExpectedConditions.ElementToBeClickable(By.Id("ofdetail")));
+                var element = webDriver.FindElement(By.Id("ofdetail")).Displayed;
 
                 if (element)
                 {

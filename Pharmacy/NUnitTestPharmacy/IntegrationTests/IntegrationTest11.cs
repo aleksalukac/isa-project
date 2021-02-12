@@ -19,11 +19,12 @@ using System.Threading;
 using OpenQA.Selenium.Chrome;
 using System.IO;
 using System.Reflection;
-
+using System.Collections.Generic;
+using System.Linq;
 
 namespace NUnitTestPharmacy.IntegrationTests
 {
-    class IntegrationTest15
+    class IntegrationTest11
     {
         public SupplyOrdersController supplyOrdersController;
         public DrugsController drugsController;
@@ -68,30 +69,47 @@ namespace NUnitTestPharmacy.IntegrationTests
 
                 webDriver.FindElement(By.Id("submit_login")).Click();
 
-                wait.Until(ExpectedConditions.ElementExists(By.Id("discort_elementMeni")));
-                webElement = webDriver.FindElement(By.Id("discort_elementMeni"));
+                wait.Until(ExpectedConditions.ElementToBeClickable(By.Id("daq")));
+                webElement = webDriver.FindElement(By.Id("daq"));
                 webElement.Click();
 
-                wait.Until(ExpectedConditions.ElementExists(By.Id("Edit0")));
-                webElement = webDriver.FindElement(By.Id("Edit0"));
+                wait.Until(ExpectedConditions.ElementToBeClickable(By.Id("crid")));
+                webElement = webDriver.FindElement(By.Id("crid"));
                 webElement.Click();
 
-                wait.Until(ExpectedConditions.ElementToBeClickable(By.Id("BeforePrice")));
-                webElement = webDriver.FindElement(By.Id("BeforePrice"));
-                webElement.Clear();
-                webDriver.FindElement(By.Id("BeforePrice")).SendKeys("666");
 
-                webDriver.FindElement(By.Id("Submit")).Click();
 
-                wait.Until(ExpectedConditions.ElementToBeClickable(By.Id("Edit0")));
-                var element = webDriver.FindElement(By.Id("Edit0")).Displayed;
+                var uls = webDriver.FindElements(By.TagName("select"));
 
-                if (element)
+                int elemInt = 0;
+
+                foreach(var ul in uls)
                 {
-                    result = true;
+                    if(elemInt > uls.Count()-3)
+                    {
+                        ul.FindElement(By.TagName("option")).Click();
+                    }
+                    elemInt++;
                 }
 
-                return result;
+                wait.Until(ExpectedConditions.ElementToBeClickable(By.Name("Quantity")));
+                webElement = webDriver.FindElement(By.Name("Quantity"));
+                webElement.Clear();
+                webDriver.FindElement(By.Name("Quantity")).SendKeys("11");
+
+                wait.Until(ExpectedConditions.ElementToBeClickable(By.Id("inmp")));
+                webElement = webDriver.FindElement(By.Id("inmp"));
+                webElement.Click();
+
+                wait.Until(ExpectedConditions.ElementToBeClickable(By.Id("daq")));
+                webElement = webDriver.FindElement(By.Id("daq"));
+
+                if(webElement == null)
+                {
+                    return false;
+                }
+                return true;
+
             }
             catch (Exception ex)
             {

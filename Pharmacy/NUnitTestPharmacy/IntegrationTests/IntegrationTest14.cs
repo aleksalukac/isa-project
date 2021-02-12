@@ -23,7 +23,7 @@ using System.Reflection;
 
 namespace NUnitTestPharmacy.IntegrationTests
 {
-    class IntegrationTest15
+    class IntegrationTest14
     {
         public SupplyOrdersController supplyOrdersController;
         public DrugsController drugsController;
@@ -68,23 +68,20 @@ namespace NUnitTestPharmacy.IntegrationTests
 
                 webDriver.FindElement(By.Id("submit_login")).Click();
 
-                wait.Until(ExpectedConditions.ElementExists(By.Id("discort_elementMeni")));
-                webElement = webDriver.FindElement(By.Id("discort_elementMeni"));
+                wait.Until(ExpectedConditions.ElementExists(By.Id("pharmId")));
+                webElement = webDriver.FindElement(By.Id("pharmId"));
                 webElement.Click();
 
-                wait.Until(ExpectedConditions.ElementExists(By.Id("Edit0")));
-                webElement = webDriver.FindElement(By.Id("Edit0"));
+                wait.Until(ExpectedConditions.ElementExists(By.Id("pharmdet")));
+                webElement = webDriver.FindElement(By.Id("pharmdet"));
                 webElement.Click();
 
-                wait.Until(ExpectedConditions.ElementToBeClickable(By.Id("BeforePrice")));
-                webElement = webDriver.FindElement(By.Id("BeforePrice"));
-                webElement.Clear();
-                webDriver.FindElement(By.Id("BeforePrice")).SendKeys("666");
 
-                webDriver.FindElement(By.Id("Submit")).Click();
+                wait.Until(ExpectedConditions.ElementExists(By.Id("YesDeleteOffer")));
+                webDriver.FindElement(By.Id("YesDeleteOffer")).Click();
 
-                wait.Until(ExpectedConditions.ElementToBeClickable(By.Id("Edit0")));
-                var element = webDriver.FindElement(By.Id("Edit0")).Displayed;
+                wait.Until(ExpectedConditions.ElementToBeClickable(By.Id("deof")));
+                var element = webDriver.FindElement(By.Id("deof")).Displayed;
 
                 if (element)
                 {
