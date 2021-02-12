@@ -1,0 +1,70 @@
+﻿@using Microsoft.AspNetCore.Authorization
+@inject IAuthorizationService AuthorizationService
+
+@using Microsoft.AspNetCore.Identity
+@using Pharmacy.Models.Entities.Users
+@model IEnumerable<Pharmacy.Models.Entities.Pharmacy>
+
+@{
+    ViewData["Title"] = "Available Pharmacies";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>Index</h1>
+
+<form asp-controller="Pharmacies" asp-action="GetAvailablePharmacies" class="form-inline">
+    <div class="form-group">
+        <label for="dateTime">Search:</label>
+        <input type="datetime-local" id="dateTime" name="dateTime" class="form-control"/>
+    </div>
+    <div class="form-group mx-sm-3">
+        <button type="submit" class="btn btn-primary">Get Available</button>
+    </div>
+</form>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Address)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Name)
+            </th>
+            <th>
+                Cost
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.AverageScore)
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+        <tr>
+            <td>
+                @item.Address
+            </td>
+            <td>
+                @item.Name
+            </td>
+            <td>
+                @ViewData["Cost"]
+            </td>
+            <td>
+                @item.AverageScore
+            </td>
+            <td>
+                <form asp-controller="Pharmacies" asp-action="ScheduleAppointment" class="form-inline">
+                    <input type="datetime" name="dateTime" class="form-control" value="@ViewData["DateTime"]" readonly>
+                    <input type="text" name="pharmacyId" class="form-control" value="@item.Id" readonly hidden>
+                    <div class="form-group mx-sm-3">
+                        <button type="submit" class="btn btn-outline-dark">Schedule Appointment</button>
+                    </div>
+                </form>
+            </td>
+        </tr>
+        }
+    </tbody>
+</table>

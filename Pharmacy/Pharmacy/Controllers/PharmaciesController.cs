@@ -5,6 +5,7 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -21,11 +22,17 @@ namespace Pharmacy.Controllers
         private readonly ApplicationDbContext _context;
         private readonly UserManager<AppUser> _userManager;
         private readonly IPharmacyService _pharmacyService;
+        private readonly IAppointmentService _appointmentService;
+        private readonly IEmailSender _emailService;
 
         public PharmaciesController(UserManager<AppUser> userManager,
             ApplicationDbContext context,
-            IPharmacyService pharmacyService)
+            IPharmacyService pharmacyService,
+            IAppointmentService appointmentService,
+            IEmailSender emailSender)
         {
+            _emailService = emailSender;
+            _appointmentService = appointmentService;
             _pharmacyService = pharmacyService;
             _userManager = userManager;
             _context = context;
@@ -211,5 +218,64 @@ namespace Pharmacy.Controllers
             var userSubcription = await _context.UserSubscribed.Where(x => x.UserId == user.Id).Select(x => x.PharmacyId).ToListAsync();
             return View(await _context.tbPharmacys.Where(x => userSubcription.Contains(x.Id)).ToListAsync());
         }
+        public IActionResult GetAvailablePharmacies()
+        {
+            ViewData["Cost"] = 40;
+            return View(new List<Models.Entities.Pharmacy>());
+        }
+        [HttpPost]
+        public async Task<IActionResult> GetAvailablePharmacies(DateTime dateTime)
+        {
+            ViewData["Cost"] = 40;
+            ViewData["DateTime"] = dateTime;
+            return View(await _pharmacyService.GetAvailablePharmacies(dateTime));
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> ScheduleAppointment(DateTime dateTime,long pharmacyId)
+        {
+            ViewData["Cost"] = 40;
+            ViewData["DateTime"] = dateTime;
+            var pharmacy = await _pharmacyService.GetById(pharmacyId);
+            ViewData["PharmacyId"] = pharmacyId;
+            ViewData["PharmacyName"] = pharmacy.Name;
+            ViewData["Pharmacists"] = await _pharmacyService.GetAllPharmacists(pharmacyId, dateTime);
+            return View();
+        }
+        [HttpPost]
+        public async Task<IActionResult> TakeAppointment(DateTime dateTime, long pharmacyId, double cost,string pharmacistsd)
+        {
+            var user = await _userManager.GetUserAsync(User);
+            Appointment appointment = new Appointment();
+            appointment.PhrmacyId = pharmacyId;
+            appointment.Duration = TimeSpan.FromMinutes(30);
+            appointment.MedicalExpertID = pharmacistsd;
+            appointment.PatientID = user.Id;
+            appointment.Price = (float)cost;
+            appointment.StartDateTime = dateTime;
+            appointment.Type = AppointmentType.Counseling;
+
+            try
+            {
+                _context.tbAppointments.Add(appointment);
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!_appointmentService.Exists(appointment.Id))
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    return View("ConcurrencyError", "Home");
+                }
+            }
+            await _emailService.SendEmailAsync(user.Email, "Scheduled Appointment",
+                $"Scheduled Appointment for {user.FirstName} at {dateTime}");
+
+            return View();
+        }
+        
     }
 }
