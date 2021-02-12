@@ -281,6 +281,7 @@ namespace Pharmacy.Controllers
                     return View("ConcurrencyError", "Home");
                 }
             }
+
             await _emailService.SendEmailAsync(user.Email, "Scheduled Appointment",
                 $"Scheduled Appointment for {user.FirstName} at {dateTime}");
 
