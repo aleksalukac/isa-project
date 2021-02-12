@@ -11,22 +11,22 @@ using Pharmacy.Services;
 
 namespace NUnitTestPharmacy.NUnitTests
 {
-    public class UnitTest11
+    public class UnitTest14
     {
 
-        public OrderService orderService;
+        public DrugService _drugService;
         private readonly UserManager<AppUser> _userManager;
         private readonly SignInManager<AppUser> _signInManager;
         private readonly IDrugAndQuantitiesService _drugAndQuantitiesService;
         private ApplicationDbContext _context;
 
-    [SetUp]
+        [SetUp]
         public async Task SetUpAsync()
         {
             var dbOption = new DbContextOptionsBuilder<ApplicationDbContext>().UseSqlServer("Server=.\\SQLEXPRESS;data source=mssql11.orion.rs;initial catalog=isa;Password = UrosFic@Luk@c;Persist Security Info=True;User ID=aleksalukac;MultipleActiveResultSets=True;App=EntityFramework&quot;").Options;
             _context = new ApplicationDbContext(dbOption);
             //drugAndQuantitiesController = new DrugAndQuantitiesController(_context, _userManager, new DrugAndQuantitiesService(_context));
-            orderService = new OrderService(_context);
+            _drugService = new DrugService(_context);
 
         }
 
@@ -34,8 +34,8 @@ namespace NUnitTestPharmacy.NUnitTests
         [Test]
         public async Task IsOverlappingValideAsync()
         {
-            var adminExit = await orderService.GetByPharmacyAndId(-1, -1);
-            Assert.IsNull(adminExit);
+            var adminExit = await _drugService.GetAllByPharmacy(-1);
+            Assert.IsEmpty(adminExit);
         }
         #endregion
     }

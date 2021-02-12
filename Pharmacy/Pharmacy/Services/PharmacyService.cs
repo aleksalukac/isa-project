@@ -22,6 +22,10 @@ namespace Pharmacy.Services
         public async Task<string> GetAdmin(long pharmacyId)
         {
             Pharmacy.Models.Entities.Pharmacy pharmacy = await _context.tbPharmacys.FindAsync(pharmacyId);
+            if(pharmacy == null)
+            {
+                return null;
+            }
             return pharmacy.AdminUserID;
         }
 

@@ -23,7 +23,7 @@ using System.Reflection;
 
 namespace NUnitTestPharmacy.IntegrationTests
 {
-    class IntegrationTest3
+    class IntegrationTest4
     {
         public SupplyOrdersController supplyOrdersController;
         public DrugsController drugsController;
