@@ -101,5 +101,13 @@ namespace NUnitTestPharmacy.IntegrationTests
             Assert.IsTrue(results);
         }
         #endregion
+
+        [TearDown]
+        public void Dispose()
+        {
+            Thread.Sleep(2000);
+            _context.Dispose();
+            _webDriver.Quit();
+        }
     }
 }
