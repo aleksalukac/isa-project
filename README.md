@@ -30,7 +30,7 @@ Password: Admin.123
 xosac84660@wirese.com
 hawafo2433@wirese.com
 
-[User]				kolate6286@wirese.com
+[User/Patient]				kolate6286@wirese.com
 yewoco6226@wirese.com
 
 
