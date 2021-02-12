@@ -1,16 +1,19 @@
 ﻿@model IEnumerable<Pharmacy.Models.DTO.AppointmentDTO>
 
 @{
-    ViewData["Title"] = "Available Appointments";
+    ViewData["Title"] = "Past Appointments";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h1>Available Appointments</h1>
+<h1>Past Appointments</h1>
 <table class="sortable table">
     <thead>
         <tr>
             <th>
                 Medical Expert
+            </th>
+            <th>
+                User
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.Price)
@@ -37,6 +40,11 @@
                     </a>
                 </td>
                 <td>
+                    <a asp-controller="AppUsers" asp-action="Details" asp-route-id="@item.PatientID">
+                        @Html.DisplayFor(modelItem => item.PatientNameAndSurname)
+                    </a>
+                </td>
+                <td>
                     @Html.DisplayFor(modelItem => item.Price)
                 </td>
                 <td>
@@ -49,7 +57,7 @@
                     @Html.DisplayFor(modelItem => item.Duration)
                 </td>
                 <td>
-                    <a asp-action="TakeAppointment" asp-route-id="@item.AppointmentId">Schedule</a>
+                    <a asp-action="Details" asp-route-id="@item.AppointmentId">Details</a>
                 </td>
             </tr>
         }

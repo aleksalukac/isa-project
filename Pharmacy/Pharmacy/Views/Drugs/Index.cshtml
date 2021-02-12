@@ -6,7 +6,6 @@
 @using Pharmacy.Models.Entities.Users
 @inject SignInManager<Pharmacy.Models.Entities.Users.AppUser> SignInManager
 @inject UserManager<AppUser> UserManager
-
 @{
     ViewData["Title"] = "Index";
     Layout = "~/Views/Shared/_Layout.cshtml";
@@ -45,11 +44,10 @@
     <div class="col-md-2">
     </div>
 </div>
-<table class="table">
-
+<table class='sortable table'>
     <thead>
         <tr>
-            <th>
+            <th data-defaultsort="asc">
                 @Html.DisplayNameFor(model => model.Name)
             </th>
             <th>
@@ -79,43 +77,43 @@
     <tbody>
         @foreach (var item in Model)
         {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Name)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Form)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Ingredients)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Drugmaker)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.IsPrescribable)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.PharmacyName)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Cost)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.AverageScore)
-            </td>
-            <td>
-                @if ((await AuthorizationService.AuthorizeAsync(User, null, "PharmacyAdminPolicy")).Succeeded)
-                {
-                    <a asp-action="Edit" asp-route-id="@item.Id">Edit</a>
-                }
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                @if ((await AuthorizationService.AuthorizeAsync(User, null, "UserPolicy")).Succeeded)
-                {
-                    <a asp-controller="Orders" asp-action="Create" asp-route-id="@item.DrugAndQuantitiesId">Order</a>
-                }
-            </td>
-        </tr>
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Form)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Ingredients)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Drugmaker)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.IsPrescribable)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.PharmacyName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Cost)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.AverageScore)
+                </td>
+                <td>
+                    @if ((await AuthorizationService.AuthorizeAsync(User, null, "PharmacyAdminPolicy")).Succeeded)
+                    {
+                        <a asp-action="Edit" asp-route-id="@item.Id">Edit</a>
+                    }
+                    <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                    @if ((await AuthorizationService.AuthorizeAsync(User, null, "UserPolicy")).Succeeded)
+                    {
+                        <a asp-controller="Orders" asp-action="Create" asp-route-id="@item.DrugAndQuantitiesId">Order</a>
+                    }
+                </td>
+            </tr>
         }
     </tbody>
 </table>

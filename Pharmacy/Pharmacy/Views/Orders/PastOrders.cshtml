@@ -1,11 +1,11 @@
 ﻿@model IEnumerable<Pharmacy.Models.Entities.Order>
 
 @{
-    ViewData["Title"] = "ScheduledOrders";
+    ViewData["Title"] = "Past Orders";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h1>ScheduledOrders</h1>
+<h1>Past Orders</h1>
 <table class="sortable table">
     <thead>
         <tr>
@@ -37,14 +37,6 @@
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.TransactionComplete)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                @if (DateTime.Compare(item.TimeOfTransaction, DateTime.Now + TimeSpan.FromDays(1)) > 0)
-                { 
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-                }
             </td>
         </tr>
 }
