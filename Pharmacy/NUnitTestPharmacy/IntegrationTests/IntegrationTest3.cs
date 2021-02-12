@@ -36,7 +36,6 @@ namespace NUnitTestPharmacy.IntegrationTests
         private int _timeoutInSeconds = 30;
         private static string _driverPath = Environment.CurrentDirectory + "\\..\\..\\..\\WebDriverGoogleChome\\";
 
-
         [SetUp]
         public void SetUp()
         {
