@@ -15,7 +15,6 @@ using Pharmacy.Models.Entities.Users;
 
 namespace Pharmacy.Controllers
 {
-    [Authorize]
     public class DrugsController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -94,7 +93,7 @@ namespace Pharmacy.Controllers
 
             return View(drug);
         }
-
+        [Authorize]
         // GET: Drugs/Create
         public IActionResult Create()
         {
@@ -104,6 +103,7 @@ namespace Pharmacy.Controllers
         // POST: Drugs/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [Authorize]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,Name,Form,Ingredients,Drugmaker,IsPrescribable,Notes")] Drug drug)
@@ -122,7 +122,7 @@ namespace Pharmacy.Controllers
 
             return View(drug);
         }
-
+        [Authorize]
         // GET: Drugs/Edit/5
         public async Task<IActionResult> Edit(long? id)
         {
@@ -142,6 +142,7 @@ namespace Pharmacy.Controllers
         // POST: Drugs/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [Authorize]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(long id, [Bind("Id,Name,Form,Ingredients,Drugmaker,IsPrescribable,Notes,AverageScore")] Drug drug)
@@ -173,7 +174,7 @@ namespace Pharmacy.Controllers
             }
             return View(drug);
         }
-
+        [Authorize]
         // GET: Drugs/Delete/5
         public async Task<IActionResult> Delete(long? id)
         {
@@ -191,7 +192,7 @@ namespace Pharmacy.Controllers
 
             return View(drug);
         }
-
+        [Authorize]
         // POST: Drugs/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]

@@ -1,5 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 using Pharmacy.Data;
+using Pharmacy.Models.DTO;
 using Pharmacy.Models.Entities;
 using System;
 using System.Collections.Generic;
@@ -79,6 +81,58 @@ namespace Pharmacy.Services
                           select drugAndQuantities).ToListAsync();
         }
 
+        public async Task<List<DrugDTO>> GetAllFiltered(string searchString, string filter,string pharmacyId, string sort)
+        {
+            List<DrugDTO> drugs;
+            if (long.TryParse(pharmacyId, out long pharmacyId2))
+            {
+                drugs = await (from drug in _context.tbDrugs
+                               join drugsQuant in _context.DrugAndQuantity on drug equals drugsQuant.Drug
+                               join pharmacy in _context.tbPharmacys on drugsQuant.PharmacyId equals pharmacy.Id
+                               where drugsQuant.PharmacyId == pharmacyId2 && drugsQuant.Quantity > 0
+                               select new DrugDTO(drug.Id, drugsQuant.Id, drug.Name, drug.Type, drug.Form, drug.Ingredients, drug.Drugmaker, drug.IsPrescribable, drug.AverageScore, pharmacy.Name, drugsQuant.Price)).ToListAsync();
+            }
+            else
+            {
+                drugs = await (from drug in _context.tbDrugs
+                               join drugsQuant in _context.DrugAndQuantity on drug equals drugsQuant.Drug
+                               join pharmacy in _context.tbPharmacys on drugsQuant.PharmacyId equals pharmacy.Id
+                               where drugsQuant.Quantity > 0
+                               select new DrugDTO(drug.Id, drugsQuant.Id, drug.Name, drug.Type, drug.Form, drug.Ingredients, drug.Drugmaker, drug.IsPrescribable, drug.AverageScore, pharmacy.Name, drugsQuant.Price)).ToListAsync();
+            }
+            if(sort == "AverageScore")
+            {
+                drugs = drugs.OrderBy(x => x.AverageScore).ToList();
+            }else if(sort == "Name")
+            {
+                drugs = drugs.OrderBy(x => x.Name).ToList();
+            }
+            List<DrugDTO> filteredDrugs = new List<DrugDTO>();
+
+            if (string.IsNullOrEmpty(searchString))
+            {
+                filteredDrugs = drugs;
+            }
+            else foreach (var drug in drugs)
+                {
+                    var json = JsonConvert.SerializeObject(drug);
+                    var dictionary = JsonConvert.DeserializeObject<Dictionary<string, string>>(json);
+
+                    if (filter == "Form")
+                    {
+                        if (drug.Form.ToString().ToUpper().Contains(searchString.ToUpper()))
+                        {
+                            filteredDrugs.Add(drug);
+                        }
+                    }
+                    if (dictionary[filter] != null && dictionary[filter].ToUpper().Contains(searchString.ToUpper()))
+                    {
+                        filteredDrugs.Add(drug);
+                    }
+                }
+            return filteredDrugs;
+        }
+
         public async Task<int> Update(Drug drug)
         {
             _context.Update(drug);
@@ -90,5 +144,6 @@ namespace Pharmacy.Services
         {
             return _context.tbDrugs.Any(e => e.Id == id);
         }
+
     }
 }

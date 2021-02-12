@@ -97,9 +97,11 @@ namespace Pharmacy.Services
             return _context.tbAppointments.Any(e => e.Id == id);
         }
 
-        public void Remove(Appointment appointment)
+        public async Task<int> Remove(Appointment appointment)
         {
             _context.Remove(appointment);
+
+            return await _context.SaveChangesAsync();
         }
 
         public async void Create(Appointment appointment)
