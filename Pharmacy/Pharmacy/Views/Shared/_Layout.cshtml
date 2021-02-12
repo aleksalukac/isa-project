@@ -123,7 +123,7 @@
                                     <a class="nav-link text-dark" asp-area="" asp-controller="SaleItems" asp-action="Index" id="discort_elementMeni">Discount</a>
                                 </li>
                                 <li class="nav-item">
-                                    
+
                                     <a class="nav-link text-dark" asp-area="" asp-controller="SupplyOrders" asp-action="Index">Supply Orders</a>
                                 </li>
                                 <li class="nav-item">
@@ -208,7 +208,7 @@
                         else
                         {
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Pharmacies" asp-action="Index">Pharmacies</a>
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Pharmacies" asp-action="Index" id="pharmacyId">Pharmacies</a>
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link text-dark" asp-area="" asp-controller="Drugs" asp-action="Index">Drugs</a>
@@ -232,7 +232,10 @@
             &copy; 2021 - Pharmacy - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
         </div>
     </footer>
-    
+
+    <a class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage" id="discort_element" hidden>Profile</a>
+    <a class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Logout" id="logout_testMeni" hidden>Logout</a>
+
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)

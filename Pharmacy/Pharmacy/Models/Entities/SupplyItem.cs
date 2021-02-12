@@ -9,6 +9,19 @@ namespace Pharmacy.Models.Entities
     [Table("tbSupplyItems")]
     public class SupplyItem
     {
+        public SupplyItem()
+        {
+
+        }
+
+        public SupplyItem(long id, long drugId, long supplyOrderId, int extraQuantity)
+        {
+            Id = id;
+            DrugId = drugId;
+            SupplyOrderId = supplyOrderId;
+            ExtraQuantity = extraQuantity;
+        }
+
         public long Id { get; set; }
 
         [ForeignKey("tbDrugAndQuantities")]
@@ -19,5 +32,7 @@ namespace Pharmacy.Models.Entities
 
 
         public int ExtraQuantity { get; set; }
+
+        
     }
 }

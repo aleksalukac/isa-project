@@ -140,6 +140,11 @@ namespace Pharmacy.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> CreatePharmacy(long? pharmacyId, int? score)
         {
+            if(pharmacyId==0 || score <0)
+            {
+                return BadRequest();
+            }
+
             if (pharmacyId != null && score != null)
             {
                 //new rating
