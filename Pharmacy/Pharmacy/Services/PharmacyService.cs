@@ -163,5 +163,10 @@ namespace Pharmacy.Services
             }
             return listUser;
         }
+
+        public async Task<List<Pharmacy.Models.Entities.Pharmacy>> GetAll()
+        {
+            return await _context.tbPharmacys.ToListAsync();
+        }
     }
 }
