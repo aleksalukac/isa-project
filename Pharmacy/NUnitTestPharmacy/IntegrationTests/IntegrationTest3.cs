@@ -72,6 +72,12 @@ namespace NUnitTestPharmacy.IntegrationTests
                 webDriver.FindElement(By.Id("submit_login")).Click();
                 Thread.Sleep(5000);
 
+                wait.Until(ExpectedConditions.ElementToBeClickable(By.Id("dropdownMenuButton")));
+                webElement = webDriver.FindElement(By.Id("dropdownMenuButton"));
+                webElement.Click();
+                Thread.Sleep(1000);
+                
+
                 wait.Until(ExpectedConditions.ElementToBeClickable(By.Id("logout_test")));
                 webElement = webDriver.FindElement(By.Id("logout_test"));
                 webElement.Click();
@@ -81,8 +87,8 @@ namespace NUnitTestPharmacy.IntegrationTests
                 webElement = webDriver.FindElement(By.Id("logout_test2"));
                 webElement.Click();
 
-                var element = webDriver.FindElement(By.Id("username_input")).Displayed;
-                if (element)
+                var element = webDriver.FindElement(By.Id("dropdownMenuButton")).Displayed;
+                if (!element)
                 {
                     result = true;
                 }
