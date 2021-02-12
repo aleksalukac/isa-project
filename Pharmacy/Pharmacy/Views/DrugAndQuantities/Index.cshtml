@@ -8,7 +8,7 @@
 <h1>Index</h1>
 
 <p>
-    <a asp-action="Create">Create New</a>
+    <a asp-action="Create" id="crid">Create New</a>
 </p>
 <table class="table">
     <thead>
@@ -26,30 +26,31 @@
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @foreach (Pharmacy.Models.Entities.Pharmacy itemPharmacy in (List<Pharmacy.Models.Entities.Pharmacy>)@ViewData["PharmacyList"])
-                {
-                    @if (item.PharmacyId == itemPharmacy.Id)
+        @for (int i = 0; i < Model.ToList().Count(); i++) 
+        { 
+            <tr>
+                <td>
+                    @foreach (Pharmacy.Models.Entities.Pharmacy itemPharmacy in (List<Pharmacy.Models.Entities.Pharmacy>)@ViewData["PharmacyList"])
                     {
-                        <label value=@itemPharmacy.Id class="option">@itemPharmacy.Name</label>
+                        @if (Model.ToList()[i].PharmacyId == itemPharmacy.Id)
+                        {
+                            <label value=@itemPharmacy.Id class="option">@itemPharmacy.Name</label>
+                        }
                     }
-                }
 
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Quantity)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Price)
-            </td>
-            <td>
-                <a id="Edit @item.Id" asp-action="Edit" asp-route-id="@item.Id" >Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-            </td>
-        </tr>
-}
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => Model.ToList()[i].Quantity)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => Model.ToList()[i].Price)
+                </td>
+                <td>
+                    <a id=@string.Concat("Edit",i) asp-action="Edit" asp-route-id="@Model.ToList()[i].Id">Edit</a> |
+                    <a id=@string.Concat("Det",i) asp-action="Details" asp-route-id="@Model.ToList()[i].Id">Details</a> |
+                    <a asp-action="Delete" asp-route-id="@Model.ToList()[i].Id">Delete</a>
+                </td>
+            </tr>
+        }
     </tbody>
 </table>

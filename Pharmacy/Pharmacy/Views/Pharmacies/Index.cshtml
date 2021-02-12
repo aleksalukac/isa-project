@@ -62,20 +62,20 @@
         </tr>
     </thead>
     <tbody>
-        @foreach (var item in Model)
+        @for (int i = 0; i < Model.ToList().Count(); i++)
         {
             <tr>
                 <td>
-                    @item.Address
+                    @Model.ToList()[i].Address
                 </td>
                 <td>
-                    @item.Name
+                    @Model.ToList()[i].Name
                 </td>
                 <td>
-                    @item.AverageScore
+                    @Model.ToList()[i].AverageScore
                 </td>
                 <td>
-                    <a asp-action="Details" asp-route-id="@item.Id">Details</a>
+                    <a id=@string.Concat("pharmdet",i)  asp-action="Details" asp-route-id="@Model.ToList()[i].Id">Details</a>
                 </td>
             </tr>
         }
