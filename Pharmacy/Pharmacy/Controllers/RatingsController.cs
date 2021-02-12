@@ -81,18 +81,26 @@ namespace Pharmacy.Controllers
         {
             if(employeeId != null && score != null)
             {
-                //new rating
                 Rating rating = new Rating();
-                rating.Employee = await _context.AppUsers.FindAsync(employeeId);
-                rating.Score = (int)score;
-                rating.User = await _userManager.GetUserAsync(User);
-                _context.Add(rating);
-                await _context.SaveChangesAsync();
+                try
+                {
+                    //new rating
+                    rating.Employee = await _context.AppUsers.FindAsync(employeeId);
+                    rating.Score = (int)score;
+                    rating.User = await _userManager.GetUserAsync(User);
+                    _context.Add(rating);
+                    await _context.SaveChangesAsync();
 
-                //modify employee
-                rating.Employee.AverageScore = _context.Rating.Where(m => m.Employee.Id == rating.Employee.Id).Select(m => (float)m.Score).Average();
-                _context.Update(rating.Employee);
-                await _context.SaveChangesAsync();
+                    //modify employee
+                    rating.Employee.AverageScore = _context.Rating.Where(m => m.Employee.Id == rating.Employee.Id).Select(m => (float)m.Score).Average();
+                    _context.Update(rating.Employee);
+                    await _context.SaveChangesAsync();
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    _context.Remove(rating);
+                    return View("ConcurrencyError", "Home");
+                }
 
                 return RedirectToAction(nameof(Index));
             }
@@ -147,18 +155,27 @@ namespace Pharmacy.Controllers
 
             if (pharmacyId != null && score != null)
             {
-                //new rating
                 Rating rating = new Rating();
-                rating.Pharmacy = await _context.tbPharmacys.FindAsync(pharmacyId);
-                rating.Score = (int)score;
-                rating.User = await _userManager.GetUserAsync(User);
-                _context.Add(rating);
-                await _context.SaveChangesAsync();
+                try
+                {
+                    //new rating
+                    rating.Pharmacy = await _context.tbPharmacys.FindAsync(pharmacyId);
+                    rating.Score = (int)score;
+                    rating.User = await _userManager.GetUserAsync(User);
+                    _context.Add(rating);
+                    await _context.SaveChangesAsync();
 
-                //modify employee
-                rating.Pharmacy.AverageScore = _context.Rating.Where(m => m.Pharmacy.Id == rating.Pharmacy.Id).Select(m => (float)m.Score).Average();
-                _context.Update(rating);
-                await _context.SaveChangesAsync();
+                    //modify employee
+                    rating.Pharmacy.AverageScore = _context.Rating.Where(m => m.Pharmacy.Id == rating.Pharmacy.Id).Select(m => (float)m.Score).Average();
+                    _context.Update(rating);
+                    await _context.SaveChangesAsync();
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    _context.Remove(rating);
+                    return View("ConcurrencyError", "Home");
+                }
+
 
                 return RedirectToAction(nameof(Index));
             }
