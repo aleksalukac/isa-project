@@ -58,7 +58,10 @@
                 </td>
                 <td>
                     <a asp-action="Details" asp-route-id="@item.AppointmentId">Details</a>
-                    <a asp-action="Unchedule" asp-route-id="@item.AppointmentId">Unchedule</a>
+                    @if (DateTime.Compare(item.StartDateTime, DateTime.Now + TimeSpan.FromDays(1)) > 0)
+                    {
+                        <a asp-action="Unchedule" asp-route-id="@item.AppointmentId">Unchedule</a>
+                    }
                 </td>
             </tr>
         }
