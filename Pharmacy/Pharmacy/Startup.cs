@@ -50,15 +50,12 @@ namespace Pharmacy
 
             services.AddAuthorization(options =>
             {
-                using (var reader = new StreamReader(@"Data/UserRoles.csv"))
-                {
-                    List<string> RoleNames = reader.ReadLine().Split(';').ToList();
+                List<string> RoleNames = "PharmacyAdmin;Admin;Supplier;User;Dermatologist;Pharmacist".Split(';').ToList();
 
-                    foreach (var RoleName in RoleNames)
-                    {
-                        options.AddPolicy(RoleName + "Policy",
-                        policy => policy.RequireRole(RoleName));
-                    }
+                foreach (var RoleName in RoleNames)
+                {
+                    options.AddPolicy(RoleName + "Policy",
+                    policy => policy.RequireRole(RoleName));
                 }
             });
 
