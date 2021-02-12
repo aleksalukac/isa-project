@@ -6,44 +6,40 @@ using Pharmacy.Models.Entities.Users;
 using Pharmacy.Data;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
-using Pharmacy.Services;
+using System.Linq;
 
 namespace NUnitTestPharmacy.NUnitTests
 {
     public class UnitTest6
     {
 
-        public AbsenceRequestsController absencesController;
+        public SupplyItemsController supplyItemsController;
+        public DrugsController drugsController;
         private readonly UserManager<AppUser> _userManager;
         private readonly SignInManager<AppUser> _signInManager;
-        private  ApplicationDbContext _context;
-        public AbsenceRequest drug;
-        /*
+        private ApplicationDbContext _context;
+        public SupplyItem supply;
+
         [SetUp]
         public async Task SetUpAsync()
         {
             var dbOption = new DbContextOptionsBuilder<ApplicationDbContext>().UseSqlServer("Server=.\\SQLEXPRESS;data source=mssql11.orion.rs;initial catalog=isa;Password = UrosFic@Luk@c;Persist Security Info=True;User ID=aleksalukac;MultipleActiveResultSets=True;App=EntityFramework&quot;").Options;
             _context = new ApplicationDbContext(dbOption);
-            absencesController = new AbsenceRequestsController(_context, _userManager, _signInManager, new UserService(_userManager) ,new AbsenceRequestService(_context), IEma, new PharmacyService());
-            /*
-              IAbsenceRequestService absenceRequestService,
-                IEmailSender emailSender, IPharmacyService pharmacyService/*
-            drug = new AbsenceRequest("Neso", DrugForm.BuccalFilm, "Nes", "Nes", true, "Nes");
-            drug.Id = await _context.tbDrugs.CountAsync() + 1;
-            var actionResult = drugsController.Create(drug);
+            supplyItemsController = new SupplyItemsController(_context);
+            supply = _context.SupplyItems.OrderByDescending(p => p.Id).FirstOrDefault();
+            var actionResult = supplyItemsController.Create(supply);
         }
 
         #region Unit Test
         [Test]
         public async Task InvalideDrugFormatValide()
-        {   
-            drugsController = new DrugsController(_context, _userManager);
-            drugsController.DeleteConfirmed(drug.Id);
-            var NullDrug = _context.tbDrugs.Find(drug.Id);
+        {
+            supplyItemsController = new SupplyItemsController(_context);
+            supplyItemsController.DeleteConfirmed(supply.Id + 1);
+            var NullDrug = _context.tbDrugs.Find(supply.Id+1);
             Assert.IsNull(NullDrug);
         }
         #endregion
-    */
 
 
     }

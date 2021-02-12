@@ -23,22 +23,24 @@ namespace NUnitTestPharmacy.NUnitTests
         {
             var dbOption = new DbContextOptionsBuilder<ApplicationDbContext>().UseSqlServer("Server=.\\SQLEXPRESS;data source=mssql11.orion.rs;initial catalog=isa;Password = UrosFic@Luk@c;Persist Security Info=True;User ID=aleksalukac;MultipleActiveResultSets=True;App=EntityFramework&quot;").Options;
             _context = new ApplicationDbContext(dbOption);
-            drugsController = new DrugsController(_context, _userManager);
+            supplyItemsController = new SupplyItemsController( _context);
         }
 
-        public Drug ValidateDrugEnter(long drugId)
+        public SupplyItem ValidateDrugEnter(long drugId)
         {
-            return _context.tbDrugs.Find(drugId);
+            return _context.SupplyItems.Find(drugId);
         }
 
         #region Unit Test
         [Test]
         public async Task InvalideDrugFormatValide()
         {
-            Drug drug = new Drug("Neso", DrugForm.BuccalFilm, "Nes", "Nes", true, "Nes");
-            var actionResult = await drugsController.Edit(drug.Id, drug);
-            var drugInDb = ValidateDrugEnter(drug.Id);
-            Assert.AreEqual(drug, drugInDb);
+            SupplyItem supply = await _context.SupplyItems.FirstOrDefaultAsync();
+            long supplyBeforeEdit = supply.ExtraQuantity;
+            supply.ExtraQuantity = supply.ExtraQuantity + 1;
+            var actionResult = await supplyItemsController.Edit(supply.Id, supply);
+            var drugInDb = ValidateDrugEnter(supply.Id);
+            Assert.AreNotEqual(supplyBeforeEdit, drugInDb.ExtraQuantity);
         }
         #endregion
 
