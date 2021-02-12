@@ -372,7 +372,7 @@ namespace Pharmacy.Controllers
                 }
                 else
                 {
-                    _appointmentService.Create(appointment);
+                    await _appointmentService.Create(appointment);
                 }
             }
             catch(DbUpdateConcurrencyException)
