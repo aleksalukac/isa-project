@@ -27,13 +27,13 @@ namespace NUnitTestPharmacy.NUnitTests
             var dbOption = new DbContextOptionsBuilder<ApplicationDbContext>().UseSqlServer("Server=.\\SQLEXPRESS;data source=mssql11.orion.rs;initial catalog=isa;Password = UrosFic@Luk@c;Persist Security Info=True;User ID=aleksalukac;MultipleActiveResultSets=True;App=EntityFramework&quot;").Options;
             _context = new ApplicationDbContext(dbOption);
             ordersController = new OrdersController(_userManager, _context, new OrderService(_context), null, null);
-            Order supplyOld = _context.tbOrders.OrderByDescending(p => p.Id).FirstOrDefault();
-            toDeleteId = supplyOld.Id + 1;
 
             absence = new Order();
 
             _ = await _context.AddAsync(absence);
             await _context.SaveChangesAsync();
+
+            toDeleteId = _context.tbOrders.OrderByDescending(p => p.Id).FirstOrDefault().Id;
         }
 
         #region Unit Test
