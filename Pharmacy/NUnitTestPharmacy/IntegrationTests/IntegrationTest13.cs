@@ -23,7 +23,7 @@ using System.Reflection;
 
 namespace NUnitTestPharmacy.IntegrationTests
 {
-    class IntegrationTest15
+    class IntegrationTest13
     {
         public SupplyOrdersController supplyOrdersController;
         public DrugsController drugsController;
@@ -68,44 +68,32 @@ namespace NUnitTestPharmacy.IntegrationTests
 
                 webDriver.FindElement(By.Id("submit_login")).Click();
 
-                webDriver.FindElement(By.Id("dropdownMenuButtonComplaint")).Click();
-
-                wait.Until(ExpectedConditions.ElementExists(By.Id("Complaint_Pharmacy")));
-                webElement = webDriver.FindElement(By.Id("Complaint_Pharmacy"));
+                wait.Until(ExpectedConditions.ElementExists(By.Id("pharmId")));
+                webElement = webDriver.FindElement(By.Id("pharmId"));
                 webElement.Click();
 
-                //wait.Until(ExpectedConditions.ElementExists(By.Id("Edit0")));
-                //webElement = webDriver.FindElement(By.Id("Edit0"));
-                //webElement.Click();
+                wait.Until(ExpectedConditions.ElementExists(By.Id("pharmdet0")));
+                webElement = webDriver.FindElement(By.Id("pharmdet0"));
+                webElement.Click();
 
-                wait.Until(ExpectedConditions.ElementToBeClickable(By.Id("reportText")));
-                webElement = webDriver.FindElement(By.Id("reportText"));
-                webElement.Clear();
-                webDriver.FindElement(By.Id("reportText")).SendKeys("This is good place");
+                wait.Until(ExpectedConditions.ElementExists(By.Name("GoogleMap")));
+                webElement = webDriver.FindElement(By.Name("GoogleMap"));
 
-                webDriver.FindElement(By.Id("sbm")).Click();
+                return true;
 
-                wait.Until(ExpectedConditions.ElementToBeClickable(By.Id("confirm")));
-                var element = webDriver.FindElement(By.Id("confirm")).Text;
-
-                if (element == "Successfully Completed Complaint")
-                {
-                    result = true;
-                }
-
-                return result;
             }
             catch (Exception ex)
             {
                 Console.WriteLine(ex.Source + " - " + ex.Message + " - " + ex.StackTrace);
                 return result;
             }
+            return result;
         }
 
         [Test]
         public async Task LoginOutTest_Valid()
         {
-            LoginDTO loginDTO = new LoginDTO("kolate6286@wirese.com", "Admin.123");
+            LoginDTO loginDTO = new LoginDTO("hafik45066@hrandod.com", "Admin.123");
             var results = LogInEmployee(_webDriver, _wait, loginDTO);
             Assert.IsTrue(results);
         }

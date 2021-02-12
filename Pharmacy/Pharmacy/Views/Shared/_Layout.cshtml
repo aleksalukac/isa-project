@@ -109,10 +109,10 @@
                                     <a class="nav-link text-dark" asp-area="" asp-controller="Appointments" asp-action="Index">Appointments</a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link text-dark" asp-area="" asp-controller="Pharmacy" asp-action="Index">Pharmacy</a>
+                                    <a id="pharmId" class="nav-link text-dark" asp-area="" asp-controller="Pharmacies" asp-action="Index">Pharmacy</a> 
                                 </li>
                                 <li>
-                                    <a class="nav-link text-dark" asp-area="" asp-controller="ColumnChart" asp-action="Index">Statistic</a>
+                                    <a id="chartId" class="nav-link text-dark" asp-area="" asp-controller="ColumnChart" asp-action="Index">Statistic</a>
                                 </li>
                                 <li>
                                     <a class="nav-link text-dark" asp-area="" asp-controller="AbsenceRequests" asp-action="CheckingForApproveal">Abesnce Requiest</a>
@@ -128,10 +128,10 @@
                                     <a class="nav-link text-dark" asp-area="" asp-controller="SupplyOrders" asp-action="Index">Supply Orders</a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link text-dark" asp-area="" asp-controller="DrugAndQuantities" asp-action="Index">Storage Drugs</a>
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="DrugAndQuantities" asp-action="Index" id="daq">Storage Drugs</a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link text-dark" asp-area="" asp-controller="SupplyOffers" asp-action="Index">Supply Offers</a>
+                                    <a id="deof" class="nav-link text-dark" asp-area="" asp-controller="SupplyOffers" asp-action="Index" >Supply Offers</a>
                                 </li>
                             }
                             else if ((await AuthorizationService.AuthorizeAsync(User, null, "UserPolicy")).Succeeded)
