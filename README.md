@@ -6,4 +6,14 @@
 # Requirements
 1. Visual Studio 2019
 2. ASP.NET Core 5
-3. Web Driver Chrome for testing, other packages will be installed when running
+3. Nugget packages and Web Driver Chrome for testing included
+
+Technologies used:
+*ASP.NET Core 5 & Razor pages 
+*Nugget packages for developing
+*Azure Web Service for deployment
+*Azure Pipeline for server integration
+*GitHub for version control
+*Resharper for code analysis
+
+We love Microsoft :)
