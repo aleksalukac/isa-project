@@ -11,6 +11,18 @@ namespace Pharmacy.Models.Entities
     [Table("tbRating")]
     public class Rating
     {
+        public Rating(long id,  Pharmacy pharmacy, int score)
+        {
+            Id = id;
+            Pharmacy = pharmacy;
+            Score = score;
+        }
+
+        public Rating()
+        {
+
+        }
+
         public long Id { get; set; }
         [Required]
         public AppUser User { get; set; }

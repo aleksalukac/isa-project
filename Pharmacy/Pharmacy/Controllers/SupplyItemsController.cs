@@ -145,8 +145,7 @@ namespace Pharmacy.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(long id)
         {
-            var supplyItem = await _context.SupplyItems.FindAsync(id);
-            _context.SupplyItems.Remove(supplyItem);
+            _context.SupplyItems.Remove(_context.SupplyItems.Find(id));
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
