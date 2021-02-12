@@ -19,11 +19,12 @@ using System.Threading;
 using OpenQA.Selenium.Chrome;
 using System.IO;
 using System.Reflection;
-
+using System.Collections.Generic;
+using System.Linq;
 
 namespace NUnitTestPharmacy.IntegrationTests
 {
-    class IntegrationTest15
+    class IntegrationTest10
     {
         public SupplyOrdersController supplyOrdersController;
         public DrugsController drugsController;
@@ -68,44 +69,36 @@ namespace NUnitTestPharmacy.IntegrationTests
 
                 webDriver.FindElement(By.Id("submit_login")).Click();
 
-                webDriver.FindElement(By.Id("dropdownMenuButtonComplaint")).Click();
-
-                wait.Until(ExpectedConditions.ElementExists(By.Id("Complaint_Pharmacy")));
-                webElement = webDriver.FindElement(By.Id("Complaint_Pharmacy"));
+                wait.Until(ExpectedConditions.ElementExists(By.Id("daq")));
+                webElement = webDriver.FindElement(By.Id("daq"));
                 webElement.Click();
 
-                //wait.Until(ExpectedConditions.ElementExists(By.Id("Edit0")));
-                //webElement = webDriver.FindElement(By.Id("Edit0"));
-                //webElement.Click();
+                wait.Until(ExpectedConditions.ElementExists(By.Id("Det0")));
+                webElement = webDriver.FindElement(By.Id("Det0"));
+                webElement.Click();
 
-                wait.Until(ExpectedConditions.ElementToBeClickable(By.Id("reportText")));
-                webElement = webDriver.FindElement(By.Id("reportText"));
-                webElement.Clear();
-                webDriver.FindElement(By.Id("reportText")).SendKeys("This is good place");
+                wait.Until(ExpectedConditions.ElementExists(By.Id("daqdet")));
+                webElement = webDriver.FindElement(By.Id("daqdet"));
 
-                webDriver.FindElement(By.Id("sbm")).Click();
-
-                wait.Until(ExpectedConditions.ElementToBeClickable(By.Id("confirm")));
-                var element = webDriver.FindElement(By.Id("confirm")).Text;
-
-                if (element == "Successfully Completed Complaint")
+                if (webElement == null)
                 {
-                    result = true;
+                    return false;
                 }
+                return true;
 
-                return result;
             }
             catch (Exception ex)
             {
                 Console.WriteLine(ex.Source + " - " + ex.Message + " - " + ex.StackTrace);
                 return result;
             }
+            return result;
         }
 
         [Test]
         public async Task LoginOutTest_Valid()
         {
-            LoginDTO loginDTO = new LoginDTO("kolate6286@wirese.com", "Admin.123");
+            LoginDTO loginDTO = new LoginDTO("hafik45066@hrandod.com", "Admin.123");
             var results = LogInEmployee(_webDriver, _wait, loginDTO);
             Assert.IsTrue(results);
         }

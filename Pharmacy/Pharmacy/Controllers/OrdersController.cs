@@ -86,12 +86,6 @@ namespace Pharmacy.Controllers
             {
                 return Redirect("Home");
             }
-            /*var drugsQuantList = await (from drug in _context.tbDrugs
-                                join drugsQuant in _context.DrugAndQuantity on drug equals drugsQuant.Drug
-                                where drugsQuant.Drug.Id == drugId && drugsQuant.Quantity > 0
-                                select drugsQuant.PharmacyId).ToListAsync();
-           
-            Drug drugInstance = await _context.tbDrugs.FindAsync(drugId);*/
             var drugQuantity = await _context.DrugAndQuantity
                 .Include(drugQuant => drugQuant.Drug)
                 .FirstOrDefaultAsync(m => m.Id == drugQuantId);
@@ -187,13 +181,39 @@ namespace Pharmacy.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(long? drugQuantId, double? cost, long? pharmacy, DateTime? time)
         {
-            var drugsQuantEl = await _context.DrugAndQuantity.FindAsync(drugQuantId);
-            //change drugs and quant
-            drugsQuantEl.Quantity -= 1;
-            _context.Update(drugsQuantEl);
-            await _context.SaveChangesAsync();
-
             AppUser currentUser = await _userManager.GetUserAsync(User);
+            if(currentUser.Penalty > 2)
+            {
+                return NotFound();
+            }
+
+            //change drugs and quant
+            var drugsQuantEl = await _context.DrugAndQuantity.FindAsync(drugQuantId);
+            drugsQuantEl.Quantity -= 1;
+            if (drugsQuantEl.Quantity >= 0)
+            {
+                try
+                {
+                    _context.Update(drugsQuantEl);
+                    _context.SaveChanges();
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    if ((await _context.DrugAndQuantity.FindAsync(drugQuantId)) == null)
+                    {
+                        return NotFound();
+                    }
+                    else
+                    {
+                        return View("ConcurrencyError", "Home");
+                    }
+                }
+            }
+            else
+            {
+                return NotFound();
+            }
+
 
             //make a new order
             var order = new Order();

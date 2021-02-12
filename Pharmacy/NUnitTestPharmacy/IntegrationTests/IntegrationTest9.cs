@@ -23,7 +23,7 @@ using System.Reflection;
 
 namespace NUnitTestPharmacy.IntegrationTests
 {
-    class IntegrationTest15
+    class IntegrationTest9
     {
         public SupplyOrdersController supplyOrdersController;
         public DrugsController drugsController;
@@ -55,7 +55,7 @@ namespace NUnitTestPharmacy.IntegrationTests
                 IWebElement webElement;
 
                 // Username
-                wait.Until(ExpectedConditions.ElementIsVisible (By.Id("username_input")));
+                wait.Until(ExpectedConditions.ElementIsVisible(By.Id("username_input")));
                 webElement = webDriver.FindElement(By.Id("username_input"));
                 webElement.Clear();
                 webDriver.FindElement(By.Id("username_input")).SendKeys(loginDTO.username);
@@ -68,27 +68,19 @@ namespace NUnitTestPharmacy.IntegrationTests
 
                 webDriver.FindElement(By.Id("submit_login")).Click();
 
-                webDriver.FindElement(By.Id("dropdownMenuButtonComplaint")).Click();
-
-                wait.Until(ExpectedConditions.ElementExists(By.Id("Complaint_Pharmacy")));
-                webElement = webDriver.FindElement(By.Id("Complaint_Pharmacy"));
+                wait.Until(ExpectedConditions.ElementExists(By.Id("deof")));
+                webElement = webDriver.FindElement(By.Id("deof"));
                 webElement.Click();
 
-                //wait.Until(ExpectedConditions.ElementExists(By.Id("Edit0")));
-                //webElement = webDriver.FindElement(By.Id("Edit0"));
-                //webElement.Click();
+                wait.Until(ExpectedConditions.ElementExists(By.Id("detailoffer0")));
+                webElement = webDriver.FindElement(By.Id("detailoffer0"));
+                webElement.Click();
 
-                wait.Until(ExpectedConditions.ElementToBeClickable(By.Id("reportText")));
-                webElement = webDriver.FindElement(By.Id("reportText"));
-                webElement.Clear();
-                webDriver.FindElement(By.Id("reportText")).SendKeys("This is good place");
 
-                webDriver.FindElement(By.Id("sbm")).Click();
+                wait.Until(ExpectedConditions.ElementToBeClickable(By.Id("ofdetail")));
+                var element = webDriver.FindElement(By.Id("ofdetail")).Displayed;
 
-                wait.Until(ExpectedConditions.ElementToBeClickable(By.Id("confirm")));
-                var element = webDriver.FindElement(By.Id("confirm")).Text;
-
-                if (element == "Successfully Completed Complaint")
+                if (element)
                 {
                     result = true;
                 }
@@ -100,12 +92,13 @@ namespace NUnitTestPharmacy.IntegrationTests
                 Console.WriteLine(ex.Source + " - " + ex.Message + " - " + ex.StackTrace);
                 return result;
             }
+            return result;
         }
 
         [Test]
         public async Task LoginOutTest_Valid()
         {
-            LoginDTO loginDTO = new LoginDTO("kolate6286@wirese.com", "Admin.123");
+            LoginDTO loginDTO = new LoginDTO("hafik45066@hrandod.com", "Admin.123");
             var results = LogInEmployee(_webDriver, _wait, loginDTO);
             Assert.IsTrue(results);
         }

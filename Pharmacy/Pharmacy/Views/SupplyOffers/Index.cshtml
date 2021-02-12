@@ -20,18 +20,19 @@
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Offer)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a> |
-                <a asp-action="AcceptAsync" asp-route-id="@item.Id">Accept</a> 
-            </td>
-        </tr>
-}
+        @for (int i = 0; i < Model.Count(); i++)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => Model.ToList()[i].Offer)
+                </td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@Model.ToList()[i].Id">Edit</a> |
+                    <a id=@string.Concat("detailoffer",i) asp-action="Details" asp-route-id="@Model.ToList()[i].Id">Details</a> |
+                    <a id=@string.Concat("deleteoffer",i) asp-action="Delete" asp-route-id="@Model.ToList()[i].Id">Delete</a> |
+                    <a asp-action="AcceptAsync" asp-route-id="@Model.ToList()[i].Id">Accept</a>
+                </td>
+            </tr>
+        }
     </tbody>
 </table>

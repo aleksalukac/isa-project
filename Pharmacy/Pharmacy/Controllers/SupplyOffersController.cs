@@ -194,8 +194,16 @@ namespace Pharmacy.Controllers
                             if (allSupplyItems[j].DrugId == drugsAndQ[k].Drug.Id)
                             {
                                 drugsAndQ[k].Quantity += (uint)allSupplyItems[j].ExtraQuantity;
-                                _ = await _context.AddAsync(drugsAndQ[k]);
-                                _ = await _context.SaveChangesAsync();
+
+                                try
+                                {
+                                    _ = await _context.AddAsync(drugsAndQ[k]);
+                                    _ = await _context.SaveChangesAsync();
+                                }
+                                catch (DbUpdateConcurrencyException)
+                                {
+                                    return NotFound();
+                                }
                                 break;
                             }
                         }

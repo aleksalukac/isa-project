@@ -23,7 +23,7 @@ using System.Reflection;
 
 namespace NUnitTestPharmacy.IntegrationTests
 {
-    class IntegrationTest15
+    class IntegrationTest4
     {
         public SupplyOrdersController supplyOrdersController;
         public DrugsController drugsController;
@@ -68,27 +68,25 @@ namespace NUnitTestPharmacy.IntegrationTests
 
                 webDriver.FindElement(By.Id("submit_login")).Click();
 
-                webDriver.FindElement(By.Id("dropdownMenuButtonComplaint")).Click();
-
-                wait.Until(ExpectedConditions.ElementExists(By.Id("Complaint_Pharmacy")));
-                webElement = webDriver.FindElement(By.Id("Complaint_Pharmacy"));
+                wait.Until(ExpectedConditions.ElementExists(By.Id("daq")));
+                webElement = webDriver.FindElement(By.Id("daq"));
                 webElement.Click();
 
-                //wait.Until(ExpectedConditions.ElementExists(By.Id("Edit0")));
-                //webElement = webDriver.FindElement(By.Id("Edit0"));
-                //webElement.Click();
+                wait.Until(ExpectedConditions.ElementExists(By.Id("Edit0")));
+                webElement = webDriver.FindElement(By.Id("Edit0"));
+                webElement.Click();
 
-                wait.Until(ExpectedConditions.ElementToBeClickable(By.Id("reportText")));
-                webElement = webDriver.FindElement(By.Id("reportText"));
+                wait.Until(ExpectedConditions.ElementToBeClickable(By.Id("Price")));
+                webElement = webDriver.FindElement(By.Id("Price"));
                 webElement.Clear();
-                webDriver.FindElement(By.Id("reportText")).SendKeys("This is good place");
+                webDriver.FindElement(By.Id("Price")).SendKeys("666");
 
-                webDriver.FindElement(By.Id("sbm")).Click();
+                webDriver.FindElement(By.Id("submited")).Click();
 
-                wait.Until(ExpectedConditions.ElementToBeClickable(By.Id("confirm")));
-                var element = webDriver.FindElement(By.Id("confirm")).Text;
+                wait.Until(ExpectedConditions.ElementToBeClickable(By.Id("Edit0")));
+                var element = webDriver.FindElement(By.Id("Edit0")).Displayed;
 
-                if (element == "Successfully Completed Complaint")
+                if (element)
                 {
                     result = true;
                 }
@@ -100,12 +98,13 @@ namespace NUnitTestPharmacy.IntegrationTests
                 Console.WriteLine(ex.Source + " - " + ex.Message + " - " + ex.StackTrace);
                 return result;
             }
+            return result;
         }
 
         [Test]
         public async Task LoginOutTest_Valid()
         {
-            LoginDTO loginDTO = new LoginDTO("kolate6286@wirese.com", "Admin.123");
+            LoginDTO loginDTO = new LoginDTO("hafik45066@hrandod.com", "Admin.123");
             var results = LogInEmployee(_webDriver, _wait, loginDTO);
             Assert.IsTrue(results);
         }
