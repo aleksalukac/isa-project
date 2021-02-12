@@ -68,14 +68,15 @@ namespace NUnitTestPharmacy.IntegrationTests
                 webElement.Clear();
                 webDriver.FindElement(By.Id("password_input")).SendKeys(loginDTO.password);
 
-                Thread.Sleep(1000);
                 webDriver.FindElement(By.Id("submit_login")).Click();
-                Thread.Sleep(3000);
 
-                wait.Until(ExpectedConditions.ElementIsVisible(By.Id("dropdownMenuButton2")));
-                webElement = webDriver.FindElement(By.Id("dropdownMenuButton2"));
+
+                wait.Until(ExpectedConditions.ElementExists(By.Id("discort_elementMeni")));
+                webElement = webDriver.FindElement(By.Id("discort_elementMeni"));
                 webElement.Click();
-                Thread.Sleep(1000);
+
+
+                wait.Until(ExpectedConditions.ElementIsVisible(By.XPath("//span[contains(text(),'" + "Edit" + "')]")));
 
                 var element = webDriver.FindElement(By.Id("logout_test")).Displayed;
                 if (element)
@@ -118,7 +119,7 @@ namespace NUnitTestPharmacy.IntegrationTests
         [Test]
         public async Task LoginOutTest_Valid()
         {
-            LoginDTO loginDTO = new LoginDTO("kolate6286@wirese.com", "Admin.123");
+            LoginDTO loginDTO = new LoginDTO("hafik45066@hrandod.com", "Admin.123");
             var results = LogInEmployee(_webDriver, _wait, loginDTO);
             Assert.IsTrue(results);
         }
