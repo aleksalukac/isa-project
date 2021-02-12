@@ -142,7 +142,6 @@ namespace Pharmacy.Controllers
                 try
                 {
                     _context.Update(saleItems);
-                    await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
