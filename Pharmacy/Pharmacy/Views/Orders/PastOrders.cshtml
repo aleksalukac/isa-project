@@ -24,21 +24,25 @@
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Id)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Cost)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.TimeOfTransaction)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.TransactionComplete)
-            </td>
-        </tr>
-}
+        @for (int i = 0; i < Model.Count(); i++)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => Model.ToList()[i].Id)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => Model.ToList()[i].Cost)
+                </td>
+                <td id=@string.Concat("TransactionTime",i)>
+                    @Html.DisplayFor(modelItem => Model.ToList()[i].TimeOfTransaction)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => Model.ToList()[i].TransactionComplete)
+                </td>
+                <td>
+                    <a id=@string.Concat("Details",i) asp-action="Details" asp-route-id="@Model.ToList()[i].Id">Details</a>
+                </td>
+            </tr>
+        }
     </tbody>
 </table>

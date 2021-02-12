@@ -23,7 +23,7 @@ using System.Reflection;
 
 namespace NUnitTestPharmacy.IntegrationTests
 {
-    class IntegrationTest4
+    class IntegrationTest8
     {
         public SupplyOrdersController supplyOrdersController;
         public DrugsController drugsController;
@@ -68,27 +68,23 @@ namespace NUnitTestPharmacy.IntegrationTests
 
                 webDriver.FindElement(By.Id("submit_login")).Click();
 
-                webDriver.FindElement(By.Id("dropdownMenuButtonComplaint")).Click();
+                wait.Until(ExpectedConditions.ElementExists(By.Id("dropdownMenuButtonRate")));
+                webDriver.FindElement(By.Id("dropdownMenuButtonRate")).Click();
 
-                wait.Until(ExpectedConditions.ElementExists(By.Id("Complaint_Pharmacy")));
-                webElement = webDriver.FindElement(By.Id("Complaint_Pharmacy"));
+                wait.Until(ExpectedConditions.ElementExists(By.Id("AllRatings")));
+                webElement = webDriver.FindElement(By.Id("AllRatings"));
                 webElement.Click();
 
-                //wait.Until(ExpectedConditions.ElementExists(By.Id("Edit0")));
-                //webElement = webDriver.FindElement(By.Id("Edit0"));
-                //webElement.Click();
+                wait.Until(ExpectedConditions.ElementExists(By.Id("Score0")));
+                var score = webDriver.FindElement(By.Id("Score0")).Text;
 
-                wait.Until(ExpectedConditions.ElementToBeClickable(By.Id("reportText")));
-                webElement = webDriver.FindElement(By.Id("reportText"));
-                webElement.Clear();
-                webDriver.FindElement(By.Id("reportText")).SendKeys("This is good place");
+                wait.Until(ExpectedConditions.ElementExists(By.Id("Details0")));
+                webElement = webDriver.FindElement(By.Id("Details0"));
+                webElement.Click();
 
-                webDriver.FindElement(By.Id("sbm")).Click();
+                var element = webDriver.FindElement(By.Id("Score")).Text;
 
-                wait.Until(ExpectedConditions.ElementToBeClickable(By.Id("confirm")));
-                var element = webDriver.FindElement(By.Id("confirm")).Text;
-
-                if (element == "Successfully Completed Complaint")
+                if (element == score)
                 {
                     result = true;
                 }

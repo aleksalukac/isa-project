@@ -6,21 +6,25 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Tests\**" />
     <Compile Remove="Views\AppUsers\Admin\**" />
     <Compile Remove="Views\AppUsers\Dermatologist\**" />
     <Compile Remove="Views\AppUsers\Pharmacist\**" />
     <Compile Remove="Views\AppUsers\PharmacyAdmin\**" />
     <Compile Remove="Views\AppUsers\User\**" />
+    <Content Remove="Tests\**" />
     <Content Remove="Views\AppUsers\Admin\**" />
     <Content Remove="Views\AppUsers\Dermatologist\**" />
     <Content Remove="Views\AppUsers\Pharmacist\**" />
     <Content Remove="Views\AppUsers\PharmacyAdmin\**" />
     <Content Remove="Views\AppUsers\User\**" />
+    <EmbeddedResource Remove="Tests\**" />
     <EmbeddedResource Remove="Views\AppUsers\Admin\**" />
     <EmbeddedResource Remove="Views\AppUsers\Dermatologist\**" />
     <EmbeddedResource Remove="Views\AppUsers\Pharmacist\**" />
     <EmbeddedResource Remove="Views\AppUsers\PharmacyAdmin\**" />
     <EmbeddedResource Remove="Views\AppUsers\User\**" />
+    <None Remove="Tests\**" />
     <None Remove="Views\AppUsers\Admin\**" />
     <None Remove="Views\AppUsers\Dermatologist\**" />
     <None Remove="Views\AppUsers\Pharmacist\**" />
@@ -53,7 +57,6 @@
 
   <ItemGroup>
     <Folder Include="Data\Migrations\" />
-    <Folder Include="Tests\Unit\" />
   </ItemGroup>
 
   <ItemGroup>

@@ -23,7 +23,7 @@ using System.Reflection;
 
 namespace NUnitTestPharmacy.IntegrationTests
 {
-    class IntegrationTest4
+    class IntegrationTest5
     {
         public SupplyOrdersController supplyOrdersController;
         public DrugsController drugsController;
@@ -68,15 +68,12 @@ namespace NUnitTestPharmacy.IntegrationTests
 
                 webDriver.FindElement(By.Id("submit_login")).Click();
 
+                wait.Until(ExpectedConditions.ElementExists(By.Id("dropdownMenuButtonComplaint")));
                 webDriver.FindElement(By.Id("dropdownMenuButtonComplaint")).Click();
 
-                wait.Until(ExpectedConditions.ElementExists(By.Id("Complaint_Pharmacy")));
-                webElement = webDriver.FindElement(By.Id("Complaint_Pharmacy"));
+                wait.Until(ExpectedConditions.ElementExists(By.Id("Complaint_Staff")));
+                webElement = webDriver.FindElement(By.Id("Complaint_Staff"));
                 webElement.Click();
-
-                //wait.Until(ExpectedConditions.ElementExists(By.Id("Edit0")));
-                //webElement = webDriver.FindElement(By.Id("Edit0"));
-                //webElement.Click();
 
                 wait.Until(ExpectedConditions.ElementToBeClickable(By.Id("reportText")));
                 webElement = webDriver.FindElement(By.Id("reportText"));

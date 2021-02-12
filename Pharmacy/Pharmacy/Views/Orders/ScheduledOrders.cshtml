@@ -24,26 +24,25 @@
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
+@for (int i = 0; i < Model.Count(); i++){
         <tr>
             <td>
-                @Html.DisplayFor(modelItem => item.Id)
+                @Html.DisplayFor(modelItem => Model.ToList()[i].Id)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Cost)
+                @Html.DisplayFor(modelItem => Model.ToList()[i].Cost)
+            </td>
+            <td id=@string.Concat("TransactionTime",i)>
+                @Html.DisplayFor(modelItem => Model.ToList()[i].TimeOfTransaction)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.TimeOfTransaction)
+                @Html.DisplayFor(modelItem => Model.ToList()[i].TransactionComplete)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.TransactionComplete)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                @if (DateTime.Compare(item.TimeOfTransaction, DateTime.Now + TimeSpan.FromDays(1)) > 0)
+                <a id=@string.Concat("Details",i) asp-action="Details" asp-route-id="@Model.ToList()[i].Id">Details</a> |
+                @if (DateTime.Compare(Model.ToList()[i].TimeOfTransaction, DateTime.Now + TimeSpan.FromDays(1)) > 0)
                 { 
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                <a asp-action="Delete" asp-route-id="@Model.ToList()[i].Id">Delete</a>
                 }
             </td>
         </tr>

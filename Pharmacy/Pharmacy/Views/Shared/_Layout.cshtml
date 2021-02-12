@@ -140,17 +140,17 @@
                                     <a class="nav-link text-dark" asp-area="" asp-controller="Drugs" asp-action="Index">Drugs</a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link text-dark" asp-area="" asp-controller="Orders" asp-action="ScheduledOrders">Scheduled Orders</a>
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="Orders" asp-action="ScheduledOrders" id="ScheduledOrders">Scheduled Orders</a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link text-dark" asp-area="" asp-controller="Orders" asp-action="PastOrders">Past Orders</a>
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="Orders" asp-action="PastOrders" id="PastOrders">Past Orders</a>
                                 </li>
                                 <li class="dropdown">
-                                    <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButtonRate" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" >
                                         Ratings
                                     </button>
                                     <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                        <a class="nav-link text-dark" asp-area="" asp-controller="Ratings" asp-action="Index">All Ratings</a>
+                                        <a class="nav-link text-dark" asp-area="" asp-controller="Ratings" asp-action="Index" id="AllRatings">All Ratings</a>
                                         <a class="nav-link text-dark" asp-area="" asp-controller="Ratings" asp-action="CreatePharmacy">Rate Pharmacies</a>
                                         <a class="nav-link text-dark" asp-area="" asp-controller="Ratings" asp-action="CreateEmployee">Rate Staff</a>
                                         <a class="nav-link text-dark" asp-area="" asp-controller="Ratings" asp-action="CreateDrugs">Rate Drugs</a>
@@ -169,12 +169,12 @@
                                     </div>
                                 </li>
                                 <li class="dropdown">
-                                    <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButtonComplaint" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                         Complaints
                                     </button>
                                     <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                        <a class="nav-link text-dark" asp-area="" asp-controller="Complaints" asp-action="CreatePharmacy">Pharmacy</a>
-                                        <a class="nav-link text-dark" asp-area="" asp-controller="Complaints" asp-action="CreateStaff">Staff</a>
+                                        <a class="nav-link text-dark" asp-area="" asp-controller="Complaints" asp-action="CreatePharmacy"  id="Complaint_Pharmacy">Pharmacy</a>
+                                        <a class="nav-link text-dark" asp-area="" asp-controller="Complaints" asp-action="CreateStaff" id="Complaint_Staff">Staff</a>
                                     </div>
                                 </li>
                                 <li class="dropdown">
