@@ -27,18 +27,20 @@ namespace Pharmacy.Controllers
         private readonly IUserService _userService;
         private readonly IDrugService _drugService;
         private readonly IPharmacyService _pharmacyService;
+        private readonly IAbsenceRequestService _absenceRequestService;
         private readonly EmailSender _emailSender;
         private readonly UserManager<AppUser> _userManager;
 
         public AppointmentsController(ApplicationDbContext context, UserManager<AppUser> userManager, 
             IAppointmentService appointmentService, IUserService userService, IDrugService drugService,
-            IEmailSender emailSender, IPharmacyService pharmacyService)
+            IEmailSender emailSender, IPharmacyService pharmacyService, IAbsenceRequestService absenceRequestService)
         {
             _context = context;
             _appointmentService = appointmentService;
             _userManager = userManager;
             _userService = userService;
             _drugService = drugService;
+            _absenceRequestService = absenceRequestService;
             _pharmacyService = pharmacyService;
             using (StreamReader r = new StreamReader("./Areas/Identity/emailCredentials.json"))
             {
@@ -306,6 +308,14 @@ namespace Pharmacy.Controllers
             {
                 allAppointmentsTime.Add(new AppointmentTimeDTO(appointment.StartDateTime, appointment.Duration));
             }
+
+            List<AbsenceRequest> absenceRequests = await _absenceRequestService.GetByUser(user.Id);
+
+            foreach(var absenceRequest in absenceRequests)
+            {
+                allAppointmentsTime.Add(new AppointmentTimeDTO(absenceRequest.StartDateTime, absenceRequest.EndDateTime));
+            }
+
 
             ViewData["appointmentsTime"] = JsonConvert.SerializeObject(allAppointmentsTime);
             ViewData["startWorkingHours"] = user.WorkHoursStart.ToString() == "00:00:00" ? "08:00:00" : user.WorkHoursStart.ToString();

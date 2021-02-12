@@ -122,7 +122,7 @@ namespace Pharmacy.Services
                 }
             }
 
-            //Local - changes that are made and still waiting in the transaction (changes that are
+            // Local - changes that are made and still waiting in the transaction (changes that are
             // not in the database but soon will be)
             // Instead of passive concurrency, we will use locals and boost our optimistic concurrency
             // Passive concurrency is forbidden in Entity framework 
