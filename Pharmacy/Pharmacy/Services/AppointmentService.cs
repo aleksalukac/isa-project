@@ -82,7 +82,11 @@ namespace Pharmacy.Services
 
         public async Task<int> Update(Appointment appointment)
         {
-            _context.Update(appointment);
+            if (await IsPossibleTime(appointment))
+            {
+                _context.Update(appointment); 
+                await _context.SaveChangesAsync();
+            }
 
             return await _context.SaveChangesAsync();
         }
