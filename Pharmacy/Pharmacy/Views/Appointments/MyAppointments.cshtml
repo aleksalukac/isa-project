@@ -8,7 +8,7 @@
 <h1>Index</h1>
 
 <p>
-    <a asp-action="ScheduleAppointment">Create New</a>
+    <a asp-action="ScheduleAppointmentEmpty">Create New</a>
     <br />
     <a asp-action="Calendar"><img src="https://cdn4.iconfinder.com/data/icons/small-n-flat/24/calendar-512.png" width="50"/></a>
     <br />
@@ -70,4 +70,15 @@
             </tr>
         }
     </tbody>
+    TIPS: You can see all the appointments in which this MedicalExpert is involved. By clicking the Calendar image on the top, 
+    you will see the Calendar view of all appointments. 
+    By clicking Start appointment, all the appointments that are scheduled to happen in this moment will appear and you can either
+    start the appointment or mark that user did not show up. System is created in the way that only one appointment can appear here, since
+    Medical Expert cannot have two appointments in the same time.
+    After starting the appointment, you can write the report and select a drug to prescribe to the patient, along with the length of prescription 
+    (how long the user should take it). If the user is allergic to certain drugs, they will not appear.
+    If you select a drug which is not available in the current Pharmacy, Pharmacy Admin will be informed about the absence of the certain drug.
+    If user is not allergic to the substitute druge and if it is available in the pharmacy, user will automatically be given the substitute drug and
+    you will be informed about this.
+    After finishing the appointment, you will be offered to schedule another appointment for this user.
 </table>

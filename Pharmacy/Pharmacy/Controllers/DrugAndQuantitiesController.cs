@@ -9,6 +9,7 @@ using Microsoft.EntityFrameworkCore;
 using Pharmacy.Data;
 using Pharmacy.Models.Entities;
 using Pharmacy.Models.Entities.Users;
+using Pharmacy.Services;
 
 namespace Pharmacy.Controllers
 {
@@ -16,10 +17,13 @@ namespace Pharmacy.Controllers
     {
         private readonly ApplicationDbContext _context;
         private readonly UserManager<AppUser> _userManager;
+        private readonly IDrugAndQuantitiesService _drugAndQuantitiesService;
 
-        public DrugAndQuantitiesController(ApplicationDbContext context, UserManager<AppUser> userManager)
+        public DrugAndQuantitiesController(ApplicationDbContext context, UserManager<AppUser> userManager,
+            IDrugAndQuantitiesService drugAndQuantitiesService)
         {
             _context = context;
+            _drugAndQuantitiesService = drugAndQuantitiesService;
             _userManager = userManager;
         }
 
@@ -154,9 +158,15 @@ namespace Pharmacy.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(long id)
         {
-            var drugAndQuantities = await _context.DrugAndQuantity.FindAsync(id);
-            _context.DrugAndQuantity.Remove(drugAndQuantities);
-            await _context.SaveChangesAsync();
+            try
+            {
+                await _drugAndQuantitiesService.Remove(await _drugAndQuantitiesService.GetById(id));
+            }
+            catch(Exception e)
+            {
+                return View("Home", "Error");
+            }
+
             return RedirectToAction(nameof(Index));
         }
 

@@ -22,6 +22,10 @@ namespace Pharmacy.Services
         public async Task<string> GetAdmin(long pharmacyId)
         {
             Pharmacy.Models.Entities.Pharmacy pharmacy = await _context.tbPharmacys.FindAsync(pharmacyId);
+            if(pharmacy == null)
+            {
+                return null;
+            }
             return pharmacy.AdminUserID;
         }
 
@@ -162,6 +166,11 @@ namespace Pharmacy.Services
                 }
             }
             return listUser;
+        }
+
+        public async Task<List<Pharmacy.Models.Entities.Pharmacy>> GetAll()
+        {
+            return await _context.tbPharmacys.ToListAsync();
         }
     }
 }

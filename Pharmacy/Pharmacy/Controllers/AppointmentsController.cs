@@ -27,18 +27,20 @@ namespace Pharmacy.Controllers
         private readonly IUserService _userService;
         private readonly IDrugService _drugService;
         private readonly IPharmacyService _pharmacyService;
+        private readonly IAbsenceRequestService _absenceRequestService;
         private readonly EmailSender _emailSender;
         private readonly UserManager<AppUser> _userManager;
 
         public AppointmentsController(ApplicationDbContext context, UserManager<AppUser> userManager, 
             IAppointmentService appointmentService, IUserService userService, IDrugService drugService,
-            IEmailSender emailSender, IPharmacyService pharmacyService)
+            IEmailSender emailSender, IPharmacyService pharmacyService, IAbsenceRequestService absenceRequestService)
         {
             _context = context;
             _appointmentService = appointmentService;
             _userManager = userManager;
             _userService = userService;
             _drugService = drugService;
+            _absenceRequestService = absenceRequestService;
             _pharmacyService = pharmacyService;
             using (StreamReader r = new StreamReader("./Areas/Identity/emailCredentials.json"))
             {
@@ -249,6 +251,37 @@ namespace Pharmacy.Controllers
             return View(appointmentDTO);
         }
 
+        [Authorize(Roles = "Pharmacist,Dermatologist")]
+        public async Task<IActionResult> ScheduleAppointmentEmpty()
+        {
+            var user = await _userManager.GetUserAsync(User);
+
+            AppointmentDTO appointmentDTO = new AppointmentDTO();
+            appointmentDTO.PatientID = "NoPatient";
+            appointmentDTO.MedicalExpertID = user.Id;
+
+            ViewData["PatientId"] = "";
+            ViewData["CurrentDate"] = DateTime.Now.ToString("yyyy-MM-dd");
+
+            List<Appointment> allAppointments = await _appointmentService.GetByMedicalExpert(user.Id);
+
+            List<AppointmentTimeDTO> allAppointmentsTime = new List<AppointmentTimeDTO>();
+
+            foreach (var appointment in allAppointments)
+            {
+                allAppointmentsTime.Add(new AppointmentTimeDTO(appointment.StartDateTime, appointment.Duration));
+            }
+
+            ViewData["appointmentsTime"] = JsonConvert.SerializeObject(allAppointmentsTime);
+            ViewData["startWorkingHours"] = user.WorkHoursStart.ToString() == "00:00:00" ? "08:00:00" : user.WorkHoursStart.ToString();
+            ViewData["endWorkingHours"] = user.WorkHoursEnd.ToString() == "00:00:00" ? "16:00:00" : user.WorkHoursEnd.ToString();
+            ViewData["pharmacyList"] = await _pharmacyService.GetAll();
+            ViewData["changePharmacy"] = "";
+
+            appointmentDTO.StartDateTime = DateTime.Now;
+            return View("ScheduleAppointment", appointmentDTO);
+        }
+
         [HttpGet("Appointments/ScheduleAppointment/{patientId}")]
         [Authorize(Roles = "Pharmacist,Dermatologist")]
         public async Task<IActionResult> ScheduleAppointment(string patientId = "")
@@ -256,7 +289,7 @@ namespace Pharmacy.Controllers
             var user = await _userManager.GetUserAsync(User);
 
             AppointmentDTO appointmentDTO = new AppointmentDTO();
-            if (patientId == "")
+            if (patientId == null)
                 appointmentDTO.PatientID = "NoPatient";
             else
                 appointmentDTO.PatientID = patientId;
@@ -276,28 +309,86 @@ namespace Pharmacy.Controllers
                 allAppointmentsTime.Add(new AppointmentTimeDTO(appointment.StartDateTime, appointment.Duration));
             }
 
+            List<AbsenceRequest> absenceRequests = await _absenceRequestService.GetByUser(user.Id);
+
+            foreach(var absenceRequest in absenceRequests)
+            {
+                allAppointmentsTime.Add(new AppointmentTimeDTO(absenceRequest.StartDateTime, absenceRequest.EndDateTime));
+            }
+
+
             ViewData["appointmentsTime"] = JsonConvert.SerializeObject(allAppointmentsTime);
             ViewData["startWorkingHours"] = user.WorkHoursStart.ToString() == "00:00:00" ? "08:00:00" : user.WorkHoursStart.ToString();
             ViewData["endWorkingHours"] = user.WorkHoursEnd.ToString() == "00:00:00" ? "16:00:00" : user.WorkHoursEnd.ToString();
-            //ViewData["pharmacyList"] = 
-            ViewData["changePharmacy"] = "";
+            ViewData["pharmacyList"] = await _pharmacyService.GetAll();
+            ViewData["ChangePharmacy"] = "disabled";
 
+            List<Appointment> freeAppointments = await _appointmentService.GetByMedicalExpertFree(user.Id);
+            ViewData["freeDateTimes"] = freeAppointments;
+
+            appointmentDTO.SelectedAppointmentId = 0;
             appointmentDTO.StartDateTime = DateTime.Now;
             return View("ScheduleAppointment", appointmentDTO);
         }
 
         [HttpPost("Appointments/ScheduleAppointment/{id}")]
         [Authorize(Roles = "Pharmacist,Dermatologist")]
-        public async Task<IActionResult> ScheduleAppointment(string patientId, [Bind("StartDateTime,Duration,PharmacyId")]
+        public async Task<IActionResult> ScheduleAppointment(string PatientId, [Bind("StartDateTime,Duration,PharmacyId,SelectedAppointmentId")]
                                                         AppointmentExamDTO appointmentExamDTO)
         {
             var user = await _userManager.GetUserAsync(User);
 
-            appointmentExamDTO.PatientID = patientId;
-            appointmentExamDTO.MedicalExpertID = user.Id;
-            ViewData["ChangePharmacy"] = "disabled";
+            Appointment appointment = new Appointment();
+            
+            if (appointmentExamDTO.SelectedAppointmentId != 0)
+            {
+                appointment = await _appointmentService.GetById(appointmentExamDTO.SelectedAppointmentId);
+            }
+            else
+            {
+                appointment.Price = appointmentExamDTO.Price;
+                appointment.StartDateTime = appointmentExamDTO.StartDateTime;
+                appointment.Duration = appointmentExamDTO.Duration;
+            }
 
-            return View();
+            appointment.MedicalExpertID = user.Id;
+            appointment.PhrmacyId = appointmentExamDTO.PharmacyId;
+
+            if (appointmentExamDTO.PatientID != null)
+            {
+                appointment.PatientID = appointmentExamDTO.PatientID;
+            }
+
+            if(PatientId != null)
+            {
+                appointment.PatientID = PatientId;
+            }
+
+            try
+            {
+                if(_appointmentService.Exists(appointment.Id))
+                {
+                    await _appointmentService.Update(appointment);
+                }
+                else
+                {
+                    await _appointmentService.Create(appointment);
+                }
+            }
+            catch(DbUpdateConcurrencyException)
+            {
+                return View("ConcurrencyError", "Home");
+            }
+
+            if(appointmentExamDTO.PatientID != null)
+            {
+                AppUser patient = await _userService.GetById(appointmentExamDTO.PatientID);
+
+                await _emailSender.SendEmailAsync(patient.Email, "New appointment scheduled",
+                    $"Date and time of the appointment {appointment.StartDateTime}, duration: {appointment.Duration} ");
+            }
+
+            return View("MyAppointments");
         }
 
         [Authorize(Roles = "Pharmacist,Dermatologist")]
@@ -577,6 +668,28 @@ namespace Pharmacy.Controllers
         {
             var user = await _userManager.GetUserAsync(User);
             var appointmentList = await _appointmentService.GetByPatientScheduled(user.Id);
+
+            var appointmentDTOList = new List<AppointmentDTO>();
+
+            foreach (var appointment in appointmentList)
+            {
+                AppUser medicalExpert = await _userService.GetById(appointment.MedicalExpertID);
+                AppUser patient = await _userService.GetById(appointment.PatientID);
+
+                string patientFullName = patient == null ? "" : patient.FirstName + " " + patient.LastName;
+                string medicalExpertFullname = medicalExpert == null ? "" : medicalExpert.FirstName + " " + medicalExpert.LastName;
+
+                appointmentDTOList.Add(new AppointmentDTO(appointment,
+                    medicalExpertFullname, patientFullName));
+            }
+
+            return View(appointmentDTOList);
+        }
+        [Authorize(Roles = "User")]
+        public async Task<IActionResult> PastAppointmentsUser()
+        {
+            var user = await _userManager.GetUserAsync(User);
+            var appointmentList = await _appointmentService.GetByPatientPast(user.Id);
 
             var appointmentDTOList = new List<AppointmentDTO>();
 

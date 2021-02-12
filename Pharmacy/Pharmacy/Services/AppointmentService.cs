@@ -11,10 +11,11 @@ namespace Pharmacy.Services
     public class AppointmentService : IAppointmentService
     {
         private readonly ApplicationDbContext _context;
-
-        public AppointmentService(ApplicationDbContext context)
+        private readonly IAbsenceRequestService _absenceRequestService;
+        public AppointmentService(ApplicationDbContext context, IAbsenceRequestService absenceRequestService)
         {
             _context = context;
+            _absenceRequestService = absenceRequestService;
         }
 
         public async Task<Appointment> GetById(long id)
@@ -68,6 +69,11 @@ namespace Pharmacy.Services
             var date = DateTime.Now;
             return await _context.tbAppointments.Where(x => x.PatientID == id && x.StartDateTime > date).ToListAsync();
         }
+        public async Task<List<Appointment>> GetByPatientPast(string id)
+        {
+            var date = DateTime.Now;
+            return await _context.tbAppointments.Where(x => x.PatientID == id && x.StartDateTime < date).ToListAsync();
+        }
 
         public async Task<List<Appointment>> GetCurrentByMedicalExpert(string id)
         {
@@ -87,7 +93,11 @@ namespace Pharmacy.Services
 
         public async Task<int> Update(Appointment appointment)
         {
-            _context.Update(appointment);
+            if (await IsPossibleTime(appointment))
+            {
+                _context.Update(appointment); 
+                await _context.SaveChangesAsync();
+            }
 
             return await _context.SaveChangesAsync();
         }
@@ -104,10 +114,81 @@ namespace Pharmacy.Services
             return await _context.SaveChangesAsync();
         }
 
-        public async void Create(Appointment appointment)
+        public bool IsOverlapping(DateTime start1, DateTime end1, DateTime start2, DateTime end2)
         {
-            _context.Add(appointment);
-            await _context.SaveChangesAsync();
+            if (!((start1 > start2) && (start1 > end2) && (end1 > start1) && (end1 > end2)))
+                return false;
+            if (!((start1 < start2) && (start1 < end2) && (end1 < start1) && (end1 < end2)))
+                return false;
+
+            return true;
+        }
+
+        public async Task<bool> IsPossibleTime(Appointment appointment)
+        {
+            var medExpertAppointments = await GetByMedicalExpert(appointment.MedicalExpertID);
+            var patientAppointments = appointment.PatientID == null ? new List<Appointment>() :
+                                                                    await GetByPatient(appointment.PatientID);
+            var absenceRequests = await _absenceRequestService.GetByUser(appointment.MedicalExpertID);
+
+            foreach(var app in medExpertAppointments)
+            {
+                if(IsOverlapping(appointment.StartDateTime, appointment.StartDateTime + appointment.Duration, app.StartDateTime, app.StartDateTime + app.Duration))
+                {
+                    return false;
+                }
+            }
+
+            // Local - changes that are made and still waiting in the transaction (changes that are
+            // not in the database but soon will be)
+            // Instead of passive concurrency, we will use locals and boost our optimistic concurrency
+            // Passive concurrency is forbidden in Entity framework 
+            foreach(var app in _context.tbAppointments.Local)
+            {
+                if(app.MedicalExpertID == appointment.MedicalExpertID || app.PatientID == appointment.PatientID)
+                {
+                    if(IsOverlapping(app.StartDateTime, app.StartDateTime + app.Duration, appointment.StartDateTime, appointment.StartDateTime + appointment.Duration))
+                    {
+                        return false;
+                    }
+                }
+            }
+
+            foreach (var app in patientAppointments)
+            {
+                if (IsOverlapping(appointment.StartDateTime, appointment.StartDateTime + appointment.Duration, app.StartDateTime, app.StartDateTime + app.Duration))
+                {
+                    return false;
+                }
+            }
+
+            foreach (var app in absenceRequests)
+            {
+                if (IsOverlapping(app.StartDateTime, app.EndDateTime, appointment.StartDateTime, appointment.StartDateTime + appointment.Duration))
+                {
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        public async Task<bool> Create(Appointment appointment)
+        {
+            if(await IsPossibleTime(appointment))
+            {
+                _context.Add(appointment);
+                await _context.SaveChangesAsync();
+                return true;
+            }
+
+            return false;
+        }
+
+        public async Task<List<Appointment>> GetByMedicalExpertFree(string id)
+        {
+            var appointments = await GetByMedicalExpert(id);
+            appointments = appointments.Where(x => x.PatientID == null).ToList();
+            return (appointments);
         }
     }
 }

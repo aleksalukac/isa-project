@@ -1,0 +1,44 @@
+﻿@model IEnumerable<Pharmacy.Models.Entities.Order>
+
+@{
+    ViewData["Title"] = "Past Orders";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>Past Orders</h1>
+<table class="sortable table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Id)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Cost)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.TimeOfTransaction)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.TransactionComplete)
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Id)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Cost)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.TimeOfTransaction)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.TransactionComplete)
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

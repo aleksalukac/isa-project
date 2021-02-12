@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
@@ -10,6 +11,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
+using Pharmacy.Areas.Identity;
 using Pharmacy.Data;
 using Pharmacy.Models.Entities;
 using Pharmacy.Models.Entities.Users;
@@ -23,7 +25,7 @@ namespace Pharmacy.Controllers
         private readonly UserManager<AppUser> _userManager;
         private readonly IPharmacyService _pharmacyService;
         private readonly IAppointmentService _appointmentService;
-        private readonly IEmailSender _emailService;
+        private readonly EmailSender _emailService;
 
         public PharmaciesController(UserManager<AppUser> userManager,
             ApplicationDbContext context,
@@ -31,7 +33,11 @@ namespace Pharmacy.Controllers
             IAppointmentService appointmentService,
             IEmailSender emailSender)
         {
-            _emailService = emailSender;
+            using (StreamReader r = new StreamReader("./Areas/Identity/emailCredentials.json"))
+            {
+                string json = r.ReadToEnd();
+                _emailService = JsonConvert.DeserializeObject<EmailSender>(json);
+            }
             _appointmentService = appointmentService;
             _pharmacyService = pharmacyService;
             _userManager = userManager;
@@ -246,6 +252,10 @@ namespace Pharmacy.Controllers
         public async Task<IActionResult> TakeAppointment(DateTime dateTime, long pharmacyId, double cost,string pharmacistsd)
         {
             var user = await _userManager.GetUserAsync(User);
+            if (user.Penalty > 2)
+            {
+                return Redirect("Home");
+            }
             Appointment appointment = new Appointment();
             appointment.PhrmacyId = pharmacyId;
             appointment.Duration = TimeSpan.FromMinutes(30);

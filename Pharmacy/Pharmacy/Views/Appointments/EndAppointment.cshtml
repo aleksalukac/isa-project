@@ -1,4 +1,12 @@
-﻿@{
+﻿@using Microsoft.AspNetCore.Authorization
+@inject IAuthorizationService AuthorizationService
+
+@using Microsoft.AspNetCore.Identity
+@using Pharmacy.Models.Entities.Users
+@inject SignInManager<Pharmacy.Models.Entities.Users.AppUser> SignInManager
+@inject UserManager<AppUser> UserManager
+
+@{
     ViewData["Title"] = "End Appointment";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
@@ -9,14 +17,16 @@
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <a asp-action="ScheduleAppointment" asp-route-id="@ViewData["PatientId"]">Schedule new appointment for this patient</a>
+        <a asp-action="ScheduleAppointment" asp-route-id="@ViewData["PatientId"]">Schedule new appointment for this patient - new appointment</a>
+       
+        <br /><hr /><br />
     </div>
     <br />
     @ViewData["DrugCheckout"]
 </div>
 
 <div>
-    
+
 </div>
 
 @section Scripts {

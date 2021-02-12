@@ -81,6 +81,11 @@ namespace Pharmacy.Controllers
             {
                 return NotFound();
             }
+            var user = await _userManager.GetUserAsync(User);
+            if (user.Penalty > 2)
+            {
+                return Redirect("Home");
+            }
             /*var drugsQuantList = await (from drug in _context.tbDrugs
                                 join drugsQuant in _context.DrugAndQuantity on drug equals drugsQuant.Drug
                                 where drugsQuant.Drug.Id == drugId && drugsQuant.Quantity > 0
@@ -109,6 +114,14 @@ namespace Pharmacy.Controllers
             var timeNow = DateTime.Now;
 
             return View(await _context.tbOrders.Where(m => m.UserId == user.Id && timeNow < m.TimeOfTransaction).ToListAsync());
+        }
+        [Authorize(Roles = "User")]
+        public async Task<IActionResult> PastOrders()
+        {
+            var user = await _userManager.GetUserAsync(User);
+            var timeNow = DateTime.Now;
+
+            return View(await _context.tbOrders.Where(m => m.UserId == user.Id && timeNow > m.TimeOfTransaction).ToListAsync());
         }
 
         // GET: Orders/SearchOrder

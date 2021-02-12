@@ -36,7 +36,6 @@ namespace NUnitTestPharmacy.IntegrationTests
         private int _timeoutInSeconds = 30;
         private static string _driverPath = Environment.CurrentDirectory + "\\..\\..\\..\\WebDriverGoogleChome\\";
 
-
         [SetUp]
         public void SetUp()
         {
@@ -54,7 +53,6 @@ namespace NUnitTestPharmacy.IntegrationTests
                 webDriver.Navigate().GoToUrl("https://localhost:44396/Identity/Account/Login");
                 webDriver.Manage().Window.Maximize();
                 IWebElement webElement;
-                Thread.Sleep(1000);
 
                 // Username
                 wait.Until(ExpectedConditions.ElementIsVisible (By.Id("username_input")));
@@ -70,37 +68,29 @@ namespace NUnitTestPharmacy.IntegrationTests
 
                 webDriver.FindElement(By.Id("submit_login")).Click();
 
-
                 wait.Until(ExpectedConditions.ElementExists(By.Id("discort_elementMeni")));
                 webElement = webDriver.FindElement(By.Id("discort_elementMeni"));
                 webElement.Click();
 
+                wait.Until(ExpectedConditions.ElementExists(By.Id("Edit0")));
+                webElement = webDriver.FindElement(By.Id("Edit0"));
+                webElement.Click();
 
-                wait.Until(ExpectedConditions.ElementIsVisible(By.XPath("//span[contains(text(),'" + "Edit" + "')]")));
+                wait.Until(ExpectedConditions.ElementToBeClickable(By.Id("BeforePrice")));
+                webElement = webDriver.FindElement(By.Id("BeforePrice"));
+                webElement.Clear();
+                webDriver.FindElement(By.Id("BeforePrice")).SendKeys("666");
 
-                var element = webDriver.FindElement(By.Id("logout_test")).Displayed;
+                webDriver.FindElement(By.Id("Submit")).Click();
+
+                wait.Until(ExpectedConditions.ElementToBeClickable(By.Id("Edit0")));
+                var element = webDriver.FindElement(By.Id("Edit0")).Displayed;
+
                 if (element)
                 {
                     result = true;
                 }
-                return result;
 
-                wait.Until(ExpectedConditions.ElementToBeClickable(By.Id("logout_test")));
-                webElement = webDriver.FindElement(By.Id("logout_test"));
-                webElement.Click();
-                Thread.Sleep(1000);
-
-                
-
-                wait.Until(ExpectedConditions.ElementToBeClickable(By.Id("logout_test2")));
-                webElement = webDriver.FindElement(By.Id("logout_test2"));
-                webElement.Click();
-
-                var element2 = webDriver.FindElement(By.Id("dropdownMenuButton")).Displayed;
-                if (!element2)
-                {
-                    result = true;
-                }
                 return result;
             }
             catch (Exception ex)
@@ -108,12 +98,7 @@ namespace NUnitTestPharmacy.IntegrationTests
                 Console.WriteLine(ex.Source + " - " + ex.Message + " - " + ex.StackTrace);
                 return result;
             }
-            finally
-            {
-
-            }
             return result;
-
         }
 
         [Test]
