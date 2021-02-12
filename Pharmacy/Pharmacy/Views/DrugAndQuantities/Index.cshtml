@@ -19,6 +19,9 @@
             <th>
                 @Html.DisplayNameFor(model => model.Quantity)
             </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Price)
+            </th>
             <th></th>
         </tr>
     </thead>
@@ -26,10 +29,20 @@
 @foreach (var item in Model) {
         <tr>
             <td>
-                @Html.DisplayFor(modelItem => item.PharmacyId)
+                @foreach (Pharmacy.Models.Entities.Pharmacy itemPharmacy in (List<Pharmacy.Models.Entities.Pharmacy>)@ViewData["PharmacyList"])
+                {
+                    @if (item.PharmacyId == itemPharmacy.Id)
+                    {
+                        <label value=@itemPharmacy.Id class="option">@itemPharmacy.Name</label>
+                    }
+                }
+
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Quantity)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Price)
             </td>
             <td>
                 <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |

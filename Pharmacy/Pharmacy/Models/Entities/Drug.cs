@@ -24,6 +24,16 @@ namespace Pharmacy.Models.Entities
             Notes = notes;
         }
 
+        public Drug(string name, DrugForm form, string ingredients, string drugmaker, bool isPrescribable, string notes)
+        {
+            Name = name;
+            Form = form;
+            Ingredients = ingredients;
+            Drugmaker = drugmaker;
+            IsPrescribable = isPrescribable;
+            Notes = notes;
+        }
+
         public long Id { get; set; }
         public string Name { get; set; }
         public DrugType Type { get; set; }
