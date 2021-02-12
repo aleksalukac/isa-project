@@ -73,8 +73,8 @@ namespace NUnitTestPharmacy.IntegrationTests
                 webElement = webDriver.FindElement(By.Id("discort_elementMeni"));
                 webElement.Click();
 
-                wait.Until(ExpectedConditions.ElementExists(By.Id("Edit 1")));
-                webElement = webDriver.FindElement(By.Id("Edit 1"));
+                wait.Until(ExpectedConditions.ElementExists(By.Id("Edit 4")));
+                webElement = webDriver.FindElement(By.Id("Edit 4"));
                 webElement.Click();
 
                 wait.Until(ExpectedConditions.ElementToBeClickable(By.Id("BeforePrice")));
