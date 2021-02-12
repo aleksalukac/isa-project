@@ -22,7 +22,7 @@ We love Microsoft :)
 
 Password: Admin.123
 
-[Admin]			jatij31112@hrandod.com
+[System Admin]			jatij31112@hrandod.com
 
 [Pharmacy Admin]		hafik45066@hrandod.com
 
