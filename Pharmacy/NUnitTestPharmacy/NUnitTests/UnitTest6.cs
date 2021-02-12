@@ -26,7 +26,9 @@ namespace NUnitTestPharmacy.NUnitTests
             var dbOption = new DbContextOptionsBuilder<ApplicationDbContext>().UseSqlServer("Server=.\\SQLEXPRESS;data source=mssql11.orion.rs;initial catalog=isa;Password = UrosFic@Luk@c;Persist Security Info=True;User ID=aleksalukac;MultipleActiveResultSets=True;App=EntityFramework&quot;").Options;
             _context = new ApplicationDbContext(dbOption);
             supplyItemsController = new SupplyItemsController(_context);
-            supply = _context.SupplyItems.OrderByDescending(p => p.Id).FirstOrDefault();
+            SupplyItem supplyOld = _context.SupplyItems.OrderByDescending(p => p.Id).FirstOrDefault();
+
+            supply = new SupplyItem(supplyOld.Id+1, 1, 4, 2);
             var actionResult = supplyItemsController.Create(supply);
         }
 
@@ -36,7 +38,7 @@ namespace NUnitTestPharmacy.NUnitTests
         {
             supplyItemsController = new SupplyItemsController(_context);
             supplyItemsController.DeleteConfirmed(supply.Id + 1);
-            var NullDrug = _context.tbDrugs.Find(supply.Id+1);
+            var NullDrug = _context.SupplyItems.Find(supply.Id+1);
             Assert.IsNull(NullDrug);
         }
         #endregion

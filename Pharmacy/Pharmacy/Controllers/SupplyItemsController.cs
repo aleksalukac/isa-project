@@ -44,7 +44,7 @@ namespace Pharmacy.Controllers
         }
 
         // GET: SupplyItems/Create
-        public async Task<IActionResult> CreateAsync()
+        public async Task<IActionResult> CreateAsync(SupplyItem supply)
         {
             ViewData["DrugList"] = await _context.tbDrugs.ToListAsync();
             return View();
@@ -64,7 +64,7 @@ namespace Pharmacy.Controllers
 
             if (ModelState.IsValid)
             {
-                _context.Add(supplyItem);
+                await _context.AddAsync(supplyItem);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
