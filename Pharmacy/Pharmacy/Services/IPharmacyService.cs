@@ -15,5 +15,6 @@ namespace Pharmacy.Services
         public Task<List<AppUser>> GetAllPharmacists(long pharmacyId, DateTime dateTime);
         public bool Exists(long id);
         public Task<List<Pharmacy.Models.Entities.Pharmacy>> GetAll();
+        public Task<List<long>> GetPharmacyByDermatologist(string id);
     }
 }

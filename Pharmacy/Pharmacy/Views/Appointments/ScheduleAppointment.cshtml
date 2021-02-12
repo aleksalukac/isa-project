@@ -14,6 +14,9 @@
 
 <h1>Schedule new Appointment</h1>
 
+<br />
+<a asp-action="Calendar"><img src="https://cdn4.iconfinder.com/data/icons/small-n-flat/24/calendar-512.png" width="50" /></a>
+<br />
 @if (ViewData["PatientId"] != "")
 {
     <h3>@ViewData["PatientId"]</h3>
@@ -33,14 +36,14 @@
             @if ((await AuthorizationService.AuthorizeAsync(User, null, "DermatologistPolicy")).Succeeded)
             {
                 <br />
-        <select name="SelectedAppointmentId" onchange="lockButton()" id="SelectedAppointmentId" class="form-control">
+                <select name="SelectedAppointmentId" onchange="lockButton()" id="SelectedAppointmentId" class="form-control">
 
-            <option value=0 class="option">Choose from existing appointments</option>
-            @foreach (Pharmacy.Models.Entities.Appointment item in (List<Pharmacy.Models.Entities.Appointment>)@ViewData["freeDateTimes"])
-            {
-                <option value=@item.Id class="option">@item.StartDateTime, @item.Duration</option>
-            }
-        </select>
+                    <option value=0 class="option">Choose from existing appointments</option>
+                    @foreach (Pharmacy.Models.Entities.Appointment item in (List<Pharmacy.Models.Entities.Appointment>)@ViewData["freeDateTimes"])
+                    {
+                        <option value=@item.Id class="option">@item.StartDateTime, @item.Duration</option>
+                    }
+                </select>
             }
             <div class="form-group">
                 <label asp-for="StartDateTime" class="control-label"></label>
@@ -61,6 +64,10 @@
         </button>
     </div>
 </div>
+TIPS: After choosing appointment time, click: Check if free appointment time
+If it is free, you will be allowed to save the appointment. If you choose one of the predefined appointments, its appointment time will
+be checked and your input in other fields will not be evaluated.
+You can check your calendar and come back to this page with back arrow.
 
 <script>
     function lockButton() {

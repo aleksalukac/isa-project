@@ -172,5 +172,10 @@ namespace Pharmacy.Services
         {
             return await _context.tbPharmacys.ToListAsync();
         }
+
+        public async Task<List<long>> GetPharmacyByDermatologist(string id)
+        {
+            return await _context.DermatologistPharmacy.Where(x => x.UserId == id).Select(x => x.PharmacyId).ToListAsync();
+        }
     }
 }

@@ -275,7 +275,20 @@ namespace Pharmacy.Controllers
             ViewData["appointmentsTime"] = JsonConvert.SerializeObject(allAppointmentsTime);
             ViewData["startWorkingHours"] = user.WorkHoursStart.ToString() == "00:00:00" ? "08:00:00" : user.WorkHoursStart.ToString();
             ViewData["endWorkingHours"] = user.WorkHoursEnd.ToString() == "00:00:00" ? "16:00:00" : user.WorkHoursEnd.ToString();
-            ViewData["pharmacyList"] = await _pharmacyService.GetAll();
+            var pharmacyIds = await _pharmacyService.GetPharmacyByDermatologist(user.Id);
+            List<Pharmacy.Models.Entities.Pharmacy> pharmacies = new List<Pharmacy.Models.Entities.Pharmacy>();
+            pharmacies.Add(await _pharmacyService.GetById(user.PharmacyId));
+
+            foreach(var id in pharmacyIds)
+            {
+                var pharmacy = await _pharmacyService.GetById(id);
+                if (!pharmacies.Contains(pharmacy))
+                {
+                    pharmacies.Add(pharmacy);
+                }
+            }
+
+            ViewData["pharmacyList"] = pharmacies;
             ViewData["changePharmacy"] = "";
 
             appointmentDTO.StartDateTime = DateTime.Now;
@@ -663,6 +676,7 @@ namespace Pharmacy.Controllers
         {
             return View();
         }
+
         [Authorize(Roles = "User")]
         public async Task<IActionResult> MyAppointmentsUser()
         {

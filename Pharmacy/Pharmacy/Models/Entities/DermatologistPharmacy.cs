@@ -14,7 +14,7 @@ namespace Pharmacy.Models.Entities
         public long Id { get; set; }
 
         [ForeignKey("AppUser")]
-        public long UserId { get; set; }
+        public string UserId { get; set; }
         [ForeignKey("Pharmacy")]
         public long PharmacyId { get; set; }
 
